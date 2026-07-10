@@ -1,0 +1,195 @@
+// Source of truth for the catalog. In-memory seed data — resets on restart.
+// Cover art is an emoji + gradient (rendered by the frontend), so no image
+// files are needed anywhere in the stack.
+
+export type ProductType = 'game' | 'console'
+export type Condition = 'Mint' | 'Good' | 'Fair'
+
+export interface Product {
+  id: number
+  title: string
+  type: ProductType
+  platform: string
+  condition: Condition
+  price: number
+  originalPrice: number
+  rating: number
+  emoji: string
+  /** Tailwind gradient classes used for the cover tile on the frontend. */
+  accent: string
+}
+
+export const products: Product[] = [
+  {
+    id: 1,
+    title: 'Elden Ring',
+    type: 'game',
+    platform: 'PlayStation',
+    condition: 'Mint',
+    price: 34.99,
+    originalPrice: 59.99,
+    rating: 4.9,
+    emoji: '⚔️',
+    accent: 'from-amber-500/30 to-brand/30',
+  },
+  {
+    id: 2,
+    title: 'God of War Ragnarök',
+    type: 'game',
+    platform: 'PlayStation',
+    condition: 'Good',
+    price: 29.99,
+    originalPrice: 49.99,
+    rating: 4.8,
+    emoji: '🪓',
+    accent: 'from-blue-500/30 to-cyan-400/30',
+  },
+  {
+    id: 3,
+    title: 'The Legend of Zelda: Tears of the Kingdom',
+    type: 'game',
+    platform: 'Nintendo',
+    condition: 'Mint',
+    price: 44.99,
+    originalPrice: 69.99,
+    rating: 4.9,
+    emoji: '🗡️',
+    accent: 'from-emerald-500/30 to-lime-400/30',
+  },
+  {
+    id: 4,
+    title: 'Mario Kart 8 Deluxe',
+    type: 'game',
+    platform: 'Nintendo',
+    condition: 'Good',
+    price: 39.99,
+    originalPrice: 59.99,
+    rating: 4.7,
+    emoji: '🏎️',
+    accent: 'from-red-500/30 to-orange-400/30',
+  },
+  {
+    id: 5,
+    title: 'Halo Infinite',
+    type: 'game',
+    platform: 'Xbox',
+    condition: 'Fair',
+    price: 19.99,
+    originalPrice: 49.99,
+    rating: 4.3,
+    emoji: '🪖',
+    accent: 'from-green-500/30 to-teal-400/30',
+  },
+  {
+    id: 6,
+    title: 'Cyberpunk 2077',
+    type: 'game',
+    platform: 'PC',
+    condition: 'Good',
+    price: 24.99,
+    originalPrice: 59.99,
+    rating: 4.5,
+    emoji: '🌆',
+    accent: 'from-yellow-400/30 to-fuchsia-500/30',
+  },
+  {
+    id: 7,
+    title: 'Forza Horizon 5',
+    type: 'game',
+    platform: 'Xbox',
+    condition: 'Mint',
+    price: 32.99,
+    originalPrice: 59.99,
+    rating: 4.8,
+    emoji: '🚗',
+    accent: 'from-purple-500/30 to-pink-400/30',
+  },
+  {
+    id: 8,
+    title: 'Baldur’s Gate 3',
+    type: 'game',
+    platform: 'PC',
+    condition: 'Mint',
+    price: 39.99,
+    originalPrice: 59.99,
+    rating: 5.0,
+    emoji: '🐉',
+    accent: 'from-rose-500/30 to-amber-400/30',
+  },
+  {
+    id: 9,
+    title: 'PlayStation 5 (Slim)',
+    type: 'console',
+    platform: 'PlayStation',
+    condition: 'Good',
+    price: 379.99,
+    originalPrice: 499.99,
+    rating: 4.8,
+    emoji: '🎮',
+    accent: 'from-blue-600/40 to-indigo-500/30',
+  },
+  {
+    id: 10,
+    title: 'Xbox Series X',
+    type: 'console',
+    platform: 'Xbox',
+    condition: 'Mint',
+    price: 399.99,
+    originalPrice: 499.99,
+    rating: 4.9,
+    emoji: '🟩',
+    accent: 'from-green-600/40 to-emerald-500/30',
+  },
+  {
+    id: 11,
+    title: 'Nintendo Switch OLED',
+    type: 'console',
+    platform: 'Nintendo',
+    condition: 'Good',
+    price: 289.99,
+    originalPrice: 349.99,
+    rating: 4.7,
+    emoji: '🕹️',
+    accent: 'from-red-500/40 to-rose-400/30',
+  },
+  {
+    id: 12,
+    title: 'PlayStation 4 Slim',
+    type: 'console',
+    platform: 'PlayStation',
+    condition: 'Fair',
+    price: 149.99,
+    originalPrice: 299.99,
+    rating: 4.2,
+    emoji: '🎮',
+    accent: 'from-slate-500/40 to-blue-400/30',
+  },
+  {
+    id: 13,
+    title: 'Xbox Series S',
+    type: 'console',
+    platform: 'Xbox',
+    condition: 'Good',
+    price: 219.99,
+    originalPrice: 299.99,
+    rating: 4.6,
+    emoji: '⬜',
+    accent: 'from-neutral-400/40 to-emerald-400/30',
+  },
+  {
+    id: 14,
+    title: 'Red Dead Redemption 2',
+    type: 'game',
+    platform: 'PlayStation',
+    condition: 'Good',
+    price: 27.99,
+    originalPrice: 59.99,
+    rating: 4.9,
+    emoji: '🤠',
+    accent: 'from-orange-600/30 to-red-500/30',
+  },
+]
+
+export function findProduct(id: number): Product | undefined {
+  return products.find((p) => p.id === id)
+}

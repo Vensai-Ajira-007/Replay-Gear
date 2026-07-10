@@ -1,0 +1,16 @@
+{
+  "name": "replaygear",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ReplayGear — pre-owned games & consoles store (React frontend + Node/Express backend)",
+  "scripts": {
+    "install:all": "npm install --prefix Back-end && npm install --prefix Front-end",
+    "dev:api": "npm run dev --prefix Back-end",
+    "dev:web": "npm run dev --prefix Front-end",
+    "dev": "concurrently -n api,web -c magenta,cyan \"npm run dev:api\" \"npm run dev:web\"",
+    "build": "npm run build --prefix Back-end && npm run build --prefix Front-end"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
