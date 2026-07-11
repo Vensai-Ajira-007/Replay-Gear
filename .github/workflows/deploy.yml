@@ -21,7 +21,6 @@ jobs:
           echo "Cleaning up workspace..."
           sudo chown -R $USER:$USER $GITHUB_WORKSPACE || true
 
-       Tar code from GitHub
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
@@ -33,7 +32,6 @@ jobs:
         run: |
           docker stop my-backend-container || true
           docker rm my-backend-container || true
-          
           docker run -d \
             --name my-backend-container \
             -p 4000:4000 \
