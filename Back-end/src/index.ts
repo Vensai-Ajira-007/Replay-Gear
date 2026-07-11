@@ -39,7 +39,10 @@ async function main() {
   })
 
   // Fallback 404 for anything not matched by a controller.
-  app.use((_req, res) => {
+  // routing-controllers calls next() after handling an action, so this runs
+  // even on matched routes — guard against double-sending the response.
+  app.use((_req, res, next) => {
+    if (res.headersSent) return next()
     res.status(404).json({ error: 'Not found' })
   })
 
