@@ -9,7 +9,7 @@ interface NavbarProps {
 const navLinks: { label: string; to: string }[] = [
   { label: 'Games', to: '/games' },
   { label: 'Consoles', to: '/consoles' },
-  { label: 'Deals', to: '/' },
+  { label: 'Deals', to: '/#deals' },
   { label: 'Sell to us', to: '/' },
 ]
 

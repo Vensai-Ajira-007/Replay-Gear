@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Hero from '../components/Hero'
+import ProductCard from '../components/ProductCard'
+import { type Product } from '../data/products'
 import { fetchProducts } from '../lib/api'
+import { useCart } from '../context/CartContext'
 
 interface Category {
   type: 'game' | 'console'
@@ -31,30 +34,47 @@ const categories: Category[] = [
   },
 ]
 
-export default function DashboardPage() {
-  const [counts, setCounts] = useState<Record<'game' | 'console', number | null>>({
-    game: null,
-    console: null,
-  })
+function discountPct(p: Product): number {
+  return p.originalPrice > 0 ? (p.originalPrice - p.price) / p.originalPrice : 0
+}
 
-  // Fetch the whole catalog once just to show per-category counts on the cards.
+export default function DashboardPage() {
+  const { add } = useCart()
+  const [products, setProducts] = useState<Product[]>([])
+
+  // Fetch the whole catalog once — used for category counts and hot deals.
   useEffect(() => {
     let cancelled = false
     fetchProducts({})
-      .then((products) => {
-        if (cancelled) return
-        setCounts({
-          game: products.filter((p) => p.type === 'game').length,
-          console: products.filter((p) => p.type === 'console').length,
-        })
+      .then((items) => {
+        if (!cancelled) setProducts(items)
       })
       .catch(() => {
-        // Leave counts null (cards still render) if the API is unreachable.
+        // Leave products empty (cards still render) if the API is unreachable.
       })
     return () => {
       cancelled = true
     }
   }, [])
+
+  const counts = {
+    game: products.length ? products.filter((p) => p.type === 'game').length : null,
+    console: products.length ? products.filter((p) => p.type === 'console').length : null,
+  }
+
+  // Top 4 by discount percentage.
+  const deals = useMemo(
+    () => [...products].sort((a, b) => discountPct(b) - discountPct(a)).slice(0, 4),
+    [products],
+  )
+
+  const handleAddToCart = async (product: Product) => {
+    try {
+      await add(product.id)
+    } catch {
+      // Non-fatal for the demo.
+    }
+  }
 
   return (
     <>
@@ -99,6 +119,29 @@ export default function DashboardPage() {
           })}
         </div>
       </section>
+
+      {deals.length > 0 && (
+        <section id="deals" className="mx-auto max-w-7xl scroll-mt-24 px-4 pb-16 sm:px-6">
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-white">🔥 Hot Deals</h2>
+              <p className="mt-1 text-sm text-white/60">
+                Biggest markdowns in the store right now.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {deals.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   )
 }
