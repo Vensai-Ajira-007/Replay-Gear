@@ -6,12 +6,18 @@ interface NavbarProps {
   onSearchChange: (value: string) => void
 }
 
-const navLinks = ['Games', 'Consoles', 'Deals', 'Sell to us']
+const navLinks: { label: string; to: string }[] = [
+  { label: 'Games', to: '/games' },
+  { label: 'Consoles', to: '/consoles' },
+  { label: 'Deals', to: '/' },
+  { label: 'Sell to us', to: '/' },
+]
 
 export default function Navbar({ search, onSearchChange }: NavbarProps) {
   const { count } = useCart()
   const { pathname } = useLocation()
-  const showSearch = pathname === '/'
+  // Search only makes sense on the category pages (which render a product grid).
+  const showSearch = pathname === '/games' || pathname === '/consoles'
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/70 backdrop-blur-xl">
@@ -29,8 +35,8 @@ export default function Navbar({ search, onSearchChange }: NavbarProps) {
         {/* Nav links */}
         <nav className="ml-4 hidden items-center gap-6 text-sm text-white/70 lg:flex">
           {navLinks.map((link) => (
-            <Link key={link} to="/" className="transition hover:text-white">
-              {link}
+            <Link key={link.label} to={link.to} className="transition hover:text-white">
+              {link.label}
             </Link>
           ))}
         </nav>

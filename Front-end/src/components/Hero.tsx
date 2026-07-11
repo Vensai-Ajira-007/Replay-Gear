@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import heroBg from '../assets/tufkigckuj241.jpg'
 
 const stats = [
@@ -32,18 +33,18 @@ export default function Hero() {
             guaranteed. Save up to 60% off retail on the titles you love.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href="#catalog"
+            <Link
+              to="/games"
               className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
             >
-              Shop the catalog
-            </a>
-            <a
-              href="#catalog"
+              Shop games
+            </Link>
+            <Link
+              to="/consoles"
               className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Browse consoles
-            </a>
+            </Link>
           </div>
 
           <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4">
