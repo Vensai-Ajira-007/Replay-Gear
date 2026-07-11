@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
+import morgan from 'morgan'
 import { useExpressServer } from 'routing-controllers'
 import { AppDataSource } from './db/data-source.js'
 import { seedProducts } from './db/seed.js'
@@ -20,6 +21,9 @@ async function main() {
 
   const app = express()
   app.use(cors())
+  // Log every incoming request (method, path, status, response time) so you can
+  // watch endpoints being hit in the container logs.
+  app.use(morgan('dev'))
   // NOTE: no express.json() here — routing-controllers does its own body parsing
   // for @Body(). Adding express.json() would consume the stream first and cause
   // "stream is not readable" on POST.
