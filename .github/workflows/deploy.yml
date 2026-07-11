@@ -22,11 +22,13 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Build Docker Image
-        run: docker build -t my-ts-backend:latest .
+      - name: Deploy with Docker Compose
+        run: docker compose up -d --build
 
-      - name: Deploy Container
+      - name: Smoke test API
         run: |
-          docker stop my-backend-container || true
-          docker rm my-backend-container || true
-          docker run -d --name my-backend-container -p 4000:4000 --restart unless-stopped my-ts-backend:latest
+          for i in $(seq 1 15); do
+            if curl -fsS http://localhost:4000/api/health; then echo " OK"; exit 0; fi
+            echo "waiting for API... ($i)"; sleep 2
+          done
+          echo "API did not become healthy"; docker compose logs api --tail 50; exit 1
