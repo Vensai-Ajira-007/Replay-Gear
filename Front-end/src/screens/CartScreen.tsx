@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { conditionColor } from '../data/products'
 import { useCart } from '../context/CartContext'
+import { ROUTES } from '../config/routes'
 
-export default function CartPage() {
+export default function CartScreen() {
   const { cart, loading, add, remove, clear, checkout } = useCart()
   const [orderId, setOrderId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -35,7 +36,7 @@ export default function CartPage() {
           Order ID: <span className="font-mono text-white/60">{orderId}</span>
         </p>
         <Link
-          to="/"
+          to={ROUTES.home}
           className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
         >
           Keep shopping
@@ -54,7 +55,7 @@ export default function CartPage() {
           Browse the catalog and add some games or consoles to get started.
         </p>
         <Link
-          to="/"
+          to={ROUTES.home}
           className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
         >
           Browse the catalog
@@ -72,7 +73,10 @@ export default function CartPage() {
             {cart.totalItems} {cart.totalItems === 1 ? 'item' : 'items'}
           </p>
         </div>
-        <Link to="/" className="text-sm text-brand-soft transition hover:text-white">
+        <Link
+          to={ROUTES.home}
+          className="text-sm text-brand-soft transition hover:text-white"
+        >
           ← Continue shopping
         </Link>
       </div>

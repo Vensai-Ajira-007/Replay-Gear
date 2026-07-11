@@ -5,11 +5,11 @@ import ProductGrid from '../components/ProductGrid'
 import { type Product, type ProductType } from '../data/products'
 import { fetchProducts } from '../lib/api'
 import { useCart } from '../context/CartContext'
+import { useSearch } from '../context/SearchContext'
+import { ROUTES } from '../config/routes'
 
-interface CategoryPageProps {
+interface CategoryScreenProps {
   type: ProductType
-  /** Search term, driven by the navbar search box in the layout. */
-  search: string
 }
 
 const meta: Record<ProductType, { title: string; blurb: string; emoji: string }> = {
@@ -25,8 +25,9 @@ const meta: Record<ProductType, { title: string; blurb: string; emoji: string }>
   },
 }
 
-export default function CategoryPage({ type, search }: CategoryPageProps) {
+export default function CategoryScreen({ type }: CategoryScreenProps) {
   const { add } = useCart()
+  const { search } = useSearch()
 
   const [debouncedSearch, setDebouncedSearch] = useState(search)
   const [platformFilter, setPlatformFilter] = useState('All')
@@ -86,7 +87,7 @@ export default function CategoryPage({ type, search }: CategoryPageProps) {
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <nav className="mb-4 text-sm text-white/50">
-        <Link to="/" className="transition hover:text-white">
+        <Link to={ROUTES.home} className="transition hover:text-white">
           Dashboard
         </Link>
         <span className="px-2">/</span>

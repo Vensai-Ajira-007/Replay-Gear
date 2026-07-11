@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard'
 import { type Product } from '../data/products'
 import { fetchProducts } from '../lib/api'
 import { useCart } from '../context/CartContext'
+import { ROUTES } from '../config/routes'
 
 interface Category {
   type: 'game' | 'console'
@@ -18,7 +19,7 @@ interface Category {
 const categories: Category[] = [
   {
     type: 'game',
-    to: '/games',
+    to: ROUTES.games,
     title: 'Games',
     blurb: 'Pre-owned titles across PlayStation, Xbox, Nintendo & PC — up to 60% off.',
     emoji: '🎮',
@@ -26,7 +27,7 @@ const categories: Category[] = [
   },
   {
     type: 'console',
-    to: '/consoles',
+    to: ROUTES.consoles,
     title: 'Consoles',
     blurb: 'Tested, cleaned consoles ready to plug in and play, with a 30-day guarantee.',
     emoji: '🕹️',
@@ -38,7 +39,7 @@ function discountPct(p: Product): number {
   return p.originalPrice > 0 ? (p.originalPrice - p.price) / p.originalPrice : 0
 }
 
-export default function DashboardPage() {
+export default function DashboardScreen() {
   const { add } = useCart()
   const [products, setProducts] = useState<Product[]>([])
 

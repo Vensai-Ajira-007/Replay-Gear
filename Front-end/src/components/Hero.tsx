@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import heroBg from '../assets/tufkigckuj241.jpg'
+import { ROUTES } from '../config/routes'
 
 const stats = [
   { value: '500+', label: 'Titles in stock' },
@@ -34,13 +35,13 @@ export default function Hero() {
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
-              to="/games"
+              to={ROUTES.games}
               className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
             >
               Shop games
             </Link>
             <Link
-              to="/consoles"
+              to={ROUTES.consoles}
               className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Browse consoles
