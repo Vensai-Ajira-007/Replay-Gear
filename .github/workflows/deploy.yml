@@ -1,0 +1,41 @@
+name: Manual DevOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    # Tells GitHub to execute all terminal steps inside the backend folder
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Post-deployment directory cleanup
+        # We run this at the root level, so we override the default working directory just for this step
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "Cleaning up workspace..."
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE || true
+
+       Tar code from GitHub
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      # Builds the Docker image using the Dockerfile inside the backend folder
+      - name: Build Docker Image
+        run: docker build -t my-ts-backend:latest .
+
+      - name: Deploy Container
+        run: |
+          docker stop my-backend-container || true
+          docker rm my-backend-container || true
+          
+          docker run -d \
+            --name my-backend-container \
+            -p 4000:4000 \
+            --restart unless-stopped \
+            my-ts-backend:latest
