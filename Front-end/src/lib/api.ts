@@ -1,8 +1,5 @@
 import type { Product, ProductType } from '../data/products'
-
-// All requests go to relative /api/* — Vite proxies these to the Node
-// backend in dev (see vite.config.ts).
-const BASE = '/api'
+import { API_BASE, API_ENDPOINTS } from '../config/apiConfig'
 
 export type SortKey = 'featured' | 'price-asc' | 'price-desc'
 export type TypeFilter = 'all' | ProductType
@@ -26,8 +23,26 @@ export interface Cart {
   subtotal: number
 }
 
+export interface OrderItem {
+  id: string
+  productId: number
+  title: string
+  unitPrice: number
+  qty: number
+  lineTotal: number
+}
+
+export interface Order {
+  id: string
+  createdAt: string
+  status: string
+  totalItems: number
+  subtotal: number
+  items: OrderItem[]
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
     ...init,
   })
@@ -53,23 +68,23 @@ export async function fetchProducts(query: ProductQuery): Promise<Product[]> {
 
   const qs = params.toString()
   const data = await request<{ products: Product[]; count: number }>(
-    `/products${qs ? `?${qs}` : ''}`,
+    `${API_ENDPOINTS.products}${qs ? `?${qs}` : ''}`,
   )
   return data.products
 }
 
 export async function fetchProduct(id: number): Promise<Product> {
-  const data = await request<{ product: Product }>(`/products/${id}`)
+  const data = await request<{ product: Product }>(API_ENDPOINTS.product(id))
   return data.product
 }
 
 export async function getCart(): Promise<Cart> {
-  const data = await request<{ cart: Cart }>('/cart')
+  const data = await request<{ cart: Cart }>(API_ENDPOINTS.cart)
   return data.cart
 }
 
 export async function addToCart(productId: number, qty = 1): Promise<Cart> {
-  const data = await request<{ cart: Cart }>('/cart', {
+  const data = await request<{ cart: Cart }>(API_ENDPOINTS.cart, {
     method: 'POST',
     body: JSON.stringify({ productId, qty }),
   })
@@ -77,13 +92,20 @@ export async function addToCart(productId: number, qty = 1): Promise<Cart> {
 }
 
 export async function removeFromCart(productId: number): Promise<Cart> {
-  const data = await request<{ cart: Cart }>(`/cart/${productId}`, {
+  const data = await request<{ cart: Cart }>(API_ENDPOINTS.cartItem(productId), {
     method: 'DELETE',
   })
   return data.cart
 }
 
 export async function clearCart(): Promise<Cart> {
-  const data = await request<{ cart: Cart }>('/cart', { method: 'DELETE' })
+  const data = await request<{ cart: Cart }>(API_ENDPOINTS.cart, { method: 'DELETE' })
   return data.cart
+}
+
+// One-click checkout: turns the current cart into a persisted order and clears
+// the cart server-side.
+export async function checkout(): Promise<Order> {
+  const data = await request<{ order: Order }>(API_ENDPOINTS.orders, { method: 'POST' })
+  return data.order
 }

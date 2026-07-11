@@ -8,10 +8,12 @@ import {
 } from 'react'
 import {
   addToCart,
+  checkout as checkoutApi,
   clearCart,
   getCart,
   removeFromCart,
   type Cart,
+  type Order,
 } from '../lib/api'
 
 interface CartContextValue {
@@ -21,6 +23,7 @@ interface CartContextValue {
   add: (productId: number) => Promise<void>
   remove: (productId: number) => Promise<void>
   clear: () => Promise<void>
+  checkout: () => Promise<Order>
   refresh: () => Promise<void>
 }
 
@@ -59,6 +62,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart(await clearCart())
   }, [])
 
+  // Create a persisted order from the cart; the server clears the cart, so
+  // reset the local state to empty afterwards.
+  const checkout = useCallback(async () => {
+    const order = await checkoutApi()
+    setCart(EMPTY_CART)
+    return order
+  }, [])
+
   const value: CartContextValue = {
     cart,
     loading,
@@ -66,6 +77,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     add,
     remove,
     clear,
+    checkout,
     refresh,
   }
 

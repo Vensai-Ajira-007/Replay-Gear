@@ -1,23 +1,27 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useSearch } from '../context/SearchContext'
+import { ROUTES } from '../config/routes'
 
-interface NavbarProps {
-  search: string
-  onSearchChange: (value: string) => void
-}
+const navLinks: { label: string; to: string }[] = [
+  { label: 'Games', to: ROUTES.games },
+  { label: 'Consoles', to: ROUTES.consoles },
+  { label: 'Deals', to: `${ROUTES.home}#deals` },
+  { label: 'Sell to us', to: ROUTES.home },
+]
 
-const navLinks = ['Games', 'Consoles', 'Deals', 'Sell to us']
-
-export default function Navbar({ search, onSearchChange }: NavbarProps) {
+export default function Navbar() {
   const { count } = useCart()
+  const { search, setSearch } = useSearch()
   const { pathname } = useLocation()
-  const showSearch = pathname === '/'
+  // Search only makes sense on the category screens (which render a product grid).
+  const showSearch = pathname === ROUTES.games || pathname === ROUTES.consoles
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6">
         {/* Brand */}
-        <Link to="/" className="flex items-center gap-2 shrink-0">
+        <Link to={ROUTES.home} className="flex items-center gap-2 shrink-0">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand to-brand-soft text-lg shadow-lg shadow-brand/30">
             🎮
           </span>
@@ -29,8 +33,8 @@ export default function Navbar({ search, onSearchChange }: NavbarProps) {
         {/* Nav links */}
         <nav className="ml-4 hidden items-center gap-6 text-sm text-white/70 lg:flex">
           {navLinks.map((link) => (
-            <Link key={link} to="/" className="transition hover:text-white">
-              {link}
+            <Link key={link.label} to={link.to} className="transition hover:text-white">
+              {link.label}
             </Link>
           ))}
         </nav>
@@ -50,7 +54,7 @@ export default function Navbar({ search, onSearchChange }: NavbarProps) {
           <input
             type="search"
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search games & consoles…"
             className="w-full rounded-full border border-white/10 bg-white/5 py-2 pl-9 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-brand/60 focus:bg-white/10"
           />
@@ -58,7 +62,7 @@ export default function Navbar({ search, onSearchChange }: NavbarProps) {
 
         {/* Cart */}
         <Link
-          to="/cart"
+          to={ROUTES.cart}
           className="relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
           aria-label="Cart"
         >

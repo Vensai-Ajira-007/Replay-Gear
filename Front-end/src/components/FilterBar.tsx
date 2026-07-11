@@ -4,8 +4,9 @@ export type SortKey = 'featured' | 'price-asc' | 'price-desc'
 export type TypeFilter = 'all' | ProductType
 
 interface FilterBarProps {
-  typeFilter: TypeFilter
-  onTypeChange: (value: TypeFilter) => void
+  // Optional — omit on category pages where the type is fixed by the route.
+  typeFilter?: TypeFilter
+  onTypeChange?: (value: TypeFilter) => void
   platformFilter: string
   onPlatformChange: (value: string) => void
   sort: SortKey
@@ -25,23 +26,25 @@ export default function FilterBar({
   return (
     <div className="flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-wrap items-center gap-2">
-        {/* Type segmented control */}
-        <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-1">
-          {types.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              onClick={() => onTypeChange(t.key)}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-                typeFilter === t.key
-                  ? 'bg-brand text-white shadow'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+        {/* Type segmented control — only when the caller manages a type filter */}
+        {onTypeChange && (
+          <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-1">
+            {types.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => onTypeChange(t.key)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                  typeFilter === t.key
+                    ? 'bg-brand text-white shadow'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Platform pills */}
         <div className="flex flex-wrap gap-2">

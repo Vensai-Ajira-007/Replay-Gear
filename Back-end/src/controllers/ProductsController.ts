@@ -6,8 +6,8 @@ import {
   Param,
   QueryParam,
 } from 'routing-controllers'
-import { findProduct } from '../data/products.js'
 import {
+  getProductById,
   queryProducts,
   type SortKey,
   type TypeFilter,
@@ -17,13 +17,13 @@ import {
 export class ProductsController {
   // GET /api/products?search=&type=&platform=&sort=
   @Get('/')
-  list(
+  async list(
     @QueryParam('search') search?: string,
     @QueryParam('type') type?: string,
     @QueryParam('platform') platform?: string,
     @QueryParam('sort') sort?: string,
   ) {
-    const products = queryProducts({
+    const products = await queryProducts({
       search,
       type: type as TypeFilter | undefined,
       platform,
@@ -35,12 +35,12 @@ export class ProductsController {
   // GET /api/products/:id
   // @Param arrives as a string (classTransformer is off), so coerce explicitly.
   @Get('/:id')
-  getOne(@Param('id') id: string) {
+  async getOne(@Param('id') id: string) {
     const numericId = Number(id)
     if (!Number.isInteger(numericId)) {
       throw new BadRequestError('Invalid product id')
     }
-    const product = findProduct(numericId)
+    const product = await getProductById(numericId)
     if (!product) {
       throw new NotFoundError('Product not found')
     }

@@ -1,6 +1,6 @@
-// Source of truth for the catalog. In-memory seed data — resets on restart.
-// Cover art is an emoji + gradient (rendered by the frontend), so no image
-// files are needed anywhere in the stack.
+// Seed data for the catalog — inserted into Postgres on first run (see
+// src/db/seed.ts). At runtime the API reads products from the database, not
+// this array. Cover art is an emoji + gradient rendered by the frontend.
 
 export type ProductType = 'game' | 'console'
 export type Condition = 'Mint' | 'Good' | 'Fair'
@@ -189,7 +189,3 @@ export const products: Product[] = [
     accent: 'from-orange-600/30 to-red-500/30',
   },
 ]
-
-export function findProduct(id: number): Product | undefined {
-  return products.find((p) => p.id === id)
-}
