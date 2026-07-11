@@ -26,6 +26,24 @@ export interface Cart {
   subtotal: number
 }
 
+export interface OrderItem {
+  id: string
+  productId: number
+  title: string
+  unitPrice: number
+  qty: number
+  lineTotal: number
+}
+
+export interface Order {
+  id: string
+  createdAt: string
+  status: string
+  totalItems: number
+  subtotal: number
+  items: OrderItem[]
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -86,4 +104,11 @@ export async function removeFromCart(productId: number): Promise<Cart> {
 export async function clearCart(): Promise<Cart> {
   const data = await request<{ cart: Cart }>('/cart', { method: 'DELETE' })
   return data.cart
+}
+
+// One-click checkout: turns the current cart into a persisted order and clears
+// the cart server-side.
+export async function checkout(): Promise<Order> {
+  const data = await request<{ order: Order }>('/orders', { method: 'POST' })
+  return data.order
 }

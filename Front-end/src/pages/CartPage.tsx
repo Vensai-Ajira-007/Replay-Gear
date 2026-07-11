@@ -4,28 +4,35 @@ import { conditionColor } from '../data/products'
 import { useCart } from '../context/CartContext'
 
 export default function CartPage() {
-  const { cart, loading, add, remove, clear } = useCart()
-  const [ordered, setOrdered] = useState(false)
+  const { cart, loading, add, remove, clear, checkout } = useCart()
+  const [orderId, setOrderId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleCheckout = async () => {
     setBusy(true)
+    setError(null)
     try {
-      await clear()
-      setOrdered(true)
+      const order = await checkout()
+      setOrderId(order.id)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Checkout failed')
     } finally {
       setBusy(false)
     }
   }
 
-  // Order confirmation (demo checkout).
-  if (ordered) {
+  // Order confirmation — the order is now persisted in the database.
+  if (orderId) {
     return (
       <section className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
         <div className="text-6xl">🎉</div>
         <h1 className="mt-4 text-3xl font-bold text-white">Order placed!</h1>
         <p className="mt-2 text-white/60">
-          Thanks for your (pretend) purchase. Your games are on the way.
+          Thanks for your purchase. Your games are on the way.
+        </p>
+        <p className="mt-4 text-xs text-white/40">
+          Order ID: <span className="font-mono text-white/60">{orderId}</span>
         </p>
         <Link
           to="/"
@@ -178,6 +185,9 @@ export default function CartPage() {
             >
               {busy ? 'Placing order…' : 'Checkout'}
             </button>
+            {error && (
+              <p className="mt-3 text-center text-xs text-red-400">{error}</p>
+            )}
             <p className="mt-3 text-center text-xs text-white/40">
               Demo checkout — no payment is taken.
             </p>

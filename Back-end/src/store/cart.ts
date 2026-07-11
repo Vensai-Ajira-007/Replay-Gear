@@ -1,7 +1,9 @@
-import { findProduct, type Product } from '../data/products.js'
+import { getProductById } from '../services/catalog.js'
+import type { Product } from '../entities/Product.js'
 
 // Single global in-memory cart (no auth/sessions in this demo).
 // Keyed by productId -> quantity. Resets on server restart.
+// Product details for the lines are looked up from Postgres on demand.
 const items = new Map<number, number>()
 
 export interface CartLine {
@@ -16,10 +18,10 @@ export interface CartView {
   subtotal: number
 }
 
-export function getCart(): CartView {
+export async function getCart(): Promise<CartView> {
   const lines: CartLine[] = []
   for (const [productId, qty] of items) {
-    const product = findProduct(productId)
+    const product = await getProductById(productId)
     if (!product) continue // product no longer exists — skip
     lines.push({ product, qty, lineTotal: round2(product.price * qty) })
   }
@@ -30,8 +32,9 @@ export function getCart(): CartView {
 }
 
 /** Add `qty` of a product. Returns false if the product id is unknown. */
-export function addItem(productId: number, qty = 1): boolean {
-  if (!findProduct(productId)) return false
+export async function addItem(productId: number, qty = 1): Promise<boolean> {
+  const product = await getProductById(productId)
+  if (!product) return false
   const next = (items.get(productId) ?? 0) + Math.max(1, Math.floor(qty))
   items.set(productId, next)
   return true

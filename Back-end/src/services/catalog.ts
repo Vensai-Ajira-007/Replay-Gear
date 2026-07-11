@@ -1,4 +1,5 @@
-import { products, type Product, type ProductType } from '../data/products.js'
+import { AppDataSource } from '../db/data-source.js'
+import { Product, type ProductType } from '../entities/Product.js'
 
 export type SortKey = 'featured' | 'price-asc' | 'price-desc'
 export type TypeFilter = 'all' | ProductType
@@ -10,28 +11,40 @@ export interface CatalogQuery {
   sort?: SortKey
 }
 
+function repo() {
+  return AppDataSource.getRepository(Product)
+}
+
 /**
- * Filter + sort the catalog. Mirrors the logic the frontend used to run
- * client-side, now owned by the API.
+ * Filter + sort the catalog from Postgres. Mirrors the previous in-memory
+ * behaviour: search over title/platform, filter by type & platform, sort by
+ * price (featured = default id order).
  */
-export function queryProducts(query: CatalogQuery): Product[] {
-  const search = (query.search ?? '').trim().toLowerCase()
+export async function queryProducts(query: CatalogQuery): Promise<Product[]> {
+  const search = (query.search ?? '').trim()
   const type = query.type ?? 'all'
   const platform = query.platform ?? 'All'
   const sort = query.sort ?? 'featured'
 
-  const filtered = products.filter((p) => {
-    const matchesSearch =
-      search === '' ||
-      p.title.toLowerCase().includes(search) ||
-      p.platform.toLowerCase().includes(search)
-    const matchesType = type === 'all' || p.type === type
-    const matchesPlatform = platform === 'All' || p.platform === platform
-    return matchesSearch && matchesType && matchesPlatform
-  })
+  const qb = repo().createQueryBuilder('p')
 
-  const sorted = [...filtered]
-  if (sort === 'price-asc') sorted.sort((a, b) => a.price - b.price)
-  if (sort === 'price-desc') sorted.sort((a, b) => b.price - a.price)
-  return sorted
+  if (type !== 'all') {
+    qb.andWhere('p.type = :type', { type })
+  }
+  if (platform !== 'All') {
+    qb.andWhere('p.platform = :platform', { platform })
+  }
+  if (search !== '') {
+    qb.andWhere('(p.title ILIKE :q OR p.platform ILIKE :q)', { q: `%${search}%` })
+  }
+
+  if (sort === 'price-asc') qb.orderBy('p.price', 'ASC')
+  else if (sort === 'price-desc') qb.orderBy('p.price', 'DESC')
+  else qb.orderBy('p.id', 'ASC')
+
+  return qb.getMany()
+}
+
+export async function getProductById(id: number): Promise<Product | null> {
+  return repo().findOneBy({ id })
 }
