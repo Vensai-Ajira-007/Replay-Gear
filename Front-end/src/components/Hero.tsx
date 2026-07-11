@@ -1,3 +1,5 @@
+import heroBg from '../assets/tufkigckuj241.jpg'
+
 const stats = [
   { value: '500+', label: 'Titles in stock' },
   { value: '30-day', label: 'Money-back guarantee' },
@@ -7,7 +9,17 @@ const stats = [
 export default function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
+      {/* Poster background (art sits on the right) */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-cover bg-no-repeat"
+        style={{ backgroundImage: `url(${heroBg})`, backgroundPosition: 'center right' }}
+      />
+      {/* Darken the left so the headline stays readable; let art show on the right */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/30" />
+      {/* Blend the hero into the page below */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent" />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
         <div className="max-w-2xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-medium text-brand-soft">
             ♻️ Pre-owned, planet-friendly, budget-friendly
