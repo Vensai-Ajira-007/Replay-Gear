@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+
+# Runs on GitHub's own cloud runners (ubuntu-latest) — no self-hosted runner /
+# laptop needed. Build both apps on every push & PR; only deploy (via Render +
+# Vercel deploy hooks) when the build passes on main.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build & type-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            Back-end/package-lock.json
+            Front-end/package-lock.json
+
+      # --- Backend ---
+      - name: Backend - install
+        working-directory: Back-end
+        run: npm ci
+      - name: Backend - build (tsc)
+        working-directory: Back-end
+        run: npm run build
+
+      # --- Frontend ---
+      - name: Frontend - install
+        working-directory: Front-end
+        run: npm ci
+      - name: Frontend - build (tsc + vite)
+        working-directory: Front-end
+        run: npm run build
+
+  deploy:
+    name: Deploy (Render + Vercel)
+    needs: build            # only runs if the build job succeeded
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy (backend)
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+
+      - name: Trigger Vercel deploy (frontend)
+        run: curl -fsS -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
