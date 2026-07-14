@@ -6,6 +6,7 @@ import morgan from 'morgan'
 import { useExpressServer } from 'routing-controllers'
 import { AppDataSource } from './db/data-source.js'
 import { seedAdmin, seedProducts } from './db/seed.js'
+import { connectProducer } from './kafka/producer.js'
 import {
   authorizationChecker,
   currentUserChecker,
@@ -24,6 +25,14 @@ async function main() {
   console.log('🗄️  Database connected')
   await seedProducts()
   await seedAdmin()
+
+  // Connect the Kafka producer used to publish order notifications. Non-fatal:
+  // the API still serves if the broker isn't up yet (publish will just fail).
+  try {
+    await connectProducer()
+  } catch (err) {
+    console.error('⚠️  Kafka producer not connected (notifications disabled):', err)
+  }
 
   const app = express()
   app.use(cors())

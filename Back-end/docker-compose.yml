@@ -24,6 +24,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      kafka:
+        condition: service_started
     environment:
       PORT: 4000
       # Reach Postgres via the compose service name, not localhost.
@@ -32,8 +34,75 @@ services:
       PGUSER: postgres
       PGPASSWORD: postgres
       PGDATABASE: replaygear
+      KAFKA_BROKERS: kafka:9092
+      NOTIFICATION_TOPIC: order-notifications
     ports:
       - '4000:4000'
+
+  # --- Kafka (single-node KRaft, no Zookeeper) ---
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: replaygear-kafka
+    restart: unless-stopped
+    ports:
+      - '29092:29092' # host access (advertised as localhost:29092)
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+
+  # --- Mailpit: local SMTP catcher + web inbox ---
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: replaygear-mailpit
+    restart: unless-stopped
+    ports:
+      - '1025:1025' # SMTP
+      - '8025:8025' # web UI
+
+  # --- Notification service: consumes the topic, sends emails ---
+  notification:
+    build: ../Notification-service
+    container_name: replaygear-notification
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_started
+      mailpit:
+        condition: service_started
+    environment:
+      KAFKA_BROKERS: kafka:9092
+      NOTIFICATION_TOPIC: order-notifications
+      KAFKA_GROUP_ID: notification-service
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_SECURE: 'false'
+      MAIL_FROM: ReplayGear <no-reply@replaygear.com>
+
+  # --- Kafka UI (visibility, optional) ---
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: replaygear-kafka-ui
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_started
+    ports:
+      - '8080:8080'
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      DYNAMIC_CONFIG_ENABLED: 'true'
 
 volumes:
   replaygear_pgdata:
