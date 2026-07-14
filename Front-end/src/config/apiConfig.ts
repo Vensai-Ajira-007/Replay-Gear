@@ -13,4 +13,11 @@ export const API_ENDPOINTS = {
   cartItem: (id: number | string) => `/cart/${id}`,
   orders: '/orders',
   order: (id: string) => `/orders/${id}`,
+  auth: {
+    register: '/auth/register',
+    login: '/auth/login',
+    refresh: '/auth/refresh',
+    logout: '/auth/logout',
+    me: '/auth/me',
+  },
 } as const

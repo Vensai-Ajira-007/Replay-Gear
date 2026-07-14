@@ -5,11 +5,16 @@ import cors from 'cors'
 import morgan from 'morgan'
 import { useExpressServer } from 'routing-controllers'
 import { AppDataSource } from './db/data-source.js'
-import { seedProducts } from './db/seed.js'
+import { seedAdmin, seedProducts } from './db/seed.js'
+import {
+  authorizationChecker,
+  currentUserChecker,
+} from './auth/authChecker.js'
 import { HealthController } from './controllers/HealthController.js'
 import { ProductsController } from './controllers/ProductsController.js'
 import { CartController } from './controllers/CartController.js'
 import { OrdersController } from './controllers/OrdersController.js'
+import { AuthController } from './controllers/AuthController.js'
 
 const PORT = Number(process.env.PORT) || 4000
 
@@ -18,6 +23,7 @@ async function main() {
   await AppDataSource.initialize()
   console.log('🗄️  Database connected')
   await seedProducts()
+  await seedAdmin()
 
   const app = express()
   app.use(cors())
@@ -32,6 +38,7 @@ async function main() {
     routePrefix: '/api',
     controllers: [
       HealthController,
+      AuthController,
       ProductsController,
       CartController,
       OrdersController,
@@ -40,6 +47,9 @@ async function main() {
     classTransformer: false,
     validation: false,
     defaultErrorHandler: true,
+    // JWT auth: powers @Authorized()/@Authorized('admin') and @CurrentUser().
+    authorizationChecker,
+    currentUserChecker,
   })
 
   // Fallback 404 for anything not matched by a controller.
