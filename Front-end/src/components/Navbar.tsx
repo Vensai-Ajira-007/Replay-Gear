@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useSearch } from '../context/SearchContext'
+import { useAuth } from '../context/AuthContext'
 import { ROUTES } from '../config/routes'
 
 const navLinks: { label: string; to: string }[] = [
@@ -13,6 +14,7 @@ const navLinks: { label: string; to: string }[] = [
 export default function Navbar() {
   const { count } = useCart()
   const { search, setSearch } = useSearch()
+  const { user, isAdmin, logout } = useAuth()
   const { pathname } = useLocation()
   // Search only makes sense on the category screens (which render a product grid).
   const showSearch = pathname === ROUTES.games || pathname === ROUTES.consoles
@@ -77,6 +79,45 @@ export default function Navbar() {
             </span>
           )}
         </Link>
+
+        {/* Auth */}
+        {user ? (
+          <div className="flex shrink-0 items-center gap-2">
+            {isAdmin && (
+              <Link
+                to={ROUTES.admin}
+                className="hidden rounded-full border border-brand/50 bg-brand/10 px-3 py-1.5 text-xs font-medium text-brand-soft transition hover:bg-brand/20 sm:block"
+              >
+                Admin
+              </Link>
+            )}
+            <span className="hidden text-sm text-white/70 sm:block">
+              Hi, {user.name.split(' ')[0]}
+            </span>
+            <button
+              type="button"
+              onClick={() => logout()}
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80 transition hover:bg-white/10"
+            >
+              Log out
+            </button>
+          </div>
+        ) : (
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              to={ROUTES.login}
+              className="rounded-full px-3 py-1.5 text-sm text-white/80 transition hover:text-white"
+            >
+              Log in
+            </Link>
+            <Link
+              to={ROUTES.register}
+              className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-3 py-1.5 text-sm font-semibold text-white transition hover:opacity-90"
+            >
+              Sign up
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   )

@@ -1,21 +1,29 @@
 import {
+  Authorized,
   BadRequestError,
+  Body,
+  Delete,
   Get,
+  HttpCode,
   JsonController,
   NotFoundError,
   Param,
+  Post,
   QueryParam,
 } from 'routing-controllers'
 import {
+  createProduct,
+  deleteProduct,
   getProductById,
   queryProducts,
+  type NewProduct,
   type SortKey,
   type TypeFilter,
 } from '../services/catalog.js'
 
 @JsonController('/products')
 export class ProductsController {
-  // GET /api/products?search=&type=&platform=&sort=
+  // GET /api/products?search=&type=&platform=&sort=  (public)
   @Get('/')
   async list(
     @QueryParam('search') search?: string,
@@ -32,8 +40,7 @@ export class ProductsController {
     return { products, count: products.length }
   }
 
-  // GET /api/products/:id
-  // @Param arrives as a string (classTransformer is off), so coerce explicitly.
+  // GET /api/products/:id  (public)
   @Get('/:id')
   async getOne(@Param('id') id: string) {
     const numericId = Number(id)
@@ -45,5 +52,27 @@ export class ProductsController {
       throw new NotFoundError('Product not found')
     }
     return { product }
+  }
+
+  // POST /api/products  (admin only) — add a product
+  @Post('/')
+  @HttpCode(201)
+  @Authorized('admin')
+  async create(@Body() body: NewProduct) {
+    const product = await createProduct(body)
+    return { product }
+  }
+
+  // DELETE /api/products/:id  (admin only)
+  @Delete('/:id')
+  @Authorized('admin')
+  async remove(@Param('id') id: string) {
+    const numericId = Number(id)
+    if (!Number.isInteger(numericId)) {
+      throw new BadRequestError('Invalid product id')
+    }
+    const removed = await deleteProduct(numericId)
+    if (!removed) throw new NotFoundError('Product not found')
+    return { ok: true }
   }
 }

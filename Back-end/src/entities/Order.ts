@@ -17,6 +17,10 @@ export class Order {
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date
 
+  // Owner of the order (the logged-in customer who checked out).
+  @Column({ name: 'user_id', type: 'uuid', nullable: true })
+  userId!: string | null
+
   @Column({ type: 'varchar', length: 16, default: 'paid' })
   status!: string
 

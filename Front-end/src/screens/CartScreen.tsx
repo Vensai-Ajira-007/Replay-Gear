@@ -1,16 +1,24 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { conditionColor } from '../data/products'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 import { ROUTES } from '../config/routes'
 
 export default function CartScreen() {
   const { cart, loading, add, remove, clear, checkout } = useCart()
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [orderId, setOrderId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleCheckout = async () => {
+    // Must be logged in to check out — send guests to login, then back to cart.
+    if (!user) {
+      navigate(ROUTES.login, { state: { from: ROUTES.cart } })
+      return
+    }
     setBusy(true)
     setError(null)
     try {
@@ -187,7 +195,7 @@ export default function CartScreen() {
               disabled={busy || cart.lines.length === 0}
               className="mt-6 w-full rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {busy ? 'Placing order…' : 'Checkout'}
+              {busy ? 'Placing order…' : user ? 'Checkout' : 'Log in to check out'}
             </button>
             {error && (
               <p className="mt-3 text-center text-xs text-red-400">{error}</p>

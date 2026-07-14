@@ -5,10 +5,10 @@ import { OrderItem } from '../entities/OrderItem.js'
 import { clearCart, getCart } from '../store/cart.js'
 
 /**
- * Snapshot the current in-memory cart into a persisted order, then clear the
- * cart. Runs in a transaction so the order + its items save atomically.
+ * Snapshot the current cart into a persisted order owned by `userId`, then clear
+ * the cart. Runs in a transaction so order + items save atomically.
  */
-export async function createOrderFromCart(): Promise<Order> {
+export async function createOrderFromCart(userId: string): Promise<Order> {
   const cart = await getCart()
   if (cart.lines.length === 0) {
     throw new BadRequestError('Cart is empty')
@@ -16,6 +16,7 @@ export async function createOrderFromCart(): Promise<Order> {
 
   const order = await AppDataSource.transaction(async (manager) => {
     const newOrder = manager.create(Order, {
+      userId,
       status: 'paid',
       totalItems: cart.totalItems,
       subtotal: cart.subtotal,
@@ -36,8 +37,10 @@ export async function createOrderFromCart(): Promise<Order> {
   return order
 }
 
-export async function listOrders(): Promise<Order[]> {
+// Admin passes no userId (sees all); a customer passes their id (sees own).
+export async function listOrders(userId?: string): Promise<Order[]> {
   return AppDataSource.getRepository(Order).find({
+    where: userId ? { userId } : {},
     order: { createdAt: 'DESC' },
   })
 }
