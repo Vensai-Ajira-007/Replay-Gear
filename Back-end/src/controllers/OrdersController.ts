@@ -15,6 +15,7 @@ import {
   getOrderById,
   listOrders,
 } from '../services/orders.js'
+import { sendOrderConfirmation } from '../mail/orderConfirmation.js'
 
 @JsonController('/orders')
 export class OrdersController {
@@ -24,6 +25,12 @@ export class OrdersController {
   @Authorized()
   async create(@CurrentUser() user: AccessPayload) {
     const order = await createOrderFromCart(user.sub)
+
+    // Fire-and-forget: emailing must never block or fail the checkout.
+    sendOrderConfirmation(order, user.email, user.name)
+      .then(() => console.log(`✉️  order confirmation sent → ${user.email}`))
+      .catch((err) => console.error('order email failed:', err))
+
     return { order }
   }
 
