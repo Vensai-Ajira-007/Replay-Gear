@@ -4,6 +4,7 @@ import { conditionColor } from '../data/products'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { ROUTES } from '../config/routes'
+import { formatINR } from '../lib/format'
 
 export default function CartScreen() {
   const { cart, loading, add, remove, setQty, clear, checkout } = useCart()
@@ -157,11 +158,11 @@ export default function CartScreen() {
                         </button>
                       </span>
                       <span className="text-xs text-white/40">
-                        ${product.price.toFixed(2)} each
+                        {formatINR(product.price)} each
                       </span>
                     </div>
                     <div className="text-lg font-bold text-white">
-                      ${lineTotal.toFixed(2)}
+                      {formatINR(lineTotal)}
                     </div>
                   </div>
                 </div>
@@ -185,7 +186,7 @@ export default function CartScreen() {
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between text-white/70">
                 <dt>Items ({cart.totalItems})</dt>
-                <dd>${cart.subtotal.toFixed(2)}</dd>
+                <dd>{formatINR(cart.subtotal)}</dd>
               </div>
               <div className="flex justify-between text-white/70">
                 <dt>Shipping</dt>
@@ -193,7 +194,7 @@ export default function CartScreen() {
               </div>
               <div className="mt-3 flex justify-between border-t border-white/10 pt-3 text-base font-bold text-white">
                 <dt>Total</dt>
-                <dd>${cart.subtotal.toFixed(2)}</dd>
+                <dd>{formatINR(cart.subtotal)}</dd>
               </div>
             </dl>
 

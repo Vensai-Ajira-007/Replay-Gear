@@ -1,5 +1,6 @@
 import { conditionColor, type Product } from '../data/products'
 import { useCart } from '../context/CartContext'
+import { formatINR } from '../lib/format'
 
 interface ProductCardProps {
   product: Product
@@ -56,10 +57,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="mt-auto flex items-end justify-between pt-4">
           <div>
             <div className="text-lg font-bold text-white">
-              ${product.price.toFixed(2)}
+              {formatINR(product.price)}
             </div>
             <div className="text-xs text-white/40 line-through">
-              ${product.originalPrice.toFixed(2)}
+              {formatINR(product.originalPrice)}
             </div>
           </div>
           {qty === 0 ? (

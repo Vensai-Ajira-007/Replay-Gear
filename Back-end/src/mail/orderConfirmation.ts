@@ -1,7 +1,12 @@
 import type { Order } from '../entities/Order.js'
 import { sendMail } from './mailer.js'
 
-const money = (n: number) => `$${n.toFixed(2)}`
+const money = (n: number) =>
+  new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(n)
 
 // Send the order-confirmation email inline. Callers should not await this in a
 // way that blocks the response, and should catch errors — a mail failure must

@@ -6,6 +6,7 @@ import {
   fetchProducts,
   type NewProductInput,
 } from '../lib/api'
+import { formatINR } from '../lib/format'
 
 const emptyForm: NewProductInput = {
   title: '',
@@ -199,7 +200,7 @@ export default function AdminScreen() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm text-white">{p.title}</div>
                   <div className="text-xs text-white/40">
-                    {p.platform} · ${p.price.toFixed(2)}
+                    {p.platform} · {formatINR(p.price)}
                   </div>
                 </div>
                 <button
