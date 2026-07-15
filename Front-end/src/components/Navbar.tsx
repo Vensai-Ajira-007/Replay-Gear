@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useSearch } from '../context/SearchContext'
@@ -19,7 +20,15 @@ export default function Navbar() {
   // Search only makes sense on the category screens (which render a product grid).
   const showSearch = pathname === ROUTES.games || pathname === ROUTES.consoles
 
+  const [confirmLogout, setConfirmLogout] = useState(false)
+
+  const handleLogout = async () => {
+    setConfirmLogout(false)
+    await logout()
+  }
+
   return (
+    <>
     <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6">
         {/* Brand */}
@@ -96,7 +105,7 @@ export default function Navbar() {
             </span>
             <button
               type="button"
-              onClick={() => logout()}
+              onClick={() => setConfirmLogout(true)}
               className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80 transition hover:bg-white/10"
             >
               Log out
@@ -120,5 +129,46 @@ export default function Navbar() {
         )}
       </div>
     </header>
+
+    {/* Logout confirmation */}
+    {confirmLogout && (
+      <div
+        className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-sm"
+        onClick={() => setConfirmLogout(false)}
+        role="presentation"
+      >
+        <div
+          className="w-full max-w-sm rounded-2xl border border-white/10 bg-panel p-6 shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="logout-title"
+        >
+          <h2 id="logout-title" className="text-lg font-bold text-white">
+            Log out?
+          </h2>
+          <p className="mt-1 text-sm text-white/60">
+            Are you sure you want to log out?
+          </p>
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setConfirmLogout(false)}
+              className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
+            >
+              Log out
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   )
 }
