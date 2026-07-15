@@ -1,11 +1,14 @@
 import { conditionColor, type Product } from '../data/products'
+import { useCart } from '../context/CartContext'
 
 interface ProductCardProps {
   product: Product
-  onAddToCart: (product: Product) => void
 }
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
+  const { cart, add, setQty } = useCart()
+  const qty = cart.lines.find((l) => l.product.id === product.id)?.qty ?? 0
+
   const discount = Math.round(
     ((product.originalPrice - product.price) / product.originalPrice) * 100,
   )
@@ -59,13 +62,37 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
               ${product.originalPrice.toFixed(2)}
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => onAddToCart(product)}
-            className="rounded-full bg-brand/90 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand active:scale-95"
-          >
-            Add to cart
-          </button>
+          {qty === 0 ? (
+            <button
+              type="button"
+              onClick={() => add(product.id)}
+              className="rounded-full bg-brand/90 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand active:scale-95"
+            >
+              Add to cart
+            </button>
+          ) : (
+            <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1">
+              <button
+                type="button"
+                onClick={() => setQty(product.id, qty - 1)}
+                className="grid h-8 w-8 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
+                aria-label={`Decrease ${product.title}`}
+              >
+                −
+              </button>
+              <span className="grid h-8 min-w-8 place-items-center px-1 text-sm font-semibold text-white">
+                {qty}
+              </span>
+              <button
+                type="button"
+                onClick={() => add(product.id)}
+                className="grid h-8 w-8 place-items-center rounded-full bg-brand/90 text-white transition hover:bg-brand active:scale-95"
+                aria-label={`Increase ${product.title}`}
+              >
+                +
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </article>

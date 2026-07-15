@@ -40,6 +40,17 @@ export async function addItem(productId: number, qty = 1): Promise<boolean> {
   return true
 }
 
+/** Set an absolute quantity. qty <= 0 removes the line. */
+export async function setItem(productId: number, qty: number): Promise<void> {
+  if (!Number.isFinite(qty) || qty <= 0) {
+    items.delete(productId)
+    return
+  }
+  const product = await getProductById(productId)
+  if (!product) return
+  items.set(productId, Math.floor(qty))
+}
+
 export function removeItem(productId: number): void {
   items.delete(productId)
 }

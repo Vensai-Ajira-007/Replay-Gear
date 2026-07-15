@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import { ROUTES } from '../config/routes'
 
 export default function CartScreen() {
-  const { cart, loading, add, remove, clear, checkout } = useCart()
+  const { cart, loading, add, remove, setQty, clear, checkout } = useCart()
   const { user } = useAuth()
   const navigate = useNavigate()
   const [orderId, setOrderId] = useState<string | null>(null)
@@ -135,8 +135,16 @@ export default function CartScreen() {
                   <div className="mt-auto flex items-end justify-between pt-3">
                     {/* Quantity */}
                     <div className="flex items-center gap-3">
-                      <span className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-1 py-1">
-                        <span className="grid h-7 w-8 place-items-center text-sm font-semibold text-white">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1">
+                        <button
+                          type="button"
+                          onClick={() => setQty(product.id, qty - 1)}
+                          className="grid h-7 w-7 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
+                          aria-label={`Remove one ${product.title}`}
+                        >
+                          −
+                        </button>
+                        <span className="grid h-7 w-6 place-items-center text-sm font-semibold text-white">
                           {qty}
                         </span>
                         <button
