@@ -18,6 +18,20 @@ export async function seedProducts(): Promise<void> {
   console.log(`🌱 Seeded ${seedData.length} products.`)
 }
 
+// Insert any seed products whose id isn't in the DB yet. Idempotent and safe on
+// every boot: an already-seeded database (local/prod) picks up newly-added
+// catalog entries without a wipe or manual SQL. Existing rows are left untouched
+// so prices and admin edits are never clobbered.
+export async function insertMissingProducts(): Promise<void> {
+  const repo = AppDataSource.getRepository(Product)
+  const existing = await repo.find({ select: { id: true } })
+  const ids = new Set(existing.map((p) => p.id))
+  const missing = seedData.filter((p) => !ids.has(p.id))
+  if (missing.length === 0) return
+  await repo.save(missing)
+  console.log(`🌱 Inserted ${missing.length} new products.`)
+}
+
 // Backfill cover art / console photos onto already-seeded rows. Idempotent and
 // safe to run on every boot: sets image_url on the known seed ids so an
 // existing database (e.g. prod) picks up images without a manual SQL update.
