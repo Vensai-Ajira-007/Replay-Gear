@@ -4,7 +4,6 @@ import Hero from '../components/Hero'
 import ProductCard from '../components/ProductCard'
 import { type Product } from '../data/products'
 import { fetchProducts } from '../lib/api'
-import { useCart } from '../context/CartContext'
 import { ROUTES } from '../config/routes'
 
 interface Category {
@@ -40,7 +39,6 @@ function discountPct(p: Product): number {
 }
 
 export default function DashboardScreen() {
-  const { add } = useCart()
   const [products, setProducts] = useState<Product[]>([])
 
   // Fetch the whole catalog once — used for category counts and hot deals.
@@ -68,14 +66,6 @@ export default function DashboardScreen() {
     () => [...products].sort((a, b) => discountPct(b) - discountPct(a)).slice(0, 4),
     [products],
   )
-
-  const handleAddToCart = async (product: Product) => {
-    try {
-      await add(product.id)
-    } catch {
-      // Non-fatal for the demo.
-    }
-  }
 
   return (
     <>
@@ -134,11 +124,7 @@ export default function DashboardScreen() {
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {deals.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-              />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </section>

@@ -175,6 +175,15 @@ export async function removeFromCart(productId: number): Promise<Cart> {
   return data.cart
 }
 
+// Set an absolute quantity for a line (qty <= 0 removes it).
+export async function setCartQty(productId: number, qty: number): Promise<Cart> {
+  const data = await request<{ cart: Cart }>(API_ENDPOINTS.cartItem(productId), {
+    method: 'PATCH',
+    body: JSON.stringify({ qty }),
+  })
+  return data.cart
+}
+
 export async function clearCart(): Promise<Cart> {
   const data = await request<{ cart: Cart }>(API_ENDPOINTS.cart, { method: 'DELETE' })
   return data.cart

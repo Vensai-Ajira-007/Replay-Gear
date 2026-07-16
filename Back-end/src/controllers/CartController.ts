@@ -7,13 +7,24 @@ import {
   JsonController,
   NotFoundError,
   Param,
+  Patch,
   Post,
 } from 'routing-controllers'
-import { addItem, clearCart, getCart, removeItem } from '../store/cart.js'
+import {
+  addItem,
+  clearCart,
+  getCart,
+  removeItem,
+  setItem,
+} from '../store/cart.js'
 
 interface AddToCartBody {
   productId: number
   qty?: number
+}
+
+interface UpdateQtyBody {
+  qty: number
 }
 
 @JsonController('/cart')
@@ -36,6 +47,20 @@ export class CartController {
     if (!(await addItem(id, qty))) {
       throw new NotFoundError('Product not found')
     }
+    return { cart: await getCart() }
+  }
+
+  // PATCH /api/cart/:productId  body: { qty } — set absolute quantity (0 removes)
+  @Patch('/:productId')
+  async updateQty(
+    @Param('productId') productId: string,
+    @Body() body: UpdateQtyBody,
+  ) {
+    const id = Number(productId)
+    if (!Number.isInteger(id)) {
+      throw new BadRequestError('Invalid product id')
+    }
+    await setItem(id, Number(body?.qty))
     return { cart: await getCart() }
   }
 

@@ -3,7 +3,6 @@ import ProductCard from './ProductCard'
 
 interface ProductGridProps {
   products: Product[]
-  onAddToCart: (product: Product) => void
   loading?: boolean
   error?: string | null
 }
@@ -13,7 +12,6 @@ const gridClasses =
 
 export default function ProductGrid({
   products,
-  onAddToCart,
   loading = false,
   error = null,
 }: ProductGridProps) {
@@ -65,7 +63,7 @@ export default function ProductGrid({
   return (
     <div className={gridClasses}>
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
+        <ProductCard key={product.id} product={product} />
       ))}
     </div>
   )

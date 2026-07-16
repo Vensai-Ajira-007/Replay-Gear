@@ -12,6 +12,7 @@ import {
   clearCart,
   getCart,
   removeFromCart,
+  setCartQty,
   type Cart,
   type Order,
 } from '../lib/api'
@@ -22,6 +23,7 @@ interface CartContextValue {
   count: number
   add: (productId: number) => Promise<void>
   remove: (productId: number) => Promise<void>
+  setQty: (productId: number, qty: number) => Promise<void>
   clear: () => Promise<void>
   checkout: () => Promise<Order>
   refresh: () => Promise<void>
@@ -58,6 +60,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart(await removeFromCart(productId))
   }, [])
 
+  const setQty = useCallback(async (productId: number, qty: number) => {
+    setCart(await setCartQty(productId, qty))
+  }, [])
+
   const clear = useCallback(async () => {
     setCart(await clearCart())
   }, [])
@@ -76,6 +82,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     count: cart.totalItems,
     add,
     remove,
+    setQty,
     clear,
     checkout,
     refresh,

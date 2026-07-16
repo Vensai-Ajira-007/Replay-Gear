@@ -4,7 +4,6 @@ import FilterBar, { type SortKey } from '../components/FilterBar'
 import ProductGrid from '../components/ProductGrid'
 import { type Product, type ProductType } from '../data/products'
 import { fetchProducts } from '../lib/api'
-import { useCart } from '../context/CartContext'
 import { useSearch } from '../context/SearchContext'
 import { ROUTES } from '../config/routes'
 
@@ -26,7 +25,6 @@ const meta: Record<ProductType, { title: string; blurb: string; emoji: string }>
 }
 
 export default function CategoryScreen({ type }: CategoryScreenProps) {
-  const { add } = useCart()
   const { search } = useSearch()
 
   const [debouncedSearch, setDebouncedSearch] = useState(search)
@@ -74,14 +72,6 @@ export default function CategoryScreen({ type }: CategoryScreenProps) {
     }
   }, [debouncedSearch, type, platformFilter, sort])
 
-  const handleAddToCart = async (product: Product) => {
-    try {
-      await add(product.id)
-    } catch {
-      // Non-fatal for the demo; a real app would surface a toast here.
-    }
-  }
-
   const { title, blurb, emoji } = meta[type]
 
   return (
@@ -113,12 +103,7 @@ export default function CategoryScreen({ type }: CategoryScreenProps) {
       />
 
       <div className="pt-6">
-        <ProductGrid
-          products={items}
-          onAddToCart={handleAddToCart}
-          loading={loading}
-          error={error}
-        />
+        <ProductGrid products={items} loading={loading} error={error} />
       </div>
     </section>
   )
