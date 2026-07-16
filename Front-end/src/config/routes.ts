@@ -9,4 +9,7 @@ export const ROUTES = {
   login: '/login',
   register: '/register',
   admin: '/admin',
+  // Product details — `productPath` is the route pattern, `product(id)` builds a link.
+  productPath: '/product/:id',
+  product: (id: number | string) => `/product/${id}`,
 } as const

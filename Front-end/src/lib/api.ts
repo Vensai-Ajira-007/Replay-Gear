@@ -260,6 +260,20 @@ export async function createProduct(input: NewProductInput): Promise<Product> {
   return data.product
 }
 
+// Admin: update an existing product. Only the provided fields are changed.
+export type UpdateProductInput = Partial<NewProductInput>
+
+export async function updateProduct(
+  id: number,
+  patch: UpdateProductInput,
+): Promise<Product> {
+  const data = await request<{ product: Product }>(API_ENDPOINTS.product(id), {
+    method: 'PUT',
+    body: JSON.stringify(patch),
+  })
+  return data.product
+}
+
 export async function deleteProduct(id: number): Promise<void> {
   await request(API_ENDPOINTS.product(id), { method: 'DELETE' })
 }

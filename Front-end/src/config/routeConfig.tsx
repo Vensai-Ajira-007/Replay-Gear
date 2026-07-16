@@ -1,6 +1,7 @@
 import type { RouteObject } from 'react-router-dom'
 import DashboardScreen from '../screens/DashboardScreen'
 import CategoryScreen from '../screens/CategoryScreen'
+import ProductDetailScreen from '../screens/ProductDetailScreen'
 import CartScreen from '../screens/CartScreen'
 import LoginScreen from '../screens/LoginScreen'
 import RegisterScreen from '../screens/RegisterScreen'
@@ -17,6 +18,7 @@ export const routeConfig: RouteObject[] = [
   { path: ROUTES.home, element: <DashboardScreen /> },
   { path: ROUTES.games, element: <CategoryScreen type="game" /> },
   { path: ROUTES.consoles, element: <CategoryScreen type="console" /> },
+  { path: ROUTES.productPath, element: <ProductDetailScreen /> },
   { path: ROUTES.cart, element: <CartScreen /> },
   { path: ROUTES.login, element: <LoginScreen /> },
   { path: ROUTES.register, element: <RegisterScreen /> },

@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom'
 import { conditionColor, type Product } from '../data/products'
 import { useCart } from '../context/CartContext'
 import { formatINR } from '../lib/format'
+import { ROUTES } from '../config/routes'
 import ProductCover from './ProductCover'
 
 interface ProductCardProps {
@@ -15,8 +17,20 @@ export default function ProductCard({ product }: ProductCardProps) {
     ((product.originalPrice - product.price) / product.originalPrice) * 100,
   )
 
+  // Cart buttons sit above the whole-card link — stop the click from navigating.
+  const stop = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   return (
-    <article className="card-glow animate-fade-up group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/60 hover:-translate-y-1 hover:border-brand/40">
+    <article className="card-glow animate-fade-up group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/60 hover:-translate-y-1 hover:border-brand/40">
+      {/* Whole-card link to the details screen (stretched-link pattern). */}
+      <Link
+        to={ROUTES.product(product.id)}
+        aria-label={`View ${product.title}`}
+        className="absolute inset-0 z-10"
+      />
       {/* Cover tile */}
       <ProductCover
         product={product}
@@ -69,16 +83,22 @@ export default function ProductCard({ product }: ProductCardProps) {
           {qty === 0 ? (
             <button
               type="button"
-              onClick={() => add(product.id)}
-              className="rounded-full bg-brand/90 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand active:scale-95"
+              onClick={(e) => {
+                stop(e)
+                add(product.id)
+              }}
+              className="relative z-20 rounded-full bg-brand/90 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand active:scale-95"
             >
               Add to cart
             </button>
           ) : (
-            <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1">
+            <div className="relative z-20 inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1">
               <button
                 type="button"
-                onClick={() => setQty(product.id, qty - 1)}
+                onClick={(e) => {
+                  stop(e)
+                  setQty(product.id, qty - 1)
+                }}
                 className="grid h-8 w-8 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
                 aria-label={`Decrease ${product.title}`}
               >
@@ -89,7 +109,10 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
               <button
                 type="button"
-                onClick={() => add(product.id)}
+                onClick={(e) => {
+                  stop(e)
+                  add(product.id)
+                }}
                 className="grid h-8 w-8 place-items-center rounded-full bg-brand/90 text-white transition hover:bg-brand active:scale-95"
                 aria-label={`Increase ${product.title}`}
               >
