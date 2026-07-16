@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { ROUTES } from '../config/routes'
 import { formatINR } from '../lib/format'
+import ProductCover from '../components/ProductCover'
 
 export default function CartScreen() {
   const { cart, loading, add, remove, setQty, clear, checkout } = useCart()
@@ -35,8 +36,10 @@ export default function CartScreen() {
   // Order confirmation — the order is now persisted in the database.
   if (orderId) {
     return (
-      <section className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
-        <div className="text-6xl">🎉</div>
+      <section className="animate-fade-up mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
+        <div className="animate-scale-in text-7xl drop-shadow-[0_0_25px_rgba(170,59,255,0.5)]">
+          🎉
+        </div>
         <h1 className="mt-4 text-3xl font-bold text-white">Order placed!</h1>
         <p className="mt-2 text-white/60">
           Thanks for your purchase. Your games are on the way.
@@ -46,7 +49,7 @@ export default function CartScreen() {
         </p>
         <Link
           to={ROUTES.home}
-          className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
+          className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-brand/50 active:scale-95"
         >
           Keep shopping
         </Link>
@@ -97,14 +100,14 @@ export default function CartScreen() {
             {cart.lines.map(({ product, qty, lineTotal }) => (
               <li
                 key={product.id}
-                className="flex gap-4 rounded-2xl border border-white/10 bg-panel/60 p-4"
+                className="flex gap-4 rounded-2xl border border-white/10 bg-panel/60 p-4 transition hover:border-white/20 hover:bg-panel/80"
               >
                 {/* Cover */}
-                <div
-                  className={`grid h-20 w-20 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${product.accent}`}
-                >
-                  <span className="text-3xl drop-shadow">{product.emoji}</span>
-                </div>
+                <ProductCover
+                  product={product}
+                  className="grid h-20 w-20 shrink-0 place-items-center rounded-xl"
+                  emojiClassName="text-3xl"
+                />
 
                 {/* Details */}
                 <div className="flex flex-1 flex-col">

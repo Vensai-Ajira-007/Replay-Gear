@@ -32,8 +32,8 @@ export default function Navbar() {
     <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6">
         {/* Brand */}
-        <Link to={ROUTES.home} className="flex items-center gap-2 shrink-0">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand to-brand-soft text-lg shadow-lg shadow-brand/30">
+        <Link to={ROUTES.home} className="group flex shrink-0 items-center gap-2">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand to-brand-soft text-lg shadow-lg shadow-brand/30 transition duration-300 group-hover:scale-105 group-hover:shadow-brand/60">
             🎮
           </span>
           <span className="text-lg font-bold tracking-tight text-white">
@@ -42,12 +42,26 @@ export default function Navbar() {
         </Link>
 
         {/* Nav links */}
-        <nav className="ml-4 hidden items-center gap-6 text-sm text-white/70 lg:flex">
-          {navLinks.map((link) => (
-            <Link key={link.label} to={link.to} className="transition hover:text-white">
-              {link.label}
-            </Link>
-          ))}
+        <nav className="ml-4 hidden items-center gap-6 text-sm lg:flex">
+          {navLinks.map((link) => {
+            const isActive =
+              link.to !== ROUTES.home &&
+              !link.to.includes('#') &&
+              pathname === link.to
+            return (
+              <Link
+                key={link.label}
+                to={link.to}
+                className={`relative transition after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:rounded-full after:bg-brand after:transition-all ${
+                  isActive
+                    ? 'text-white after:w-full'
+                    : 'text-white/70 hover:text-white after:w-0 hover:after:w-full'
+                }`}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
         </nav>
 
         {/* Search (catalog only) */}
@@ -133,12 +147,12 @@ export default function Navbar() {
     {/* Logout confirmation */}
     {confirmLogout && (
       <div
-        className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-sm"
+        className="animate-fade fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-sm"
         onClick={() => setConfirmLogout(false)}
         role="presentation"
       >
         <div
-          className="w-full max-w-sm rounded-2xl border border-white/10 bg-panel p-6 shadow-2xl"
+          className="animate-scale-in w-full max-w-sm rounded-2xl border border-white/10 bg-panel p-6 shadow-2xl"
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-modal="true"

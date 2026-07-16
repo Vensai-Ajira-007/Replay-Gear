@@ -79,29 +79,35 @@ export default function DashboardScreen() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
-          {categories.map((c) => {
+          {categories.map((c, i) => {
             const count = counts[c.type]
             return (
               <Link
                 key={c.type}
                 to={c.to}
-                className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br ${c.accent} p-8 transition hover:-translate-y-1 hover:border-brand/40 hover:shadow-xl hover:shadow-brand/10`}
+                style={{ animationDelay: `${i * 90}ms` }}
+                className={`card-glow animate-fade-up group relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br ${c.accent} p-8 hover:-translate-y-1 hover:border-brand/40`}
               >
-                <div className="flex items-start justify-between">
-                  <span className="grid h-16 w-16 place-items-center rounded-2xl bg-black/30 text-4xl backdrop-blur">
+                {/* Hover glow blob */}
+                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
+
+                <div className="relative flex items-start justify-between">
+                  <span className="grid h-16 w-16 place-items-center rounded-2xl bg-black/30 text-4xl backdrop-blur transition duration-300 group-hover:scale-105">
                     {c.emoji}
                   </span>
-                  <span className="rounded-full bg-black/30 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur">
+                  <span className="rounded-full bg-black/30 px-3 py-1 text-xs font-medium text-white/80 ring-1 ring-white/10 backdrop-blur">
                     {count === null ? '—' : `${count} in stock`}
                   </span>
                 </div>
 
-                <h3 className="mt-6 text-3xl font-extrabold tracking-tight text-white">
+                <h3 className="relative mt-6 text-3xl font-extrabold tracking-tight text-white">
                   {c.title}
                 </h3>
-                <p className="mt-2 max-w-sm text-sm text-white/70">{c.blurb}</p>
+                <p className="relative mt-2 max-w-sm text-sm text-white/70">
+                  {c.blurb}
+                </p>
 
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-soft transition group-hover:gap-3">
+                <span className="relative mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-soft transition group-hover:gap-3">
                   Browse {c.title}
                   <span aria-hidden>→</span>
                 </span>

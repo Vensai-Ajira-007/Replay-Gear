@@ -249,12 +249,27 @@ export interface NewProductInput {
   rating?: number
   emoji?: string
   accent?: string
+  imageUrl?: string
 }
 
 export async function createProduct(input: NewProductInput): Promise<Product> {
   const data = await request<{ product: Product }>(API_ENDPOINTS.products, {
     method: 'POST',
     body: JSON.stringify(input),
+  })
+  return data.product
+}
+
+// Admin: update an existing product. Only the provided fields are changed.
+export type UpdateProductInput = Partial<NewProductInput>
+
+export async function updateProduct(
+  id: number,
+  patch: UpdateProductInput,
+): Promise<Product> {
+  const data = await request<{ product: Product }>(API_ENDPOINTS.product(id), {
+    method: 'PUT',
+    body: JSON.stringify(patch),
   })
   return data.product
 }

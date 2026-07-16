@@ -29,7 +29,7 @@ export default function RegisterScreen() {
 
   return (
     <section className="mx-auto max-w-md px-4 py-16 sm:px-6">
-      <div className="rounded-2xl border border-white/10 bg-panel/60 p-8">
+      <div className="animate-fade-up rounded-2xl border border-white/10 bg-panel/60 p-8 shadow-2xl shadow-black/30">
         <h1 className="text-2xl font-bold text-white">Create account</h1>
         <p className="mt-1 text-sm text-white/60">
           Sign up to save your orders and check out.

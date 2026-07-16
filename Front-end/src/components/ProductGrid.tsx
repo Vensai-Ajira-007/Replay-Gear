@@ -36,11 +36,11 @@ export default function ProductGrid({
             key={i}
             className="overflow-hidden rounded-2xl border border-white/10 bg-panel/60"
           >
-            <div className="aspect-[4/3] animate-pulse bg-white/5" />
+            <div className="shimmer aspect-[4/3]" />
             <div className="space-y-3 p-4">
-              <div className="h-3 w-1/3 animate-pulse rounded bg-white/10" />
-              <div className="h-4 w-3/4 animate-pulse rounded bg-white/10" />
-              <div className="h-8 w-full animate-pulse rounded bg-white/5" />
+              <div className="shimmer h-3 w-1/3 rounded" />
+              <div className="shimmer h-4 w-3/4 rounded" />
+              <div className="shimmer h-8 w-full rounded" />
             </div>
           </div>
         ))}

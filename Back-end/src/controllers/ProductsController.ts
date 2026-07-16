@@ -9,6 +9,7 @@ import {
   NotFoundError,
   Param,
   Post,
+  Put,
   QueryParam,
 } from 'routing-controllers'
 import {
@@ -16,9 +17,11 @@ import {
   deleteProduct,
   getProductById,
   queryProducts,
+  updateProduct,
   type NewProduct,
   type SortKey,
   type TypeFilter,
+  type UpdateProduct,
 } from '../services/catalog.js'
 
 @JsonController('/products')
@@ -60,6 +63,19 @@ export class ProductsController {
   @Authorized('admin')
   async create(@Body() body: NewProduct) {
     const product = await createProduct(body)
+    return { product }
+  }
+
+  // PUT /api/products/:id  (admin only) — update an existing product
+  @Put('/:id')
+  @Authorized('admin')
+  async update(@Param('id') id: string, @Body() body: UpdateProduct) {
+    const numericId = Number(id)
+    if (!Number.isInteger(numericId)) {
+      throw new BadRequestError('Invalid product id')
+    }
+    const product = await updateProduct(numericId, body)
+    if (!product) throw new NotFoundError('Product not found')
     return { product }
   }
 
