@@ -42,4 +42,9 @@ export class Product {
 
   @Column({ type: 'text' })
   accent!: string
+
+  // Real cover art / console photo (remote URL). Nullable — falls back to the
+  // emoji + accent gradient on the frontend when absent or the image fails.
+  @Column({ name: 'image_url', type: 'text', nullable: true })
+  imageUrl!: string | null
 }

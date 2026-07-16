@@ -17,6 +17,8 @@ export interface Product {
   emoji: string
   /** Tailwind gradient classes used for the cover tile. */
   accent: string
+  /** Real cover art / console photo. Falls back to emoji+accent if missing. */
+  imageUrl?: string | null
 }
 
 export const types: { key: 'all' | ProductType; label: string }[] = [

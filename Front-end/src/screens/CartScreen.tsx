@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { ROUTES } from '../config/routes'
 import { formatINR } from '../lib/format'
+import ProductCover from '../components/ProductCover'
 
 export default function CartScreen() {
   const { cart, loading, add, remove, setQty, clear, checkout } = useCart()
@@ -102,11 +103,11 @@ export default function CartScreen() {
                 className="flex gap-4 rounded-2xl border border-white/10 bg-panel/60 p-4 transition hover:border-white/20 hover:bg-panel/80"
               >
                 {/* Cover */}
-                <div
-                  className={`grid h-20 w-20 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${product.accent}`}
-                >
-                  <span className="text-3xl drop-shadow">{product.emoji}</span>
-                </div>
+                <ProductCover
+                  product={product}
+                  className="grid h-20 w-20 shrink-0 place-items-center rounded-xl"
+                  emojiClassName="text-3xl"
+                />
 
                 {/* Details */}
                 <div className="flex flex-1 flex-col">

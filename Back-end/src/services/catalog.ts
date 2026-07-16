@@ -64,6 +64,7 @@ export interface NewProduct {
   rating?: number
   emoji?: string
   accent?: string
+  imageUrl?: string
 }
 
 const TYPES: ProductType[] = ['game', 'console']
@@ -101,6 +102,7 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     rating: Number(input.rating) || 4.5,
     emoji: input.emoji?.trim() || '🎮',
     accent: input.accent?.trim() || 'from-brand/30 to-fuchsia-500/20',
+    imageUrl: input.imageUrl?.trim() || null,
   })
   return repo().save(product)
 }

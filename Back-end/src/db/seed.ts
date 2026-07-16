@@ -18,6 +18,27 @@ export async function seedProducts(): Promise<void> {
   console.log(`🌱 Seeded ${seedData.length} products.`)
 }
 
+// Backfill cover art / console photos onto already-seeded rows. Idempotent and
+// safe to run on every boot: sets image_url on the known seed ids so an
+// existing database (e.g. prod) picks up images without a manual SQL update.
+// Skips rows that already carry an image so admin/manual edits aren't clobbered.
+export async function backfillProductImages(): Promise<void> {
+  const repo = AppDataSource.getRepository(Product)
+  let updated = 0
+  for (const p of seedData) {
+    if (!p.imageUrl) continue
+    const result = await repo
+      .createQueryBuilder()
+      .update(Product)
+      .set({ imageUrl: p.imageUrl })
+      .where('id = :id', { id: p.id })
+      .andWhere("(image_url IS NULL OR image_url = '')")
+      .execute()
+    updated += result.affected ?? 0
+  }
+  if (updated > 0) console.log(`🖼️  Backfilled images on ${updated} products.`)
+}
+
 // Create the default admin account on first run if it doesn't exist.
 export async function seedAdmin(): Promise<void> {
   const repo = AppDataSource.getRepository(User)

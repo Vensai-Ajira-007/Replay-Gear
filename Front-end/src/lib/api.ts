@@ -249,6 +249,7 @@ export interface NewProductInput {
   rating?: number
   emoji?: string
   accent?: string
+  imageUrl?: string
 }
 
 export async function createProduct(input: NewProductInput): Promise<Product> {
