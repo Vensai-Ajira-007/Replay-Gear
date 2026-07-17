@@ -12,4 +12,8 @@ export const ROUTES = {
   // Product details — `productPath` is the route pattern, `product(id)` builds a link.
   productPath: '/product/:id',
   product: (id: number | string) => `/product/${id}`,
+  // Account area (all require login).
+  profile: '/profile',
+  profileOrders: '/profile/orders',
+  profilePassword: '/profile/password',
 } as const

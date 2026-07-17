@@ -9,6 +9,7 @@ import {
 } from 'routing-controllers'
 import type { AccessPayload } from '../auth/tokens.js'
 import {
+  changePassword,
   getUserById,
   login,
   logout,
@@ -27,6 +28,10 @@ interface LoginBody {
 }
 interface RefreshBody {
   refreshToken?: string
+}
+interface ChangePasswordBody {
+  currentPassword?: string
+  newPassword?: string
 }
 
 @JsonController('/auth')
@@ -54,6 +59,21 @@ export class AuthController {
   @Post('/logout')
   async logout(@Body() body: RefreshBody) {
     await logout(body?.refreshToken)
+    return { ok: true }
+  }
+
+  // POST /api/auth/change-password  → change the current user's password
+  @Post('/change-password')
+  @Authorized()
+  async changePassword(
+    @Body() body: ChangePasswordBody,
+    @CurrentUser() current: AccessPayload,
+  ) {
+    await changePassword(
+      current.sub,
+      body.currentPassword ?? '',
+      body.newPassword ?? '',
+    )
     return { ok: true }
   }
 

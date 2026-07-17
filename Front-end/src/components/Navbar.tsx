@@ -114,9 +114,18 @@ export default function Navbar() {
                 Admin
               </Link>
             )}
-            <span className="hidden text-sm text-white/70 sm:block">
-              Hi, {user.name.split(' ')[0]}
-            </span>
+            <Link
+              to={ROUTES.profile}
+              title="Your profile"
+              className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pl-1 pr-3 transition hover:border-brand/50 hover:bg-white/10"
+            >
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-brand to-brand-soft text-xs font-bold uppercase text-white">
+                {user.name.trim().charAt(0) || 'U'}
+              </span>
+              <span className="hidden text-sm text-white/80 transition group-hover:text-white sm:block">
+                {user.name.split(' ')[0]}
+              </span>
+            </Link>
             <button
               type="button"
               onClick={() => setConfirmLogout(true)}

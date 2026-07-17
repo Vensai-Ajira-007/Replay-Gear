@@ -6,6 +6,9 @@ import CartScreen from '../screens/CartScreen'
 import LoginScreen from '../screens/LoginScreen'
 import RegisterScreen from '../screens/RegisterScreen'
 import AdminScreen from '../screens/AdminScreen'
+import ProfileScreen from '../screens/ProfileScreen'
+import MyOrdersScreen from '../screens/MyOrdersScreen'
+import ChangePasswordScreen from '../screens/ChangePasswordScreen'
 import RequireAuth from '../components/RequireAuth'
 import { ROUTES } from './routes'
 
@@ -27,6 +30,30 @@ export const routeConfig: RouteObject[] = [
     element: (
       <RequireAuth role="admin">
         <AdminScreen />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: ROUTES.profile,
+    element: (
+      <RequireAuth>
+        <ProfileScreen />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: ROUTES.profileOrders,
+    element: (
+      <RequireAuth>
+        <MyOrdersScreen />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: ROUTES.profilePassword,
+    element: (
+      <RequireAuth>
+        <ChangePasswordScreen />
       </RequireAuth>
     ),
   },
