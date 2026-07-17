@@ -1,9 +1,10 @@
--- Product catalog seed — the source of truth for the storefront's products.
--- Run on every boot by seedProductsFromSql() in seed.ts. Idempotent:
---   * fresh DB      → all rows inserted
---   * existing DB   → new ids inserted; existing rows keep their price/edits,
---                     and a still-empty image_url is backfilled (never clobbers
---                     a non-empty image).
+-- Product catalog seed — the single source of truth for the storefront's
+-- products. Run on every boot by seedProductsFromSql() in seed.ts. Idempotent
+-- full upsert:
+--   * fresh DB    → all rows inserted
+--   * existing DB → new ids inserted; seeded ids (1–44) are fully synced to the
+--                   values below (title, price, image, …). Admin-ADDED products
+--                   (id ≥ 45) aren't listed here, so they're never touched.
 -- Prices are in INR (whole rupees). image_url is real cover art / console photo.
 INSERT INTO products
   (id, title, type, platform, "condition", price, original_price, rating, emoji, accent, image_url)
@@ -52,6 +53,14 @@ VALUES
   (42, 'Xbox One X', 'console', 'Xbox', 'Good', 16599, 33199, 4.6, '🎮', 'from-neutral-700/40 to-green-500/30', 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Microsoft-Xbox-One-X-Console-01.jpg/960px-Microsoft-Xbox-One-X-Console-01.jpg'),
   (43, 'PlayStation 3 Super Slim', 'console', 'PlayStation', 'Fair', 9959, 20749, 4.3, '🎮', 'from-slate-700/40 to-blue-500/30', 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Sony-PlayStation-PS3-SuperSlim-Console-FL.jpg/960px-Sony-PlayStation-PS3-SuperSlim-Console-FL.jpg'),
   (44, 'Steam Deck', 'console', 'PC', 'Mint', 33199, 41499, 4.8, '🎒', 'from-blue-600/40 to-slate-500/30', 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Steam_Deck_%28front%29.png/960px-Steam_Deck_%28front%29.png')
-ON CONFLICT (id) DO UPDATE
-  SET image_url = EXCLUDED.image_url
-  WHERE products.image_url IS NULL OR products.image_url = '';
+ON CONFLICT (id) DO UPDATE SET
+  title          = EXCLUDED.title,
+  type           = EXCLUDED.type,
+  platform       = EXCLUDED.platform,
+  "condition"    = EXCLUDED."condition",
+  price          = EXCLUDED.price,
+  original_price = EXCLUDED.original_price,
+  rating         = EXCLUDED.rating,
+  emoji          = EXCLUDED.emoji,
+  accent         = EXCLUDED.accent,
+  image_url      = EXCLUDED.image_url;

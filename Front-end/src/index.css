@@ -41,6 +41,15 @@ body {
   color: #fff;
 }
 
+/* Native <select> popups: render in the dark theme instead of white-on-white. */
+select {
+  color-scheme: dark;
+}
+select option {
+  background-color: #1d1430; /* --color-panel-2 */
+  color: #e9e4f0;
+}
+
 /* Custom dark, brand-tinted scrollbar */
 * {
   scrollbar-width: thin;
