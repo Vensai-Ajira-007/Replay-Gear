@@ -2,6 +2,7 @@ import { useLocation, useRoutes } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import BackButton from './components/BackButton'
+import AmbientAudio from './components/AmbientAudio'
 import { routeConfig } from './config/routeConfig'
 import { ROUTES } from './config/routes'
 
@@ -22,6 +23,7 @@ export default function App() {
         {routes}
       </main>
       <Footer />
+      <AmbientAudio />
     </div>
   )
 }
