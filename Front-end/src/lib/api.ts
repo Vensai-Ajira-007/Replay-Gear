@@ -238,6 +238,23 @@ export async function fetchMe(): Promise<AuthUser | null> {
   return data.user
 }
 
+// Change the logged-in user's password.
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  await request(API_ENDPOINTS.auth.changePassword, {
+    method: 'POST',
+    body: JSON.stringify({ currentPassword, newPassword }),
+  })
+}
+
+// The current user's own orders (backend scopes GET /orders by user).
+export async function fetchOrders(): Promise<Order[]> {
+  const data = await request<{ orders: Order[] }>(API_ENDPOINTS.orders)
+  return data.orders
+}
+
 // --- Admin: product management ----------------------------------------------
 export interface NewProductInput {
   title: string

@@ -108,3 +108,21 @@ export async function logout(refreshToken?: string): Promise<void> {
 export async function getUserById(id: string): Promise<User | null> {
   return userRepo().findOneBy({ id })
 }
+
+// Change the logged-in user's password: verify the current one, then re-hash.
+export async function changePassword(
+  userId: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  const user = await getUserById(userId)
+  if (!user) throw new UnauthorizedError('Not authenticated')
+  if (!(await bcrypt.compare(currentPassword, user.passwordHash))) {
+    throw new BadRequestError('Current password is incorrect')
+  }
+  if (!newPassword || newPassword.length < 6) {
+    throw new BadRequestError('New password must be at least 6 characters')
+  }
+  user.passwordHash = await bcrypt.hash(newPassword, 10)
+  await userRepo().save(user)
+}
