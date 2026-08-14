@@ -6,6 +6,7 @@ export const ROUTES = {
   games: '/games',
   consoles: '/consoles',
   cart: '/cart',
+  checkout: '/checkout',
   login: '/login',
   register: '/register',
   admin: '/admin',

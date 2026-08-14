@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchOrders, type Order } from '../lib/api'
-import { formatINR } from '../lib/format'
+import { formatAddressLines, formatINR } from '../lib/format'
 import { ROUTES } from '../config/routes'
 
 function formatDate(iso: string): string {
@@ -126,6 +126,23 @@ export default function MyOrdersScreen() {
                   {formatINR(order.subtotal)}
                 </span>
               </div>
+
+              {/* Where it shipped. Orders placed before delivery details existed
+                  have none, so this is optional. */}
+              {order.deliveryAddress && (
+                <div className="mt-3 border-t border-white/10 pt-3">
+                  <div className="text-xs uppercase tracking-wide text-white/40">
+                    Delivering to
+                  </div>
+                  <p className="mt-1 text-sm leading-relaxed text-white/70">
+                    {formatAddressLines(order.deliveryAddress).map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -24,6 +24,8 @@ interface EditForm {
   rating: number
   emoji: string
   imageUrl: string
+  description: string
+  wikipediaUrl: string
 }
 
 const conditions: Condition[] = ['Mint', 'Good', 'Fair']
@@ -40,6 +42,8 @@ function toForm(p: Product): EditForm {
     rating: p.rating,
     emoji: p.emoji,
     imageUrl: p.imageUrl ?? '',
+    description: p.description ?? '',
+    wikipediaUrl: p.wikipediaUrl ?? '',
   }
 }
 
@@ -122,7 +126,7 @@ export default function ProductDetailScreen() {
     return (
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="shimmer aspect-square rounded-2xl" />
+          <div className="shimmer mx-auto aspect-[3/4] w-full max-w-sm rounded-3xl" />
           <div className="space-y-4">
             <div className="shimmer h-4 w-1/3 rounded" />
             <div className="shimmer h-8 w-3/4 rounded" />
@@ -178,8 +182,9 @@ export default function ProductDetailScreen() {
         <div className="animate-fade-up">
           <ProductCover
             product={product}
-            className="flex aspect-square w-full items-center justify-center rounded-3xl border border-white/10"
+            className="mx-auto flex aspect-[3/4] w-full max-w-sm items-center justify-center rounded-3xl border border-white/10"
             emojiClassName="text-8xl"
+            imgClassName="p-6"
           >
             {discount > 0 && (
               <span className="absolute left-4 top-4 z-10 rounded-full bg-black/60 px-3 py-1 text-sm font-bold text-white shadow-lg ring-1 ring-white/10 backdrop-blur">
@@ -228,6 +233,27 @@ export default function ProductDetailScreen() {
                   </span>
                 )}
               </div>
+
+              {/* Blurb + source link. Absent on admin-added products, so both
+                  the text and the link are rendered only when present. */}
+              {product.description && (
+                <p className="mt-5 text-sm leading-relaxed text-white/75">
+                  {product.description}
+                </p>
+              )}
+              {product.wikipediaUrl && (
+                <p className="mt-2 text-xs text-white/40">
+                  <a
+                    href={product.wikipediaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-soft transition hover:text-white"
+                  >
+                    Read more on Wikipedia ↗
+                  </a>
+                  {product.description && ' — text from Wikipedia, CC BY-SA'}
+                </p>
+              )}
 
               <p className="mt-4 text-sm leading-relaxed text-white/60">
                 A pre-owned {product.type === 'game' ? 'game' : 'console'} in{' '}
@@ -419,6 +445,31 @@ export default function ProductDetailScreen() {
                     onChange={(e) => set('imageUrl', e.target.value)}
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm text-white/70">
+                  Description <span className="text-white/40">(optional)</span>
+                </label>
+                <textarea
+                  className={`${input} min-h-20 resize-y`}
+                  rows={3}
+                  value={form?.description ?? ''}
+                  onChange={(e) => set('description', e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm text-white/70">
+                  Wikipedia URL <span className="text-white/40">(optional)</span>
+                </label>
+                <input
+                  className={input}
+                  type="url"
+                  placeholder="https://en.wikipedia.org/wiki/…"
+                  value={form?.wikipediaUrl ?? ''}
+                  onChange={(e) => set('wikipediaUrl', e.target.value)}
+                />
               </div>
 
               {saveError && <p className="text-sm text-red-400">{saveError}</p>}

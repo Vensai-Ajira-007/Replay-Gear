@@ -7,6 +7,7 @@ import {
   type Relation,
 } from 'typeorm'
 import { numericTransformer } from '../db/numericTransformer.js'
+import type { DeliveryAddress } from '../services/address.js'
 import { OrderItem } from './OrderItem.js'
 
 @Entity('orders')
@@ -29,6 +30,12 @@ export class Order {
 
   @Column({ type: 'numeric', precision: 10, scale: 2, transformer: numericTransformer })
   subtotal!: number
+
+  // Immutable snapshot of where this order shipped, so editing the saved profile
+  // address later never rewrites history. Nullable: orders placed before delivery
+  // details existed have none.
+  @Column({ name: 'delivery_address', type: 'jsonb', nullable: true })
+  deliveryAddress!: DeliveryAddress | null
 
   @OneToMany(() => OrderItem, (item) => item.order, {
     cascade: true,

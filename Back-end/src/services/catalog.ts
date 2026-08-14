@@ -65,6 +65,8 @@ export interface NewProduct {
   emoji?: string
   accent?: string
   imageUrl?: string
+  description?: string
+  wikipediaUrl?: string
 }
 
 const TYPES: ProductType[] = ['game', 'console']
@@ -103,6 +105,8 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     emoji: input.emoji?.trim() || '🎮',
     accent: input.accent?.trim() || 'from-brand/30 to-fuchsia-500/20',
     imageUrl: input.imageUrl?.trim() || null,
+    description: input.description?.trim() || null,
+    wikipediaUrl: input.wikipediaUrl?.trim() || null,
   })
   return repo().save(product)
 }
@@ -118,6 +122,8 @@ export interface UpdateProduct {
   emoji?: string
   accent?: string
   imageUrl?: string
+  description?: string
+  wikipediaUrl?: string
 }
 
 // Admin-only: update an existing product. Only the provided fields are changed;
@@ -174,6 +180,12 @@ export async function updateProduct(
     existing.accent = patch.accent.trim() || 'from-brand/30 to-fuchsia-500/20'
   }
   if (patch.imageUrl !== undefined) existing.imageUrl = patch.imageUrl.trim() || null
+  if (patch.description !== undefined) {
+    existing.description = patch.description.trim() || null
+  }
+  if (patch.wikipediaUrl !== undefined) {
+    existing.wikipediaUrl = patch.wikipediaUrl.trim() || null
+  }
 
   return repo().save(existing)
 }

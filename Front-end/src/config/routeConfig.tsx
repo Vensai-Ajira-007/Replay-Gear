@@ -3,6 +3,7 @@ import DashboardScreen from '../screens/DashboardScreen'
 import CategoryScreen from '../screens/CategoryScreen'
 import ProductDetailScreen from '../screens/ProductDetailScreen'
 import CartScreen from '../screens/CartScreen'
+import CheckoutScreen from '../screens/CheckoutScreen'
 import LoginScreen from '../screens/LoginScreen'
 import RegisterScreen from '../screens/RegisterScreen'
 import AdminScreen from '../screens/AdminScreen'
@@ -23,6 +24,14 @@ export const routeConfig: RouteObject[] = [
   { path: ROUTES.consoles, element: <CategoryScreen type="console" /> },
   { path: ROUTES.productPath, element: <ProductDetailScreen /> },
   { path: ROUTES.cart, element: <CartScreen /> },
+  {
+    path: ROUTES.checkout,
+    element: (
+      <RequireAuth>
+        <CheckoutScreen />
+      </RequireAuth>
+    ),
+  },
   { path: ROUTES.login, element: <LoginScreen /> },
   { path: ROUTES.register, element: <RegisterScreen /> },
   {

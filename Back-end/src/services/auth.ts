@@ -7,6 +7,7 @@ import { AppDataSource } from '../db/data-source.js'
 import { User, type Role } from '../entities/User.js'
 import { Session } from '../entities/Session.js'
 import { authConfig } from '../auth/config.js'
+import { parseDeliveryAddress, type DeliveryAddress } from './address.js'
 import {
   generateRefreshToken,
   hashToken,
@@ -21,6 +22,7 @@ export interface PublicUser {
   name: string
   email: string
   role: Role
+  defaultAddress: DeliveryAddress | null
 }
 
 export interface AuthResult {
@@ -29,8 +31,14 @@ export interface AuthResult {
   refreshToken: string
 }
 
-function toPublic(u: User): PublicUser {
-  return { id: u.id, name: u.name, email: u.email, role: u.role }
+export function toPublic(u: User): PublicUser {
+  return {
+    id: u.id,
+    name: u.name,
+    email: u.email,
+    role: u.role,
+    defaultAddress: u.defaultAddress ?? null,
+  }
 }
 
 async function issueTokens(user: User): Promise<AuthResult> {
@@ -107,6 +115,17 @@ export async function logout(refreshToken?: string): Promise<void> {
 
 export async function getUserById(id: string): Promise<User | null> {
   return userRepo().findOneBy({ id })
+}
+
+// Save/replace the logged-in user's default delivery address.
+export async function updateDefaultAddress(
+  userId: string,
+  input: unknown,
+): Promise<User> {
+  const user = await getUserById(userId)
+  if (!user) throw new UnauthorizedError('Not authenticated')
+  user.defaultAddress = parseDeliveryAddress(input)
+  return userRepo().save(user)
 }
 
 // Change the logged-in user's password: verify the current one, then re-hash.

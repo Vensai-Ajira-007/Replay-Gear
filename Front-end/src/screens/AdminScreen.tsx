@@ -7,6 +7,7 @@ import {
   type NewProductInput,
 } from '../lib/api'
 import { formatINR } from '../lib/format'
+import ProductCover from '../components/ProductCover'
 
 const emptyForm: NewProductInput = {
   title: '',
@@ -17,6 +18,8 @@ const emptyForm: NewProductInput = {
   originalPrice: 0,
   emoji: '🎮',
   imageUrl: '',
+  description: '',
+  wikipediaUrl: '',
 }
 
 const conditions: Condition[] = ['Mint', 'Good', 'Fair']
@@ -188,6 +191,32 @@ export default function AdminScreen() {
             </div>
           </div>
 
+          <div>
+            <label className="mb-1 block text-sm text-white/70">
+              Description <span className="text-white/40">(optional)</span>
+            </label>
+            <textarea
+              className={`${input} min-h-20 resize-y`}
+              rows={3}
+              placeholder="Short blurb shown on the product page"
+              value={form.description ?? ''}
+              onChange={(e) => set('description', e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm text-white/70">
+              Wikipedia URL <span className="text-white/40">(optional)</span>
+            </label>
+            <input
+              className={input}
+              type="url"
+              placeholder="https://en.wikipedia.org/wiki/…"
+              value={form.wikipediaUrl ?? ''}
+              onChange={(e) => set('wikipediaUrl', e.target.value)}
+            />
+          </div>
+
           {error && <p className="text-sm text-red-400">{error}</p>}
           {msg && <p className="text-sm text-mint">{msg}</p>}
 
@@ -211,18 +240,11 @@ export default function AdminScreen() {
                 key={p.id}
                 className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2"
               >
-                {p.imageUrl ? (
-                  <img
-                    src={p.imageUrl}
-                    alt={p.title}
-                    loading="lazy"
-                    className="h-10 w-10 shrink-0 rounded-md object-cover"
-                  />
-                ) : (
-                  <span className="grid h-10 w-10 shrink-0 place-items-center text-xl">
-                    {p.emoji}
-                  </span>
-                )}
+                <ProductCover
+                  product={p}
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-md"
+                  emojiClassName="text-xl"
+                />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm text-white">{p.title}</div>
                   <div className="text-xs text-white/40">
