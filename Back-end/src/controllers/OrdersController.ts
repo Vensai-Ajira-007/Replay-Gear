@@ -1,5 +1,6 @@
 import {
   Authorized,
+  Body,
   CurrentUser,
   ForbiddenError,
   Get,
@@ -17,14 +18,22 @@ import {
 } from '../services/orders.js'
 import { sendOrderConfirmation } from '../mail/orderConfirmation.js'
 
+interface CreateOrderBody {
+  // Validated in the service via parseDeliveryAddress (global validation is off).
+  deliveryAddress?: unknown
+}
+
 @JsonController('/orders')
 export class OrdersController {
   // POST /api/orders — checkout (must be logged in); order is tied to the user
   @Post('/')
   @HttpCode(201)
   @Authorized()
-  async create(@CurrentUser() user: AccessPayload) {
-    const order = await createOrderFromCart(user.sub)
+  async create(
+    @Body() body: CreateOrderBody,
+    @CurrentUser() user: AccessPayload,
+  ) {
+    const order = await createOrderFromCart(user.sub, body?.deliveryAddress)
 
     // Fire-and-forget: emailing must never block or fail the checkout.
     sendOrderConfirmation(order, user.email, user.name)

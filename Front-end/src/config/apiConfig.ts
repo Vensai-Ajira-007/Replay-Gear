@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
   product: (id: number | string) => `/products/${id}`,
   cart: '/cart',
   cartItem: (id: number | string) => `/cart/${id}`,
+  cartClaim: '/cart/claim',
   orders: '/orders',
   order: (id: string) => `/orders/${id}`,
   auth: {
@@ -20,5 +21,6 @@ export const API_ENDPOINTS = {
     logout: '/auth/logout',
     me: '/auth/me',
     changePassword: '/auth/change-password',
+    address: '/auth/address',
   },
 } as const

@@ -1,3 +1,5 @@
+import type { DeliveryAddress } from './api'
+
 // Format a whole-rupee amount as INR with Indian grouping, e.g. ₹31,539.
 const inr = new Intl.NumberFormat('en-IN', {
   style: 'currency',
@@ -7,4 +9,16 @@ const inr = new Intl.NumberFormat('en-IN', {
 
 export function formatINR(amount: number): string {
   return inr.format(amount)
+}
+
+// A delivery address as display lines. Mirrors formatAddressLines on the server
+// (used there for the confirmation email) so both render the same way.
+export function formatAddressLines(address: DeliveryAddress): string[] {
+  return [
+    address.fullName,
+    `Phone: ${address.phone}`,
+    address.line1,
+    ...(address.line2 ? [address.line2] : []),
+    `${address.city}, ${address.state} ${address.pincode}`,
+  ]
 }

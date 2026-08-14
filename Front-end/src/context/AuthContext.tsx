@@ -21,6 +21,8 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>
   register: (name: string, email: string, password: string) => Promise<void>
   logout: () => Promise<void>
+  /** Re-read /auth/me — used after saving a default address. */
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -67,6 +69,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
+  const refreshUser = async () => {
+    setUser(await fetchMe())
+  }
+
   const value: AuthContextValue = {
     user,
     loading,
@@ -74,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login,
     register,
     logout,
+    refreshUser,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

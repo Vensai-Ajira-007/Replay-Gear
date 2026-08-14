@@ -15,6 +15,8 @@ import {
   logout,
   refresh,
   register,
+  toPublic,
+  updateDefaultAddress,
 } from '../services/auth.js'
 
 interface RegisterBody {
@@ -32,6 +34,10 @@ interface RefreshBody {
 interface ChangePasswordBody {
   currentPassword?: string
   newPassword?: string
+}
+interface AddressBody {
+  // Validated by parseDeliveryAddress in the service.
+  deliveryAddress?: unknown
 }
 
 @JsonController('/auth')
@@ -77,19 +83,24 @@ export class AuthController {
     return { ok: true }
   }
 
+  // POST /api/auth/address  → save the current user's default delivery address
+  @Post('/address')
+  @Authorized()
+  async saveAddress(
+    @Body() body: AddressBody,
+    @CurrentUser() current: AccessPayload,
+  ) {
+    const user = await updateDefaultAddress(current.sub, body?.deliveryAddress)
+    return { user: toPublic(user) }
+  }
+
   // GET /api/auth/me  → current user (requires a valid access token)
+  // Uses toPublic so this can't drift from the login/register user payload.
   @Get('/me')
   @Authorized()
   async me(@CurrentUser() current: AccessPayload) {
     const user = await getUserById(current.sub)
     if (!user) return { user: null }
-    return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    }
+    return { user: toPublic(user) }
   }
 }

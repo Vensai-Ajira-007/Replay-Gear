@@ -2,11 +2,15 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { ROUTES } from '../config/routes'
+import { formatAddressLines } from '../lib/format'
+import { saveDefaultAddress, type DeliveryAddress } from '../lib/api'
+import AddressForm from '../components/AddressForm'
 
 export default function ProfileScreen() {
-  const { user, logout } = useAuth()
+  const { user, logout, refreshUser } = useAuth()
   const navigate = useNavigate()
   const [confirmLogout, setConfirmLogout] = useState(false)
+  const [editingAddress, setEditingAddress] = useState(false)
 
   if (!user) return null // RequireAuth guarantees a user, but keeps TS happy.
 
@@ -14,6 +18,13 @@ export default function ProfileScreen() {
     setConfirmLogout(false)
     await logout()
     navigate(ROUTES.home)
+  }
+
+  // AddressForm surfaces any thrown error, so let it propagate on failure.
+  const handleSaveAddress = async (address: DeliveryAddress) => {
+    await saveDefaultAddress(address)
+    await refreshUser()
+    setEditingAddress(false)
   }
 
   const options = [
@@ -45,6 +56,62 @@ export default function ProfileScreen() {
             {user.role}
           </span>
         </div>
+      </div>
+
+      {/* Saved delivery address */}
+      <div
+        style={{ animationDelay: '60ms' }}
+        className="animate-fade-up mt-6 rounded-2xl border border-white/10 bg-panel/60 p-6"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="font-semibold text-white">Delivery address</h2>
+            <p className="mt-0.5 text-sm text-white/55">
+              Used to prefill checkout.
+            </p>
+          </div>
+          {!editingAddress && (
+            <button
+              type="button"
+              onClick={() => setEditingAddress(true)}
+              className="shrink-0 rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-white/70 transition hover:border-brand/40 hover:text-white"
+            >
+              {user.defaultAddress ? 'Edit' : 'Add address'}
+            </button>
+          )}
+        </div>
+
+        {editingAddress ? (
+          <div className="mt-5">
+            <AddressForm
+              initial={user.defaultAddress ?? { fullName: user.name }}
+              submitLabel="Save address"
+              busyLabel="Saving…"
+              onSubmit={handleSaveAddress}
+              secondaryAction={
+                <button
+                  type="button"
+                  onClick={() => setEditingAddress(false)}
+                  className="rounded-full px-4 py-2.5 text-sm font-medium text-white/60 transition hover:text-white"
+                >
+                  Cancel
+                </button>
+              }
+            />
+          </div>
+        ) : user.defaultAddress ? (
+          <p className="mt-4 text-sm leading-relaxed text-white/70">
+            {formatAddressLines(user.defaultAddress).map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </p>
+        ) : (
+          <p className="mt-4 text-sm text-white/40">
+            No address saved yet — you'll be asked for one at checkout.
+          </p>
+        )}
       </div>
 
       {/* Options */}

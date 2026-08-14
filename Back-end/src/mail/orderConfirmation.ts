@@ -1,4 +1,5 @@
 import type { Order } from '../entities/Order.js'
+import { formatAddressLines } from '../services/address.js'
 import { sendMail } from './mailer.js'
 
 const money = (n: number) =>
@@ -17,6 +18,21 @@ export async function sendOrderConfirmation(
   name: string,
 ): Promise<void> {
   const shortId = order.id.slice(0, 8)
+
+  // Orders placed before delivery details existed have no address — skip the block.
+  const addressLines = order.deliveryAddress
+    ? formatAddressLines(order.deliveryAddress)
+    : null
+
+  const addressHtml = addressLines
+    ? `
+    <div style="margin-top:24px;padding:16px;background:#faf7ff;border-radius:8px">
+      <h3 style="margin:0 0 8px;font-size:14px;color:#aa3bff">Delivering to</h3>
+      <p style="margin:0;font-size:14px;line-height:1.6">
+        ${addressLines.join('<br />')}
+      </p>
+    </div>`
+    : ''
 
   const rows = order.items
     .map(
@@ -46,6 +62,7 @@ export async function sendOrderConfirmation(
     <p style="text-align:right;font-size:18px;margin-top:16px">
       <strong>Total: ${money(order.subtotal)}</strong> (${order.totalItems} items)
     </p>
+    ${addressHtml}
     <p style="color:#888;font-size:13px">This is a demo store — no payment was taken.</p>
   </div>`
 
@@ -54,6 +71,7 @@ export async function sendOrderConfirmation(
     `Order #${shortId} confirmed.`,
     ...order.items.map((i) => `- ${i.title} x${i.qty} = ${money(i.lineTotal)}`),
     `Total: ${money(order.subtotal)} (${order.totalItems} items)`,
+    ...(addressLines ? ['', 'Delivering to:', ...addressLines] : []),
   ].join('\n')
 
   await sendMail({

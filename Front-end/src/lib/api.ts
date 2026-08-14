@@ -32,6 +32,17 @@ export interface OrderItem {
   lineTotal: number
 }
 
+/** Mirrors DeliveryAddress in Back-end/src/services/address.ts. */
+export interface DeliveryAddress {
+  fullName: string
+  phone: string
+  line1: string
+  line2: string | null
+  city: string
+  state: string
+  pincode: string
+}
+
 export interface Order {
   id: string
   createdAt: string
@@ -39,6 +50,8 @@ export interface Order {
   totalItems: number
   subtotal: number
   userId?: string | null
+  /** Snapshot of where this order shipped; null for pre-delivery-details orders. */
+  deliveryAddress?: DeliveryAddress | null
   items: OrderItem[]
 }
 
@@ -49,6 +62,8 @@ export interface AuthUser {
   name: string
   email: string
   role: Role
+  /** Saved default address, used to prefill checkout. */
+  defaultAddress?: DeliveryAddress | null
 }
 
 export interface AuthResult {
@@ -60,6 +75,21 @@ export interface AuthResult {
 // --- Token store (in memory + localStorage) ---------------------------------
 const ACCESS_KEY = 'rg_access'
 const REFRESH_KEY = 'rg_refresh'
+const CART_ID_KEY = 'rg_cart_id'
+
+/**
+ * Stable per-browser id so a signed-out visitor gets their own server cart
+ * instead of sharing one with every other guest. Once they log in the server
+ * keys the cart by user id instead, and POST /cart/claim merges this one in.
+ */
+function guestCartId(): string {
+  let id = localStorage.getItem(CART_ID_KEY)
+  if (!id) {
+    id = crypto.randomUUID()
+    localStorage.setItem(CART_ID_KEY, id)
+  }
+  return id
+}
 
 let accessToken: string | null = localStorage.getItem(ACCESS_KEY)
 let refreshToken: string | null = localStorage.getItem(REFRESH_KEY)
@@ -111,6 +141,7 @@ async function request<T>(
     ...init,
     headers: {
       'Content-Type': 'application/json',
+      'x-cart-id': guestCartId(),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...(init?.headers ?? {}),
     },
@@ -189,10 +220,21 @@ export async function clearCart(): Promise<Cart> {
   return data.cart
 }
 
-// One-click checkout: turns the current cart into a persisted order and clears
-// the cart server-side. Requires a logged-in user.
-export async function checkout(): Promise<Order> {
-  const data = await request<{ order: Order }>(API_ENDPOINTS.orders, { method: 'POST' })
+// Merge the guest cart built before signing in into the user's own cart.
+export async function claimCart(): Promise<Cart> {
+  const data = await request<{ cart: Cart }>(API_ENDPOINTS.cartClaim, {
+    method: 'POST',
+  })
+  return data.cart
+}
+
+// Checkout: turns the current cart into a persisted order shipped to
+// `deliveryAddress`, and clears the cart server-side. Requires a logged-in user.
+export async function checkout(deliveryAddress: DeliveryAddress): Promise<Order> {
+  const data = await request<{ order: Order }>(API_ENDPOINTS.orders, {
+    method: 'POST',
+    body: JSON.stringify({ deliveryAddress }),
+  })
   return data.order
 }
 
@@ -235,6 +277,17 @@ export async function logoutUser(): Promise<void> {
 
 export async function fetchMe(): Promise<AuthUser | null> {
   const data = await request<{ user: AuthUser | null }>(API_ENDPOINTS.auth.me)
+  return data.user
+}
+
+// Save/replace the logged-in user's default delivery address.
+export async function saveDefaultAddress(
+  deliveryAddress: DeliveryAddress,
+): Promise<AuthUser> {
+  const data = await request<{ user: AuthUser }>(API_ENDPOINTS.auth.address, {
+    method: 'POST',
+    body: JSON.stringify({ deliveryAddress }),
+  })
   return data.user
 }
 

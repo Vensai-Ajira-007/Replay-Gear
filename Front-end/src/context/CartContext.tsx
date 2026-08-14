@@ -9,13 +9,16 @@ import {
 import {
   addToCart,
   checkout as checkoutApi,
+  claimCart,
   clearCart,
   getCart,
   removeFromCart,
   setCartQty,
   type Cart,
+  type DeliveryAddress,
   type Order,
 } from '../lib/api'
+import { useAuth } from './AuthContext'
 
 interface CartContextValue {
   cart: Cart
@@ -25,7 +28,7 @@ interface CartContextValue {
   remove: (productId: number) => Promise<void>
   setQty: (productId: number, qty: number) => Promise<void>
   clear: () => Promise<void>
-  checkout: () => Promise<Order>
+  checkout: (deliveryAddress: DeliveryAddress) => Promise<Order>
   refresh: () => Promise<void>
 }
 
@@ -36,6 +39,8 @@ const CartContext = createContext<CartContextValue | null>(null)
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart>(EMPTY_CART)
   const [loading, setLoading] = useState(true)
+  const { user, loading: authLoading } = useAuth()
+  const userId = user?.id ?? null
 
   const refresh = useCallback(async () => {
     try {
@@ -47,10 +52,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  // Load the server cart once on mount.
+  // Carts are server-side and keyed by owner, so re-sync whenever the signed-in
+  // identity changes. On login we claim the guest cart built before signing in
+  // (which returns the merged result); otherwise just read the guest cart.
   useEffect(() => {
-    refresh()
-  }, [refresh])
+    if (authLoading) return
+    let cancelled = false
+    async function sync() {
+      try {
+        const next = userId ? await claimCart() : await getCart()
+        if (!cancelled) setCart(next)
+      } catch {
+        // Leave the cart as-is if the API isn't reachable.
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+    sync()
+    return () => {
+      cancelled = true
+    }
+  }, [authLoading, userId])
 
   const add = useCallback(async (productId: number) => {
     setCart(await addToCart(productId))
@@ -70,8 +92,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Create a persisted order from the cart; the server clears the cart, so
   // reset the local state to empty afterwards.
-  const checkout = useCallback(async () => {
-    const order = await checkoutApi()
+  const checkout = useCallback(async (deliveryAddress: DeliveryAddress) => {
+    const order = await checkoutApi(deliveryAddress)
     setCart(EMPTY_CART)
     return order
   }, [])

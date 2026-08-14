@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { conditionColor } from '../data/products'
 import { useCart } from '../context/CartContext'
@@ -8,53 +7,18 @@ import { formatINR } from '../lib/format'
 import ProductCover from '../components/ProductCover'
 
 export default function CartScreen() {
-  const { cart, loading, add, remove, setQty, clear, checkout } = useCart()
+  const { cart, loading, add, remove, setQty, clear } = useCart()
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [orderId, setOrderId] = useState<string | null>(null)
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  const handleCheckout = async () => {
-    // Must be logged in to check out — send guests to login, then back to cart.
+  // Ordering happens on the checkout screen, which collects delivery details.
+  // Guests go via login first, then land straight on checkout.
+  const goToCheckout = () => {
     if (!user) {
-      navigate(ROUTES.login, { state: { from: ROUTES.cart } })
+      navigate(ROUTES.login, { state: { from: ROUTES.checkout } })
       return
     }
-    setBusy(true)
-    setError(null)
-    try {
-      const order = await checkout()
-      setOrderId(order.id)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Checkout failed')
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  // Order confirmation — the order is now persisted in the database.
-  if (orderId) {
-    return (
-      <section className="animate-fade-up mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
-        <div className="animate-scale-in text-7xl drop-shadow-[0_0_25px_rgba(170,59,255,0.5)]">
-          🎉
-        </div>
-        <h1 className="mt-4 text-3xl font-bold text-white">Order placed!</h1>
-        <p className="mt-2 text-white/60">
-          Thanks for your purchase. Your games are on the way.
-        </p>
-        <p className="mt-4 text-xs text-white/40">
-          Order ID: <span className="font-mono text-white/60">{orderId}</span>
-        </p>
-        <Link
-          to={ROUTES.home}
-          className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-brand/50 active:scale-95"
-        >
-          Keep shopping
-        </Link>
-      </section>
-    )
+    navigate(ROUTES.checkout)
   }
 
   // Empty cart.
@@ -204,15 +168,12 @@ export default function CartScreen() {
 
             <button
               type="button"
-              onClick={handleCheckout}
-              disabled={busy || cart.lines.length === 0}
+              onClick={goToCheckout}
+              disabled={cart.lines.length === 0}
               className="mt-6 w-full rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {busy ? 'Placing order…' : user ? 'Checkout' : 'Log in to check out'}
+              {user ? 'Proceed to checkout' : 'Log in to check out'}
             </button>
-            {error && (
-              <p className="mt-3 text-center text-xs text-red-400">{error}</p>
-            )}
             <p className="mt-3 text-center text-xs text-white/40">
               Demo checkout — no payment is taken.
             </p>
