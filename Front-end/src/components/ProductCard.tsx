@@ -34,9 +34,9 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Cover tile */}
       <ProductCover
         product={product}
-        className="flex aspect-[4/3] items-center justify-center"
+        className="flex aspect-[3/4] items-center justify-center"
         emojiClassName="text-6xl transition duration-300 group-hover:scale-110 group-hover:-rotate-3"
-        imgClassName="transition duration-500 group-hover:scale-105"
+        imgClassName="p-3 transition duration-500 group-hover:scale-105"
       >
         {/* Diagonal sheen sweep on hover */}
         <div className="pointer-events-none absolute inset-0 z-10 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />

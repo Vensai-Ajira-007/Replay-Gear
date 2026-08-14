@@ -107,6 +107,7 @@ export default function CartScreen() {
                   product={product}
                   className="grid h-20 w-20 shrink-0 place-items-center rounded-xl"
                   emojiClassName="text-3xl"
+                  imgClassName="p-1.5"
                 />
 
                 {/* Details */}

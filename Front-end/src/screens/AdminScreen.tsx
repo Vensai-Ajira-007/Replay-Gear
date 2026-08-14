@@ -7,6 +7,7 @@ import {
   type NewProductInput,
 } from '../lib/api'
 import { formatINR } from '../lib/format'
+import ProductCover from '../components/ProductCover'
 
 const emptyForm: NewProductInput = {
   title: '',
@@ -211,18 +212,11 @@ export default function AdminScreen() {
                 key={p.id}
                 className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2"
               >
-                {p.imageUrl ? (
-                  <img
-                    src={p.imageUrl}
-                    alt={p.title}
-                    loading="lazy"
-                    className="h-10 w-10 shrink-0 rounded-md object-cover"
-                  />
-                ) : (
-                  <span className="grid h-10 w-10 shrink-0 place-items-center text-xl">
-                    {p.emoji}
-                  </span>
-                )}
+                <ProductCover
+                  product={p}
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-md"
+                  emojiClassName="text-xl"
+                />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm text-white">{p.title}</div>
                   <div className="text-xs text-white/40">

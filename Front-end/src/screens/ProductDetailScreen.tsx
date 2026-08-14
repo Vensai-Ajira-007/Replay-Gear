@@ -122,7 +122,7 @@ export default function ProductDetailScreen() {
     return (
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="shimmer aspect-square rounded-2xl" />
+          <div className="shimmer mx-auto aspect-[3/4] w-full max-w-sm rounded-3xl" />
           <div className="space-y-4">
             <div className="shimmer h-4 w-1/3 rounded" />
             <div className="shimmer h-8 w-3/4 rounded" />
@@ -178,8 +178,9 @@ export default function ProductDetailScreen() {
         <div className="animate-fade-up">
           <ProductCover
             product={product}
-            className="flex aspect-square w-full items-center justify-center rounded-3xl border border-white/10"
+            className="mx-auto flex aspect-[3/4] w-full max-w-sm items-center justify-center rounded-3xl border border-white/10"
             emojiClassName="text-8xl"
+            imgClassName="p-6"
           >
             {discount > 0 && (
               <span className="absolute left-4 top-4 z-10 rounded-full bg-black/60 px-3 py-1 text-sm font-bold text-white shadow-lg ring-1 ring-white/10 backdrop-blur">

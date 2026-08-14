@@ -3,9 +3,10 @@
 @theme {
   --color-brand: #aa3bff;
   --color-brand-soft: #c07bff;
-  --color-ink: #0b0710;
-  --color-panel: #150e1f;
-  --color-panel-2: #1d1430;
+  /* Deep navy base — page, cards, and raised surfaces. */
+  --color-ink: #0a1024;
+  --color-panel: #141c33;
+  --color-panel-2: #1c2545;
 
   --color-mint: #34d399;
   --color-good: #60a5fa;
@@ -46,7 +47,7 @@ select {
   color-scheme: dark;
 }
 select option {
-  background-color: #1d1430; /* --color-panel-2 */
+  background-color: #1c2545; /* --color-panel-2 */
   color: #e9e4f0;
 }
 
