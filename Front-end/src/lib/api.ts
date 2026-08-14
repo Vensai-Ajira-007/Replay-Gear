@@ -320,6 +320,8 @@ export interface NewProductInput {
   emoji?: string
   accent?: string
   imageUrl?: string
+  description?: string
+  wikipediaUrl?: string
 }
 
 export async function createProduct(input: NewProductInput): Promise<Product> {

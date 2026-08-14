@@ -19,6 +19,10 @@ export interface Product {
   accent: string
   /** Real cover art / console photo. Falls back to emoji+accent if missing. */
   imageUrl?: string | null
+  /** Short blurb on the product page. Seeded ones quote the Wikipedia article. */
+  description?: string | null
+  /** Source article for the description; also the "read more" link. */
+  wikipediaUrl?: string | null
 }
 
 export const types: { key: 'all' | ProductType; label: string }[] = [

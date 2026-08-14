@@ -18,6 +18,8 @@ const emptyForm: NewProductInput = {
   originalPrice: 0,
   emoji: '🎮',
   imageUrl: '',
+  description: '',
+  wikipediaUrl: '',
 }
 
 const conditions: Condition[] = ['Mint', 'Good', 'Fair']
@@ -187,6 +189,32 @@ export default function AdminScreen() {
                 onChange={(e) => set('imageUrl', e.target.value)}
               />
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm text-white/70">
+              Description <span className="text-white/40">(optional)</span>
+            </label>
+            <textarea
+              className={`${input} min-h-20 resize-y`}
+              rows={3}
+              placeholder="Short blurb shown on the product page"
+              value={form.description ?? ''}
+              onChange={(e) => set('description', e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm text-white/70">
+              Wikipedia URL <span className="text-white/40">(optional)</span>
+            </label>
+            <input
+              className={input}
+              type="url"
+              placeholder="https://en.wikipedia.org/wiki/…"
+              value={form.wikipediaUrl ?? ''}
+              onChange={(e) => set('wikipediaUrl', e.target.value)}
+            />
           </div>
 
           {error && <p className="text-sm text-red-400">{error}</p>}

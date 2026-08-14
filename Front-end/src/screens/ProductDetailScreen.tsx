@@ -24,6 +24,8 @@ interface EditForm {
   rating: number
   emoji: string
   imageUrl: string
+  description: string
+  wikipediaUrl: string
 }
 
 const conditions: Condition[] = ['Mint', 'Good', 'Fair']
@@ -40,6 +42,8 @@ function toForm(p: Product): EditForm {
     rating: p.rating,
     emoji: p.emoji,
     imageUrl: p.imageUrl ?? '',
+    description: p.description ?? '',
+    wikipediaUrl: p.wikipediaUrl ?? '',
   }
 }
 
@@ -229,6 +233,27 @@ export default function ProductDetailScreen() {
                   </span>
                 )}
               </div>
+
+              {/* Blurb + source link. Absent on admin-added products, so both
+                  the text and the link are rendered only when present. */}
+              {product.description && (
+                <p className="mt-5 text-sm leading-relaxed text-white/75">
+                  {product.description}
+                </p>
+              )}
+              {product.wikipediaUrl && (
+                <p className="mt-2 text-xs text-white/40">
+                  <a
+                    href={product.wikipediaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-soft transition hover:text-white"
+                  >
+                    Read more on Wikipedia ↗
+                  </a>
+                  {product.description && ' — text from Wikipedia, CC BY-SA'}
+                </p>
+              )}
 
               <p className="mt-4 text-sm leading-relaxed text-white/60">
                 A pre-owned {product.type === 'game' ? 'game' : 'console'} in{' '}
@@ -420,6 +445,31 @@ export default function ProductDetailScreen() {
                     onChange={(e) => set('imageUrl', e.target.value)}
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm text-white/70">
+                  Description <span className="text-white/40">(optional)</span>
+                </label>
+                <textarea
+                  className={`${input} min-h-20 resize-y`}
+                  rows={3}
+                  value={form?.description ?? ''}
+                  onChange={(e) => set('description', e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm text-white/70">
+                  Wikipedia URL <span className="text-white/40">(optional)</span>
+                </label>
+                <input
+                  className={input}
+                  type="url"
+                  placeholder="https://en.wikipedia.org/wiki/…"
+                  value={form?.wikipediaUrl ?? ''}
+                  onChange={(e) => set('wikipediaUrl', e.target.value)}
+                />
               </div>
 
               {saveError && <p className="text-sm text-red-400">{saveError}</p>}

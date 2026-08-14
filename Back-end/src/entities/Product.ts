@@ -47,4 +47,14 @@ export class Product {
   // emoji + accent gradient on the frontend when absent or the image fails.
   @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl!: string | null
+
+  // Short blurb shown on the product page. For seeded products this is a brief
+  // quote from the linked Wikipedia article (see scripts/fetch-wikipedia.mjs);
+  // admin-added products may leave it empty.
+  @Column({ type: 'text', nullable: true })
+  description!: string | null
+
+  // Source article for the description, and a "read more" link on the product page.
+  @Column({ name: 'wikipedia_url', type: 'text', nullable: true })
+  wikipediaUrl!: string | null
 }

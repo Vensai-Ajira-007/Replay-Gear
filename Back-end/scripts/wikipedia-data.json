@@ -1,0 +1,398 @@
+{
+  "1": {
+    "requested": "Elden Ring",
+    "overridden": false,
+    "article": "Elden Ring",
+    "url": "https://en.wikipedia.org/wiki/Elden_Ring",
+    "extract": "Elden Ring is a 2022 action role-playing game directed by Hidetaka Miyazaki with worldbuilding provided by the American fantasy writer George R. R. Martin. Developed by FromSoftware and published by Bandai Namco Entertainment, it was first released on February 25, 2022 for PlayStation 4, PlayStation 5, Windows, Xbox One and Xbox Series X/S. Set in the Lands Between, players control a customizable player character on a quest to repair the Elden Ring and become the new Elden Lord.",
+    "type": "standard",
+    "error": null
+  },
+  "2": {
+    "requested": "God of War Ragnarök",
+    "overridden": false,
+    "article": "God of War Ragnarök",
+    "url": "https://en.wikipedia.org/wiki/God_of_War_Ragnar%C3%B6k",
+    "extract": "God of War Ragnarök is a 2022 action-adventure game developed by Santa Monica Studio and published by Sony Interactive Entertainment. It was released worldwide on November 9, 2022, for both the PlayStation 4 and PlayStation 5, marking the first cross-generation release in the God of War series, and was released for Windows on September 19, 2024. It is the ninth installment in the series, the tenth chronologically, and the sequel to 2018's God of War. Loosely based on Norse mythology, the game is set in mythical ancient Scandinavia and features series protagonist, Kratos, and his now teenage son, Atreus. Concluding the Norse era of the series, the story follows Kratos and Atreus' efforts to prevent the nine realms from being destroyed by Ragnarök, the eschatological event which is central to Norse mythology and was foretold to happen in the previous game after Kratos killed the Aesir god Baldur.",
+    "type": "standard",
+    "error": null
+  },
+  "3": {
+    "requested": "The Legend of Zelda: Tears of the Kingdom",
+    "overridden": false,
+    "article": "The Legend of Zelda: Tears of the Kingdom",
+    "url": "https://en.wikipedia.org/wiki/The_Legend_of_Zelda%3A_Tears_of_the_Kingdom",
+    "extract": "The Legend of Zelda: Tears of the Kingdom is a 2023 action-adventure game developed by Nintendo EPD for the Nintendo Switch. The player controls Link as he searches for Princess Zelda and fights to prevent Ganondorf from destroying Hyrule. Tears of the Kingdom retains the open-world gameplay and setting of its predecessor, Breath of the Wild (2017), but features new environments, including islands floating in the sky and a vast underground area called the Depths. It introduces construction elements, allowing the player to create devices that aid in combat or exploration.",
+    "type": "standard",
+    "error": null
+  },
+  "4": {
+    "requested": "Mario Kart 8 Deluxe",
+    "overridden": false,
+    "article": "Mario Kart 8",
+    "url": "https://en.wikipedia.org/wiki/Mario_Kart_8",
+    "extract": "Mario Kart 8 is a 2014 kart racing game developed and published by Nintendo for the Wii U. It retains the gameplay of previous Mario Kart games, with players controlling characters from the Mario series and other Nintendo characters in races around tracks. Tracks are themed around locales from the Super Mario series populated with power-ups that help players gain advantages in races. Different difficulties are selectable prior to a race; harder difficulties make gameplay faster. In the new anti-gravity sequences, players drive on walls and ceilings. Mario Kart 8 contains a variety of single-player and local and online multiplayer game modes, including Grand Prix racing and arena-based battle modes.",
+    "type": "standard",
+    "error": null
+  },
+  "5": {
+    "requested": "Halo Infinite",
+    "overridden": false,
+    "article": "Halo Infinite",
+    "url": "https://en.wikipedia.org/wiki/Halo_Infinite",
+    "extract": "Halo Infinite is a 2021 first-person shooter game developed by 343 Industries and published by Xbox Game Studios. It is the sixth mainline installment in the Halo series, following Halo 5: Guardians (2015). The game's campaign follows the human supersoldier Master Chief and his fight against a mercenary organization, known as the Banished, on the Forerunner ringworld Zeta Halo. Unlike previous mainline entries in the series, the multiplayer portion of the game is free-to-play.",
+    "type": "standard",
+    "error": null
+  },
+  "6": {
+    "requested": "Cyberpunk 2077",
+    "overridden": false,
+    "article": "Cyberpunk 2077",
+    "url": "https://en.wikipedia.org/wiki/Cyberpunk_2077",
+    "extract": "Cyberpunk 2077 is a 2020 action role-playing game developed by CD Projekt Red and published by CD Projekt. Based on Mike Pondsmith's Cyberpunk tabletop game series, the plot is set in the fictional metropolis of Night City in California, within the dystopian Cyberpunk universe. The player assumes the role of V, a mercenary who gets reluctantly imbued with a cybernetic \"biochip\" containing an engram of legendary rockstar and terrorist Johnny Silverhand. As Johnny's consciousness begins overwriting V's own, the two must work together to separate from each other and save V's life by confronting the Arasaka Corporation, a powerful megacorporation acting as the de facto ruler of the city.",
+    "type": "standard",
+    "error": null
+  },
+  "7": {
+    "requested": "Forza Horizon 5",
+    "overridden": false,
+    "article": "Forza Horizon 5",
+    "url": "https://en.wikipedia.org/wiki/Forza_Horizon_5",
+    "extract": "Forza Horizon 5 is a 2021 racing game developed by Playground Games and published by Xbox Game Studios. It is the fifth Forza Horizon title, following Forza Horizon 4, and the twelfth main instalment in the Forza series. The game is set in a fictionalised representation of Mexico. It was released on 9 November 2021 for Windows, Xbox One, and Xbox Series X/S. It marks the final mainline Forza instalment released on Xbox One. The game was also released for PlayStation 5 on 29 April 2025, the first instance of a mainline Forza game being released on a non-Microsoft platform.",
+    "type": "standard",
+    "error": null
+  },
+  "8": {
+    "requested": "Baldur’s Gate 3",
+    "overridden": false,
+    "article": "Baldur's Gate 3",
+    "url": "https://en.wikipedia.org/wiki/Baldur's_Gate_3",
+    "extract": "Baldur's Gate 3 is a role-playing video game by Larian Studios. It is the third installment in the Baldur's Gate series. The game's full release for Windows happened on August 3, 2023, with PlayStation 5, macOS, and Xbox Series X/S later in the same year. In the game's narrative, the party seeks to cure themselves of the Illithid parasites infecting their brains. It can be played alone or in a group.",
+    "type": "standard",
+    "error": null
+  },
+  "9": {
+    "requested": "PlayStation 5",
+    "overridden": true,
+    "article": "PlayStation 5",
+    "url": "https://en.wikipedia.org/wiki/PlayStation_5",
+    "extract": "The PlayStation 5 (PS5) is a home video game console developed by Sony Interactive Entertainment as the fifth iteration of their PlayStation brand. It was announced as the successor to the PlayStation 4 in April 2019, and was launched in Australia, Japan, New Zealand, North America, and South Korea on November 12, 2020, and worldwide a week later. The PS5 is part of the ninth generation of video game consoles, along with Microsoft's Xbox Series X/S consoles, which were released the same month.",
+    "type": "standard",
+    "error": null
+  },
+  "10": {
+    "requested": "Xbox Series X",
+    "overridden": false,
+    "article": "Xbox Series X and Series S",
+    "url": "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S",
+    "extract": "The Xbox Series X and Xbox Series S are the fourth generation of consoles in Microsoft's Xbox series, succeeding the previous generation's Xbox One. Released on November 10, 2020, the higher-end Series X and lower-end Series S are part of the ninth generation of video game consoles, which also includes Sony's PlayStation 5, released the same month.",
+    "type": "standard",
+    "error": null
+  },
+  "11": {
+    "requested": "Nintendo Switch OLED Model",
+    "overridden": true,
+    "article": "Nintendo Switch",
+    "url": "https://en.wikipedia.org/wiki/Nintendo_Switch",
+    "extract": "The Nintendo Switch is a video game console developed by Nintendo and released worldwide in most regions on March 3, 2017. Released in the middle of the eighth generation of home consoles, the Switch succeeded the Wii U and competed with Sony's PlayStation 4 and Microsoft's Xbox One; it also competes with the ninth-generation consoles, the PlayStation 5 and Xbox Series X/S.",
+    "type": "standard",
+    "error": null
+  },
+  "12": {
+    "requested": "PlayStation 4",
+    "overridden": true,
+    "article": "PlayStation 4",
+    "url": "https://en.wikipedia.org/wiki/PlayStation_4",
+    "extract": "The PlayStation 4 (PS4) is a home video game console developed by Sony Interactive Entertainment. Announced as the successor to the PlayStation 3 in February 2013, it was launched on November 15, 2013, in North America, November 29, 2013, in Europe, South America, and Australia, and on February 22, 2014, in Japan. A console of the eighth generation, it competed with Microsoft's Xbox One and Nintendo's Wii U and Switch.",
+    "type": "standard",
+    "error": null
+  },
+  "13": {
+    "requested": "Xbox Series S",
+    "overridden": false,
+    "article": "Xbox Series X and Series S",
+    "url": "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S",
+    "extract": "The Xbox Series X and Xbox Series S are the fourth generation of consoles in Microsoft's Xbox series, succeeding the previous generation's Xbox One. Released on November 10, 2020, the higher-end Series X and lower-end Series S are part of the ninth generation of video game consoles, which also includes Sony's PlayStation 5, released the same month.",
+    "type": "standard",
+    "error": null
+  },
+  "14": {
+    "requested": "Red Dead Redemption 2",
+    "overridden": false,
+    "article": "Red Dead Redemption 2",
+    "url": "https://en.wikipedia.org/wiki/Red_Dead_Redemption_2",
+    "extract": "Red Dead Redemption 2 is a 2018 action-adventure game developed and published by Rockstar Games. The game is the third entry in the Red Dead series and a prequel to the 2010 game Red Dead Redemption. The story is set in a fictionalized representation of the United States in 1899 and follows the exploits of Arthur Morgan, an outlaw and member of the Van der Linde gang, who must face the challenges of a declining Wild West, while attempting to survive against government forces, rival gangs, and other adversaries. The game is presented through first- and third-person perspectives, and the player may freely roam its interactive open world. Gameplay elements include shootouts, robberies, hunting, horseback riding, interacting with non-player characters, and maintaining the character's honor rating through moral choices and deeds. A bounty system governs the response of law enforcement and bounty hunters to crimes committed by the player.",
+    "type": "standard",
+    "error": null
+  },
+  "15": {
+    "requested": "The Witcher 3: Wild Hunt",
+    "overridden": false,
+    "article": "The Witcher 3: Wild Hunt",
+    "url": "https://en.wikipedia.org/wiki/The_Witcher_3%3A_Wild_Hunt",
+    "extract": "The Witcher 3: Wild Hunt‍ is a 2015 action role-playing game developed and published by CD Projekt. It is the sequel to the 2011 game The Witcher 2: Assassins of Kings and the third game in The Witcher video game series, played in an open world with a third-person perspective. The games follow the Witcher series of fantasy novels by Polish author Andrzej Sapkowski.",
+    "type": "standard",
+    "error": null
+  },
+  "16": {
+    "requested": "Grand Theft Auto V",
+    "overridden": false,
+    "article": "Grand Theft Auto V",
+    "url": "https://en.wikipedia.org/wiki/Grand_Theft_Auto_V",
+    "extract": "Grand Theft Auto V is a 2013 action-adventure game developed by Rockstar North and published by Rockstar Games. It is the seventh main entry in the Grand Theft Auto series, following 2008's Grand Theft Auto IV, and the fifteenth instalment overall. Set within the fictional state of San Andreas, based on Southern California, the single-player story follows three protagonists—retired bank robber Michael De Santa, street gangster Franklin Clinton, and drug dealer and gunrunner Trevor Philips —and their attempts to commit heists while under pressure from a corrupt government agency and powerful criminals. Players freely roam San Andreas's open-world countryside and fictional city of Los Santos, based on Los Angeles.",
+    "type": "standard",
+    "error": null
+  },
+  "17": {
+    "requested": "Hogwarts Legacy",
+    "overridden": false,
+    "article": "Hogwarts Legacy",
+    "url": "https://en.wikipedia.org/wiki/Hogwarts_Legacy",
+    "extract": "Hogwarts Legacy is a 2023 action role-playing video game developed by Avalanche Software and published by Warner Bros. Games under its Portkey Games label. It is part of the Wizarding World franchise, taking place a century before the Harry Potter novels. Players control a student enrolled at the magical Hogwarts School of Witchcraft and Wizardry who attends classes, learns spells, and explores Hogwarts Castle and its surroundings. With the assistance of fellow students and professors, the protagonist embarks on a journey to uncover an ancient secret hidden within the wizarding world.",
+    "type": "standard",
+    "error": null
+  },
+  "18": {
+    "requested": "Sekiro: Shadows Die Twice",
+    "overridden": false,
+    "article": "Sekiro: Shadows Die Twice",
+    "url": "https://en.wikipedia.org/wiki/Sekiro%3A_Shadows_Die_Twice",
+    "extract": "Sekiro: Shadows Die Twice is a 2019 action-adventure game developed by FromSoftware. It was released in Japan by FromSoftware and internationally by Activision for the PlayStation 4, Windows and Xbox One in March 2019 and for Stadia in October 2020.",
+    "type": "standard",
+    "error": null
+  },
+  "19": {
+    "requested": "Hades (video game)",
+    "overridden": true,
+    "article": "Hades (video game)",
+    "url": "https://en.wikipedia.org/wiki/Hades_(video_game)",
+    "extract": "Hades is a 2020 roguelike action role-playing game developed and published by Supergiant Games. It was released for macOS, Nintendo Switch, and Windows on September 17, 2020, following an early access release in December 2018. It was later released for PlayStation 4, PlayStation 5, Xbox One, and Xbox Series X/S in August 2021, and was released for iOS in March 2024 through Netflix Games.",
+    "type": "standard",
+    "error": null
+  },
+  "20": {
+    "requested": "Doom Eternal",
+    "overridden": false,
+    "article": "Doom Eternal",
+    "url": "https://en.wikipedia.org/wiki/Doom_Eternal",
+    "extract": "Doom Eternal is a 2020 first-person shooter game developed by id Software and published by Bethesda Softworks. It is the sequel to Doom (2016), and the seventh game in the Doom series. The story follows the Doom Slayer once again, on a mission to end Hell's consumption of Earth and foil the alien Maykrs' plans to exterminate humanity. Doom Eternal introduces several new weapons and enemy types, and has a large focus on resource management in which players can gain the Slayer's ammo, armor and health by executing enemies in close range. Along with the single-player campaign, a multiplayer mode, Battlemode, was introduced. In this mode, players can either play as the Doom Slayer or as a demon, and fight until either the Doom Slayer defeats the demons, or vice versa.",
+    "type": "standard",
+    "error": null
+  },
+  "21": {
+    "requested": "Resident Evil 4 (2023 video game)",
+    "overridden": true,
+    "article": "Resident Evil 4 (2023 video game)",
+    "url": "https://en.wikipedia.org/wiki/Resident_Evil_4_(2023_video_game)",
+    "extract": "Resident Evil 4 is a 2023 survival horror game developed and published by Capcom. A remake of the 2005 game Resident Evil 4, it was released for PlayStation 4, PlayStation 5, Windows, and Xbox Series X/S on March 24, 2023. Versions for iOS, iPadOS, and macOS were released on December 20, 2023.",
+    "type": "standard",
+    "error": null
+  },
+  "22": {
+    "requested": "Marvel's Spider-Man (video game)",
+    "overridden": true,
+    "article": "Marvel's Spider-Man (video game)",
+    "url": "https://en.wikipedia.org/wiki/Marvel's_Spider-Man_(video_game)",
+    "extract": "Marvel's Spider-Man is a 2018 action-adventure game developed by Insomniac Games and published by Sony Interactive Entertainment. The first installment in the Marvel's Spider-Man game series, it is based on the Marvel Comics character Spider-Man and tells an original narrative that is inspired by the long-running comic book mythology, while also drawing from various adaptations in other media. In the main story, the superhuman crime lord Mister Negative orchestrates a plot to seize control of New York City's criminal underworld. When Mister Negative threatens to release a deadly virus, Spider-Man must confront him and protect the city while dealing with the personal problems of his civilian persona, Peter Parker.",
+    "type": "standard",
+    "error": null
+  },
+  "23": {
+    "requested": "Horizon Zero Dawn",
+    "overridden": false,
+    "article": "Horizon Zero Dawn",
+    "url": "https://en.wikipedia.org/wiki/Horizon_Zero_Dawn",
+    "extract": "Horizon Zero Dawn is a 2017 action role-playing game developed by Guerrilla Games and published by Sony Interactive Entertainment. The first instalment in the Horizon video game series, it is set in a post-apocalyptic United States where large robotic machines dominate the Earth while humans live in primitive tribes with varying levels of technological development. The game follows Aloy, a young huntress who sets out to uncover her past. The player uses ranged weapons, a spear, and stealth to combat mechanical creatures and other enemy forces. A skill tree provides the player with new abilities and bonuses. The player can explore the open world to discover locations and take on side quests.",
+    "type": "standard",
+    "error": null
+  },
+  "24": {
+    "requested": "Death Stranding",
+    "overridden": false,
+    "article": "Death Stranding",
+    "url": "https://en.wikipedia.org/wiki/Death_Stranding",
+    "extract": "Death Stranding is a 2019 action-adventure game developed by Kojima Productions and published by Sony Interactive Entertainment. It is the first game from director Hideo Kojima and Kojima Productions after their split from Konami in 2015. It was first released for PlayStation 4 in November 2019, followed by a Windows port in July 2020. A director's cut was released for PlayStation 5 in September 2021, followed by releases for Windows in March 2022, iOS, iPadOS and macOS in January 2024, and Amazon Luna and Xbox Series X/S in November 2024. Sony published the game on their consoles, while 505 Games published all other versions under license from Kojima Productions.",
+    "type": "standard",
+    "error": null
+  },
+  "25": {
+    "requested": "Monster Hunter: World",
+    "overridden": false,
+    "article": "Monster Hunter: World",
+    "url": "https://en.wikipedia.org/wiki/Monster_Hunter%3A_World",
+    "extract": "Monster Hunter: World is a 2018 action role-playing game developed and published by Capcom. The fifth mainline installment in the Monster Hunter series, it was released worldwide for PlayStation 4 and Xbox One in January 2018, with a Windows version following in August 2018. In the game, the player takes the role of a Hunter, tasked to hunt down and either kill or trap monsters that roam in one of several environmental spaces. If successful, the player is rewarded through loot consisting of parts from the monster and other elements that are used to craft weapons and armor, amongst other equipment. The game's core loop has the player crafting appropriate gear to be able to hunt down more difficult monsters, which in turn provide parts that lead to more powerful gear. Players may hunt alone or in a group of up to four players via the game's online multiplayer.",
+    "type": "standard",
+    "error": null
+  },
+  "26": {
+    "requested": "Control (video game)",
+    "overridden": true,
+    "article": "Control (video game)",
+    "url": "https://en.wikipedia.org/wiki/Control_(video_game)",
+    "extract": "Control is a 2019 action-adventure game developed by Remedy Entertainment. It follows Jesse Faden, the new Director of the Federal Bureau of Control (FBC), a secret U.S. government agency that investigates and contains phenomena that violate the normal laws of reality. As Jesse, the player explores the Oldest House–the FBC's headquarters–and uses paranormal abilities and a shapeshifting gun known as the \"Service Weapon\" to combat the Hiss, a hostile, otherworldly entity that has invaded and corrupted the FBC. Players unlock new powers by locating Objects of Power, mundane objects imbued with energies from another dimension. The Oldest House has four sectors that can be explored at a nonlinear pace, and players are free to complete side quests and explore hidden areas.",
+    "type": "standard",
+    "error": null
+  },
+  "27": {
+    "requested": "Hollow Knight",
+    "overridden": false,
+    "article": "Hollow Knight",
+    "url": "https://en.wikipedia.org/wiki/Hollow_Knight",
+    "extract": "Hollow Knight is a 2017 Metroidvania video game developed and published by Australian independent development studio Team Cherry. The player controls a nameless insectoid warrior in exploring Hallownest, a fallen kingdom plagued by a supernatural disease. The game is set in diverse subterranean locations, featuring friendly and hostile insectoid characters and numerous bosses. Players have the opportunity to unlock abilities as they explore, along with pieces of lore and flavour text that are spread throughout the kingdom.",
+    "type": "standard",
+    "error": null
+  },
+  "28": {
+    "requested": "Celeste (video game)",
+    "overridden": true,
+    "article": "Celeste (video game)",
+    "url": "https://en.wikipedia.org/wiki/Celeste_(video_game)",
+    "extract": "Celeste is a 2018 platform video game developed and published by indie studio Maddy Makes Games. The player controls the player character Madeline, a young woman with anxiety and depression, who endeavors to climb Celeste Mountain, a fictional version of Mount Celeste. During her climb, she encounters several characters, including a personification of her self-doubt nicknamed \"Badeline\", who attempts to stop her from reaching the mountain's summit.",
+    "type": "standard",
+    "error": null
+  },
+  "29": {
+    "requested": "Cuphead",
+    "overridden": false,
+    "article": "Cuphead",
+    "url": "https://en.wikipedia.org/wiki/Cuphead",
+    "extract": "Cuphead is a 2017 run and gun game developed and published independently by Studio MDHR. The game follows its titular cup-head character and his brother Mugman, as they make a deal with the Devil to pay casino losses by repossessing the souls of runaway debtors. In the game, up to two players control Cuphead or Mugman to fight through several levels and boss fights; the game does not have a rigid narrative structure. As the game progresses, the protagonist acquires more power and abilities, eventually facing the Devil. Players, however, can only equip a limited number of these abilities at a given time.",
+    "type": "standard",
+    "error": null
+  },
+  "30": {
+    "requested": "The Last of Us Part I",
+    "overridden": false,
+    "article": "The Last of Us Part I",
+    "url": "https://en.wikipedia.org/wiki/The_Last_of_Us_Part_I",
+    "extract": "The Last of Us Part I is a 2022 action-adventure game developed by Naughty Dog and published by Sony Interactive Entertainment. A remake of the 2013 game The Last of Us, it features revised gameplay, including enhanced combat and exploration, and expanded accessibility options. Players control Joel, who is tasked with escorting the young Ellie across a post-apocalyptic United States and defend her against cannibalistic creatures infected by a mutated strain of the Cordyceps fungus. The game includes a remake of the 2014 expansion pack, The Last of Us: Left Behind, which follows Ellie and her best friend Riley.",
+    "type": "standard",
+    "error": null
+  },
+  "31": {
+    "requested": "Starfield (video game)",
+    "overridden": true,
+    "article": "Starfield (video game)",
+    "url": "https://en.wikipedia.org/wiki/Starfield_(video_game)",
+    "extract": "Starfield is a 2023 action role-playing game developed by Bethesda Game Studios and published by Bethesda Softworks. In the game, the player character joins a group of space explorers who must venture 50 light-years around the Sol System to acquire mysterious artifacts. The game features an open world in the form of a volume within the Milky Way galaxy, containing both fictional and non-fictional planetary systems.",
+    "type": "standard",
+    "error": null
+  },
+  "32": {
+    "requested": "Lies of P",
+    "overridden": false,
+    "article": "Lies of P",
+    "url": "https://en.wikipedia.org/wiki/Lies_of_P",
+    "extract": "Lies of P is a 2023 action role-playing game developed by Neowiz and Nough and published by Neowiz. The story is loosely based on the 1883 Italian novel The Adventures of Pinocchio by Carlo Collodi, to whom it is dedicated. The game is a Soulslike set in the fictional city of Krat, inspired by the Belle Époque. The titular \"P\" refers to protagonist Pinocchio, whom the player controls from a third-person perspective, and is one of the automaton-like \"Puppets\" central to the life and industry of Krat.",
+    "type": "standard",
+    "error": null
+  },
+  "33": {
+    "requested": "Street Fighter 6",
+    "overridden": false,
+    "article": "Street Fighter 6",
+    "url": "https://en.wikipedia.org/wiki/Street_Fighter_6",
+    "extract": "Street Fighter 6 is a 2023 fighting game developed and published by Capcom. It is the seventh main entry in the Street Fighter franchise, following Street Fighter V (2016), and was released worldwide on June 2, 2023, for PlayStation 4, PlayStation 5, Windows and Xbox Series X/S, while an arcade version, named Street Fighter 6 Type Arcade, was published by Taito for Japanese arcade cabinets in December. An updated version with post-launch content, Street Fighter 6 Years 1-2 Fighters Edition, was released on June 5, 2025, alongside a Nintendo Switch 2 version as a launch title and corresponding Amiibo for the game.",
+    "type": "standard",
+    "error": null
+  },
+  "34": {
+    "requested": "Devil May Cry 5",
+    "overridden": false,
+    "article": "Devil May Cry 5",
+    "url": "https://en.wikipedia.org/wiki/Devil_May_Cry_5",
+    "extract": "Devil May Cry 5 is a 2019 action-adventure game developed and published by Capcom. The game is the sixth installment overall and the fifth mainline installment in the Devil May Cry series. The plot follows returning protagonists Nero and Dante as they are hired by a mysterious stranger named V to stop the Demon King Urizen. Players control Nero, Dante and V, who each feature a different playstyle.",
+    "type": "standard",
+    "error": null
+  },
+  "35": {
+    "requested": "Stardew Valley",
+    "overridden": false,
+    "article": "Stardew Valley",
+    "url": "https://en.wikipedia.org/wiki/Stardew_Valley",
+    "extract": "Stardew Valley is a 2016 farm life simulation video game developed by Eric \"ConcernedApe\" Barone. Players take the role of a character who inherits their deceased grandfather's dilapidated farm. The game is open-ended, with players managing the farm by clearing land, growing seasonal crops, and raising animals. Players can acquire skills in farming, foraging, fishing, mining, and combat. Social features include building relationships with townspeople, with the option to marry and have a child. A later update added multiplayer, allowing online play with others.",
+    "type": "standard",
+    "error": null
+  },
+  "36": {
+    "requested": "Super Mario Odyssey",
+    "overridden": false,
+    "article": "Super Mario Odyssey",
+    "url": "https://en.wikipedia.org/wiki/Super_Mario_Odyssey",
+    "extract": "Super Mario Odyssey is a 2017 platform game developed and published by Nintendo for the Nintendo Switch. An installment in the Super Mario series, it follows Mario and his new ally Cappy—a sentient hat—as they journey across various kingdoms to save Princess Peach from Mario's nemesis Bowser's plans of forced marriage. In contrast to the linear gameplay of prior entries, the game returns to the primarily open-ended, 3D platform gameplay featured in Super Mario 64 and Super Mario Sunshine.",
+    "type": "standard",
+    "error": null
+  },
+  "37": {
+    "requested": "Animal Crossing: New Horizons",
+    "overridden": false,
+    "article": "Animal Crossing: New Horizons",
+    "url": "https://en.wikipedia.org/wiki/Animal_Crossing%3A_New_Horizons",
+    "extract": "Animal Crossing: New Horizons is a 2020 social simulation game developed and published by Nintendo for the Nintendo Switch. It is the fifth main installment in the Animal Crossing series, following Animal Crossing: New Leaf. In New Horizons, the player controls a character who moves to a deserted island after purchasing a getaway package from Tom Nook, accomplishes assigned tasks, and develops the island as they choose. They can gather and craft items, customize the island, and develop it into a community of anthropomorphic animals.",
+    "type": "standard",
+    "error": null
+  },
+  "38": {
+    "requested": "Super Smash Bros. Ultimate",
+    "overridden": false,
+    "article": "Super Smash Bros. Ultimate",
+    "url": "https://en.wikipedia.org/wiki/Super_Smash_Bros._Ultimate",
+    "extract": "Super Smash Bros. Ultimate is a 2018 crossover fighting game developed by Bandai Namco Studios and Sora Ltd. and published by Nintendo for the Nintendo Switch. It is the fifth installment in the Super Smash Bros. series, succeeding Super Smash Bros. for Nintendo 3DS and Wii U (2014). The game follows the series' traditional style of gameplay, in which players control one of the various characters and use attacks to weaken their opponents and knock them out of an arena. It features a wide variety of game modes, including a single-player campaign and multiplayer versus modes. Ultimate features 74 playable fighters, including all characters from previous Super Smash Bros. games as well as newcomers. The roster ranges from Nintendo characters to those from third-party franchises.",
+    "type": "standard",
+    "error": null
+  },
+  "39": {
+    "requested": "Splatoon 3",
+    "overridden": false,
+    "article": "Splatoon 3",
+    "url": "https://en.wikipedia.org/wiki/Splatoon_3",
+    "extract": "Splatoon 3 is a 2022 third-person shooter game developed and published by Nintendo for the Nintendo Switch. It is the third game in the Splatoon series and the sequel to Splatoon 2. Like its predecessors in the Splatoon series, the game consists of online multiplayer alongside a single-player story campaign, both featuring combat based around ink-firing weapons. A single-player downloadable content (DLC) expansion titled Side Order was released on 22 February 2024 as the second half of the paid Splatoon 3 Expansion Pass.",
+    "type": "standard",
+    "error": null
+  },
+  "40": {
+    "requested": "Nintendo Switch",
+    "overridden": false,
+    "article": "Nintendo Switch",
+    "url": "https://en.wikipedia.org/wiki/Nintendo_Switch",
+    "extract": "The Nintendo Switch is a video game console developed by Nintendo and released worldwide in most regions on March 3, 2017. Released in the middle of the eighth generation of home consoles, the Switch succeeded the Wii U and competed with Sony's PlayStation 4 and Microsoft's Xbox One; it also competes with the ninth-generation consoles, the PlayStation 5 and Xbox Series X/S.",
+    "type": "standard",
+    "error": null
+  },
+  "41": {
+    "requested": "Nintendo Switch Lite",
+    "overridden": false,
+    "article": "Nintendo Switch",
+    "url": "https://en.wikipedia.org/wiki/Nintendo_Switch",
+    "extract": "The Nintendo Switch is a video game console developed by Nintendo and released worldwide in most regions on March 3, 2017. Released in the middle of the eighth generation of home consoles, the Switch succeeded the Wii U and competed with Sony's PlayStation 4 and Microsoft's Xbox One; it also competes with the ninth-generation consoles, the PlayStation 5 and Xbox Series X/S.",
+    "type": "standard",
+    "error": null
+  },
+  "42": {
+    "requested": "Xbox One",
+    "overridden": true,
+    "article": "Xbox One",
+    "url": "https://en.wikipedia.org/wiki/Xbox_One",
+    "extract": "The Xbox One is a home video game console developed by Microsoft. Announced in May 2013, it is the successor to Xbox 360 and the third console in the Xbox series. It was first released in North America, parts of Europe, Australia, and South America in November 2013 and in Japan, China, and other European countries in September 2014. It is the first Xbox game console to be released in China, specifically in the Shanghai Free-Trade Zone. Microsoft marketed the device as an \"all-in-one entertainment system\", hence the name \"Xbox One\". An eighth-generation console, it mainly competed against Sony's PlayStation 4 and Nintendo's Wii U and later the Nintendo Switch.",
+    "type": "standard",
+    "error": null
+  },
+  "43": {
+    "requested": "PlayStation 3",
+    "overridden": true,
+    "article": "PlayStation 3",
+    "url": "https://en.wikipedia.org/wiki/PlayStation_3",
+    "extract": "The PlayStation 3 (PS3) is a home video game console developed and marketed by Sony Computer Entertainment (SCE). It is the successor to the PlayStation 2, and both are part of the PlayStation brand of consoles. The PS3 was first released on November 11, 2006, in Japan, followed by November 17 in North America and March 23, 2007, in Europe and Australasia. It competed primarily with Microsoft's Xbox 360 and Nintendo's Wii as part of the seventh generation of video game consoles.",
+    "type": "standard",
+    "error": null
+  },
+  "44": {
+    "requested": "Steam Deck",
+    "overridden": false,
+    "article": "Steam Deck",
+    "url": "https://en.wikipedia.org/wiki/Steam_Deck",
+    "extract": "The Steam Deck is a handheld gaming computer produced by Valve Corporation, designed to run games available on its Steam storefront. Built upon the experiences gained from Valve's earlier ventures with the original 2015 Steam Machine and the Steam Controller, the Steam Deck integrates a custom AMD APU and SteamOS, a Linux-based operating system. The Steam Deck represents Valve's pivot towards a fully in-house hardware development approach, following the challenges faced with Steam Machines' reliance on OEMs and the requirement for native Linux game support.",
+    "type": "standard",
+    "error": null
+  }
+}
