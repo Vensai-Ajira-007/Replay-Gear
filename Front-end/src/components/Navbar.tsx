@@ -30,7 +30,7 @@ export default function Navbar() {
   return (
     <>
     <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/70 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-3 px-4 py-3 sm:gap-x-4 sm:px-6">
         {/* Brand */}
         <Link to={ROUTES.home} className="group flex shrink-0 items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand to-brand-soft text-lg shadow-lg shadow-brand/30 transition duration-300 group-hover:scale-105 group-hover:shadow-brand/60">
@@ -65,7 +65,18 @@ export default function Navbar() {
         </nav>
 
         {/* Search (catalog only) */}
-        <div className={`relative ml-auto w-full max-w-xs ${showSearch ? '' : 'invisible'}`}>
+        {/* From sm up: fills the gap between the links and the cart (min-w-0 so
+            it can shrink past the placeholder's intrinsic width). Below sm there
+            isn't room for it beside the brand and auth buttons, so it wraps onto
+            its own full-width row instead of being crushed to a sliver.
+            When hidden it keeps its space on desktop (so the header doesn't
+            reflow between routes) but is removed on mobile, where it would
+            otherwise leave an empty second row. */}
+        <div
+          className={`relative order-last min-w-0 basis-full sm:order-none sm:basis-auto sm:flex-1 ${
+            showSearch ? '' : 'hidden sm:invisible sm:block'
+          }`}
+        >
           <svg
             className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40"
             viewBox="0 0 24 24"
@@ -85,10 +96,11 @@ export default function Navbar() {
           />
         </div>
 
-        {/* Cart */}
+        {/* Cart — ml-auto keeps this and the auth cluster right-aligned when the
+            search box isn't filling the row (mobile, or routes without search). */}
         <Link
           to={ROUTES.cart}
-          className="relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
+          className="relative ml-auto grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
           aria-label="Cart"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
