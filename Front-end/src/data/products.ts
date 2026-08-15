@@ -23,6 +23,10 @@ export interface Product {
   description?: string | null
   /** Source article for the description; also the "read more" link. */
   wikipediaUrl?: string | null
+  /** Steam app id, when the title is on Steam. Drives the live INR price. */
+  steamAppid?: number | null
+  /** Whether the price came from Steam or from the store's own database. */
+  priceSource?: 'steam' | 'store'
 }
 
 export const types: { key: 'all' | ProductType; label: string }[] = [

@@ -57,4 +57,13 @@ export class Product {
   // Source article for the description, and a "read more" link on the product page.
   @Column({ name: 'wikipedia_url', type: 'text', nullable: true })
   wikipediaUrl!: string | null
+
+  // Steam application id, used to look up a live INR price. Null for hardware and
+  // for titles that aren't on Steam (the Nintendo catalogue).
+  @Column({ name: 'steam_appid', type: 'int', nullable: true })
+  steamAppid!: number | null
+
+  // Set at read time by the catalog service, never persisted — tells the frontend
+  // whether the price it received came from Steam or from this table.
+  priceSource?: 'steam' | 'store'
 }

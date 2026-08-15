@@ -20,6 +20,7 @@ const emptyForm: NewProductInput = {
   imageUrl: '',
   description: '',
   wikipediaUrl: '',
+  steamAppid: null,
 }
 
 const conditions: Condition[] = ['Mint', 'Good', 'Fair']
@@ -204,17 +205,34 @@ export default function AdminScreen() {
             />
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm text-white/70">
-              Wikipedia URL <span className="text-white/40">(optional)</span>
-            </label>
-            <input
-              className={input}
-              type="url"
-              placeholder="https://en.wikipedia.org/wiki/…"
-              value={form.wikipediaUrl ?? ''}
-              onChange={(e) => set('wikipediaUrl', e.target.value)}
-            />
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-2">
+              <label className="mb-1 block text-sm text-white/70">
+                Wikipedia URL <span className="text-white/40">(optional)</span>
+              </label>
+              <input
+                className={input}
+                type="url"
+                placeholder="https://en.wikipedia.org/wiki/…"
+                value={form.wikipediaUrl ?? ''}
+                onChange={(e) => set('wikipediaUrl', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm text-white/70">
+                Steam appid <span className="text-white/40">(optional)</span>
+              </label>
+              <input
+                className={input}
+                type="number"
+                min="1"
+                placeholder="1091500"
+                value={form.steamAppid ?? ''}
+                onChange={(e) =>
+                  set('steamAppid', Number(e.target.value) > 0 ? Number(e.target.value) : null)
+                }
+              />
+            </div>
           </div>
 
           {error && <p className="text-sm text-red-400">{error}</p>}

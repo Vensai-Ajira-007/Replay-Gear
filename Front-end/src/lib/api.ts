@@ -322,6 +322,7 @@ export interface NewProductInput {
   imageUrl?: string
   description?: string
   wikipediaUrl?: string
+  steamAppid?: number | null
 }
 
 export async function createProduct(input: NewProductInput): Promise<Product> {

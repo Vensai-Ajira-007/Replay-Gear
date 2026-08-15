@@ -26,6 +26,7 @@ interface EditForm {
   imageUrl: string
   description: string
   wikipediaUrl: string
+  steamAppid: string
 }
 
 const conditions: Condition[] = ['Mint', 'Good', 'Fair']
@@ -44,6 +45,7 @@ function toForm(p: Product): EditForm {
     imageUrl: p.imageUrl ?? '',
     description: p.description ?? '',
     wikipediaUrl: p.wikipediaUrl ?? '',
+    steamAppid: p.steamAppid ? String(p.steamAppid) : '',
   }
 }
 
@@ -111,6 +113,8 @@ export default function ProductDetailScreen() {
         price: Number(form.price),
         originalPrice: Number(form.originalPrice) || Number(form.price),
         rating: Number(form.rating),
+        // Held as a string in the form; blank means "not on Steam".
+        steamAppid: Number(form.steamAppid) > 0 ? Number(form.steamAppid) : null,
       })
       setProduct(updated)
       setEditing(false)
@@ -233,6 +237,12 @@ export default function ProductDetailScreen() {
                   </span>
                 )}
               </div>
+
+              {product.priceSource === 'steam' && (
+                <p className="mt-1.5 text-xs text-white/40">
+                  Live Steam price (India)
+                </p>
+              )}
 
               {/* Blurb + source link. Absent on admin-added products, so both
                   the text and the link are rendered only when present. */}
@@ -459,17 +469,32 @@ export default function ProductDetailScreen() {
                 />
               </div>
 
-              <div>
-                <label className="mb-1 block text-sm text-white/70">
-                  Wikipedia URL <span className="text-white/40">(optional)</span>
-                </label>
-                <input
-                  className={input}
-                  type="url"
-                  placeholder="https://en.wikipedia.org/wiki/…"
-                  value={form?.wikipediaUrl ?? ''}
-                  onChange={(e) => set('wikipediaUrl', e.target.value)}
-                />
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-2">
+                  <label className="mb-1 block text-sm text-white/70">
+                    Wikipedia URL <span className="text-white/40">(optional)</span>
+                  </label>
+                  <input
+                    className={input}
+                    type="url"
+                    placeholder="https://en.wikipedia.org/wiki/…"
+                    value={form?.wikipediaUrl ?? ''}
+                    onChange={(e) => set('wikipediaUrl', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-white/70">
+                    Steam appid <span className="text-white/40">(optional)</span>
+                  </label>
+                  <input
+                    className={input}
+                    type="number"
+                    min="1"
+                    placeholder="1091500"
+                    value={form?.steamAppid ?? ''}
+                    onChange={(e) => set('steamAppid', e.target.value)}
+                  />
+                </div>
               </div>
 
               {saveError && <p className="text-sm text-red-400">{saveError}</p>}
