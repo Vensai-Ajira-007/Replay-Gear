@@ -32,6 +32,11 @@ services:
       PGUSER: postgres
       PGPASSWORD: postgres
       PGDATABASE: replaygear
+      # Mail settings come from Back-end/.env, which is gitignored and excluded
+      # from the image by .dockerignore — Compose reads it on the host and passes
+      # the values in. Unset means empty, which the app treats as "not configured".
+      MAILEROO_API_KEY: ${MAILEROO_API_KEY:-}
+      MAIL_FROM: ${MAIL_FROM:-}
     ports:
       - '4000:4000'
 

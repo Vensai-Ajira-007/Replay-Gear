@@ -1,11 +1,16 @@
 import nodemailer, { type Transporter } from 'nodemailer'
 
-// Two delivery paths, chosen by env:
-// 1. BREVO_API_KEY set  → send via Brevo's HTTPS API (port 443). Use this in
+// Three delivery paths, chosen by env:
+// 1. MAILEROO_API_KEY set → send via Maileroo's HTTPS API (port 443). Use this in
 //    production (Render/most PaaS block outbound SMTP ports).
-// 2. else SMTP_HOST set → send via SMTP (great for local Mailpit).
-// 3. else                → skip + log, so checkout still works anywhere.
-const brevoApiKey = process.env.BREVO_API_KEY
+// 2. else SMTP_HOST set   → send via SMTP (great for local Mailpit).
+// 3. else                 → skip + log, so checkout still works anywhere.
+const mailerooApiKey = process.env.MAILEROO_API_KEY
+
+const MAILEROO_ENDPOINT = 'https://smtp.maileroo.com/api/v2/emails'
+// The send is fire-and-forget at the call site, so a hung request would leak
+// silently — bound it.
+const MAILEROO_TIMEOUT_MS = Number(process.env.MAILEROO_TIMEOUT_MS) || 10000
 
 const host = process.env.SMTP_HOST
 const port = Number(process.env.SMTP_PORT) || 587
@@ -13,13 +18,15 @@ const secure = process.env.SMTP_SECURE === 'true'
 const user = process.env.SMTP_USER
 const pass = process.env.SMTP_PASS
 
+// `||` not `??`: Compose passes an empty string for unset vars, and an empty
+// sender would be sent verbatim rather than falling back.
 export const mailFrom =
-  process.env.MAIL_FROM ?? 'ReplayGear <no-reply@replaygear.com>'
+  process.env.MAIL_FROM || 'ReplayGear <no-reply@replaygear.com>'
 
 let transporter: Transporter | null = null
 
-if (brevoApiKey) {
-  console.log('✉️  Email via Brevo HTTP API')
+if (mailerooApiKey) {
+  console.log('✉️  Email via Maileroo HTTP API')
 } else if (host) {
   transporter = nodemailer.createTransport({
     host,
@@ -46,31 +53,55 @@ interface MailOptions {
   text: string
 }
 
-async function sendViaBrevo(opts: MailOptions): Promise<void> {
+/**
+ * POST /api/v2/emails — Maileroo's transactional endpoint.
+ *
+ * Note the field names differ from most providers: `plain` (not textContent),
+ * and addresses are objects with `address`/`display_name`. MAIL_FROM must sit on
+ * a domain verified in Maileroo or the send is rejected.
+ */
+async function sendViaMaileroo(opts: MailOptions): Promise<void> {
   const sender = parseFrom(mailFrom)
-  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: {
-      'api-key': brevoApiKey as string,
-      'content-type': 'application/json',
-      accept: 'application/json',
-    },
-    body: JSON.stringify({
-      sender,
-      to: [{ email: opts.to }],
-      subject: opts.subject,
-      htmlContent: opts.html,
-      textContent: opts.text,
-    }),
-  })
-  if (!res.ok) {
-    const body = await res.text().catch(() => '')
-    throw new Error(`Brevo API ${res.status}: ${body}`)
+
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), MAILEROO_TIMEOUT_MS)
+  let res: Response
+  try {
+    res = await fetch(MAILEROO_ENDPOINT, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'X-Api-Key': mailerooApiKey as string,
+        'content-type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify({
+        from: { address: sender.email, ...(sender.name ? { display_name: sender.name } : {}) },
+        to: [{ address: opts.to }],
+        subject: opts.subject,
+        html: opts.html,
+        plain: opts.text,
+      }),
+    })
+  } finally {
+    clearTimeout(timer)
+  }
+
+  const body = (await res.json().catch(() => null)) as
+    | { success?: boolean; message?: string }
+    | null
+
+  // Maileroo can answer 200 with success:false, so the status alone isn't enough.
+  // The body is already consumed above, hence no res.text() fallback here.
+  if (!res.ok || body?.success === false) {
+    throw new Error(
+      `Maileroo API ${res.status}: ${body?.message ?? res.statusText ?? 'unknown error'}`,
+    )
   }
 }
 
 export async function sendMail(opts: MailOptions): Promise<void> {
-  if (brevoApiKey) return sendViaBrevo(opts)
+  if (mailerooApiKey) return sendViaMaileroo(opts)
   if (transporter) {
     await transporter.sendMail({ from: mailFrom, ...opts })
     return

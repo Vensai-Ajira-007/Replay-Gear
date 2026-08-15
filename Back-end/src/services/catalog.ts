@@ -5,6 +5,7 @@ import {
   type Condition,
   type ProductType,
 } from '../entities/Product.js'
+import { getSteamPrices } from './steamPrices.js'
 
 export type SortKey = 'featured' | 'price-asc' | 'price-desc'
 export type TypeFilter = 'all' | ProductType
@@ -18,6 +19,38 @@ export interface CatalogQuery {
 
 function repo() {
   return AppDataSource.getRepository(Product)
+}
+
+/**
+ * Overlay live Steam prices onto products that have an appid, leaving the rest on
+ * their stored prices. Mutates and returns the same instances.
+ *
+ * Steam's `initial` maps onto originalPrice and `final` onto price, so the
+ * frontend's existing strikethrough and "Save X%" badge reflect Steam's real sale
+ * with no changes on that side.
+ *
+ * This lives in the catalog service rather than the controller on purpose: the
+ * cart and order services read through getProductById, so the price a customer is
+ * charged always matches the price they were shown.
+ */
+async function applySteamPrices(products: Product[]): Promise<Product[]> {
+  const appids = products
+    .map((p) => p.steamAppid)
+    .filter((id): id is number => typeof id === 'number' && id > 0)
+
+  const prices = appids.length ? await getSteamPrices(appids) : new Map()
+
+  for (const product of products) {
+    const live = product.steamAppid ? prices.get(product.steamAppid) : undefined
+    if (live) {
+      product.price = live.final
+      product.originalPrice = live.initial
+      product.priceSource = 'steam'
+    } else {
+      product.priceSource = 'store'
+    }
+  }
+  return products
 }
 
 /**
@@ -47,11 +80,21 @@ export async function queryProducts(query: CatalogQuery): Promise<Product[]> {
   else if (sort === 'price-desc') qb.orderBy('p.price', 'DESC')
   else qb.orderBy('p.id', 'ASC')
 
-  return qb.getMany()
+  const products = await applySteamPrices(await qb.getMany())
+
+  // The ORDER BY above ran against the stored prices, which the Steam overlay may
+  // have just changed — re-sort so the order matches the prices we're returning.
+  if (sort === 'price-asc') products.sort((a, b) => a.price - b.price)
+  else if (sort === 'price-desc') products.sort((a, b) => b.price - a.price)
+
+  return products
 }
 
 export async function getProductById(id: number): Promise<Product | null> {
-  return repo().findOneBy({ id })
+  const product = await repo().findOneBy({ id })
+  if (!product) return null
+  const [enriched] = await applySteamPrices([product])
+  return enriched
 }
 
 export interface NewProduct {
@@ -67,6 +110,7 @@ export interface NewProduct {
   imageUrl?: string
   description?: string
   wikipediaUrl?: string
+  steamAppid?: number | null
 }
 
 const TYPES: ProductType[] = ['game', 'console']
@@ -107,6 +151,7 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     imageUrl: input.imageUrl?.trim() || null,
     description: input.description?.trim() || null,
     wikipediaUrl: input.wikipediaUrl?.trim() || null,
+    steamAppid: Number(input.steamAppid) > 0 ? Number(input.steamAppid) : null,
   })
   return repo().save(product)
 }
@@ -124,6 +169,7 @@ export interface UpdateProduct {
   imageUrl?: string
   description?: string
   wikipediaUrl?: string
+  steamAppid?: number | null
 }
 
 // Admin-only: update an existing product. Only the provided fields are changed;
@@ -185,6 +231,9 @@ export async function updateProduct(
   }
   if (patch.wikipediaUrl !== undefined) {
     existing.wikipediaUrl = patch.wikipediaUrl.trim() || null
+  }
+  if (patch.steamAppid !== undefined) {
+    existing.steamAppid = Number(patch.steamAppid) > 0 ? Number(patch.steamAppid) : null
   }
 
   return repo().save(existing)
