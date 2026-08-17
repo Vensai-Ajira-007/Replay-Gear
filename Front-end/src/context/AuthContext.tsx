@@ -13,6 +13,9 @@ import {
   registerUser,
   type AuthUser,
 } from '../lib/api'
+import { useToast } from './ToastContext'
+
+const firstName = (name: string) => name.trim().split(' ')[0] || 'there'
 
 interface AuthContextValue {
   user: AuthUser | null
@@ -30,6 +33,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const { showToast } = useToast()
 
   // On load, if we have a stored session, fetch the current user.
   useEffect(() => {
@@ -54,19 +58,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  // The toasts fire here rather than in a useEffect on `user` for two reasons:
+  // the boot restore above and refreshUser() both change `user` without being
+  // an interactive sign-in, and LoginScreen/RegisterScreen navigate away the
+  // instant these resolve — so a screen-owned toast would unmount immediately.
+  // Triggering in the context also covers both logout buttons (Navbar and
+  // ProfileScreen) without touching either.
   const login = async (email: string, password: string) => {
     const { user } = await loginUser({ email, password })
     setUser(user)
+    showToast({
+      kind: 'success',
+      icon: '👋',
+      title: `Welcome back, ${firstName(user.name)}`,
+      body: "You're logged in.",
+    })
   }
 
   const register = async (name: string, email: string, password: string) => {
     const { user } = await registerUser({ name, email, password })
     setUser(user)
+    showToast({
+      kind: 'success',
+      icon: '🎮',
+      title: `Welcome to ReplayGear, ${firstName(user.name)}`,
+      body: 'Your account is ready.',
+    })
   }
 
   const logout = async () => {
     await logoutUser()
     setUser(null)
+    showToast({
+      kind: 'neutral',
+      icon: '👋',
+      title: 'Signed out',
+      body: 'See you next time.',
+    })
   }
 
   const refreshUser = async () => {
