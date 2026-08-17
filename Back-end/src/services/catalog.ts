@@ -6,6 +6,7 @@ import {
   type ProductType,
 } from '../entities/Product.js'
 import { getSteamPrices } from './steamPrices.js'
+import { fetchWikipediaSummary } from './wikipedia.js'
 
 export type SortKey = 'featured' | 'price-asc' | 'price-desc'
 export type TypeFilter = 'all' | ProductType
@@ -116,6 +117,28 @@ export interface NewProduct {
 const TYPES: ProductType[] = ['game', 'console']
 const CONDITIONS: Condition[] = ['Mint', 'Good', 'Fair']
 
+/**
+ * The blurb to store: whatever the admin typed, or — when they left it blank
+ * and gave a Wikipedia link — the article's opening sentences.
+ *
+ * A blank description with a link set is treated as "pull it from the article",
+ * which is the whole point of the field. The fetch never throws, so a Wikipedia
+ * outage just leaves the blurb empty instead of failing the save.
+ */
+async function resolveDescription(
+  description: string | null,
+  wikipediaUrl: string | null,
+): Promise<string | null> {
+  if (description || !wikipediaUrl) return description
+  const summary = await fetchWikipediaSummary(wikipediaUrl)
+  if (summary) {
+    console.log(`📖 description pulled from Wikipedia → ${wikipediaUrl}`)
+  } else {
+    console.warn(`📖 no Wikipedia summary for ${wikipediaUrl}`)
+  }
+  return summary
+}
+
 // Admin-only: add a new product. Assigns the next id (PK is a fixed int).
 export async function createProduct(input: NewProduct): Promise<Product> {
   const title = (input.title ?? '').trim()
@@ -137,6 +160,12 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     .getRawOne<{ max: number | null }>()
   const nextId = (max?.max ?? 0) + 1
 
+  const wikipediaUrl = input.wikipediaUrl?.trim() || null
+  const description = await resolveDescription(
+    input.description?.trim() || null,
+    wikipediaUrl,
+  )
+
   const product = repo().create({
     id: nextId,
     title,
@@ -149,8 +178,8 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     emoji: input.emoji?.trim() || '🎮',
     accent: input.accent?.trim() || 'from-brand/30 to-fuchsia-500/20',
     imageUrl: input.imageUrl?.trim() || null,
-    description: input.description?.trim() || null,
-    wikipediaUrl: input.wikipediaUrl?.trim() || null,
+    description,
+    wikipediaUrl,
     steamAppid: Number(input.steamAppid) > 0 ? Number(input.steamAppid) : null,
   })
   return repo().save(product)
@@ -231,6 +260,14 @@ export async function updateProduct(
   }
   if (patch.wikipediaUrl !== undefined) {
     existing.wikipediaUrl = patch.wikipediaUrl.trim() || null
+  }
+  // Only when this edit actually touched one of the two — otherwise every
+  // unrelated patch (a price change, say) would re-hit Wikipedia.
+  if (patch.description !== undefined || patch.wikipediaUrl !== undefined) {
+    existing.description = await resolveDescription(
+      existing.description,
+      existing.wikipediaUrl,
+    )
   }
   if (patch.steamAppid !== undefined) {
     existing.steamAppid = Number(patch.steamAppid) > 0 ? Number(patch.steamAppid) : null

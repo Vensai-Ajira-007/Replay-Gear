@@ -465,7 +465,10 @@ export default function ProductDetailScreen() {
 
               <div>
                 <label className="mb-1 block text-sm text-white/70">
-                  Description <span className="text-white/40">(optional)</span>
+                  Description{' '}
+                  <span className="text-white/40">
+                    (blank = pull from the Wikipedia article)
+                  </span>
                 </label>
                 <textarea
                   className={`${input} min-h-20 resize-y`}
