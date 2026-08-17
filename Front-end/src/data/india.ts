@@ -38,3 +38,12 @@ export const INDIAN_STATES = [
   'Lakshadweep',
   'Puducherry',
 ] as const
+
+/**
+ * 6 digits, first one non-zero. Mirrors isValidPincode in
+ * Back-end/src/services/address.ts so the same rule guards the address form
+ * and the delivery check without a round trip.
+ */
+export function isValidPincode(value: string): boolean {
+  return /^[1-9]\d{5}$/.test(value)
+}

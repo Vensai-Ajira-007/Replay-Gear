@@ -19,6 +19,11 @@ export interface DeliveryAddress {
 
 const str = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
 
+/** 6 digits, first one non-zero. Shared with the delivery serviceability check. */
+export function isValidPincode(value: string): boolean {
+  return /^[1-9]\d{5}$/.test(value)
+}
+
 /**
  * Strip the formatting people actually type — spaces, dashes, brackets, and a
  * country/trunk prefix — leaving the bare subscriber number.
@@ -69,7 +74,7 @@ export function parseDeliveryAddress(input: unknown): DeliveryAddress {
   if (!line1) throw new BadRequestError('Address line 1 is required')
   if (!city) throw new BadRequestError('City is required')
   if (!state) throw new BadRequestError('State is required')
-  if (!/^[1-9]\d{5}$/.test(pincode)) {
+  if (!isValidPincode(pincode)) {
     throw new BadRequestError('Enter a valid 6-digit PIN code')
   }
 

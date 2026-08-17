@@ -186,6 +186,34 @@ export async function fetchProduct(id: number): Promise<Product> {
   return data.product
 }
 
+// --- Delivery serviceability -------------------------------------------------
+
+export type DeliveryZone = 'metro' | 'regional' | 'remote'
+
+/** Mirrors DeliveryCheck in Back-end/src/services/delivery.ts. */
+export interface DeliveryCheck {
+  pincode: string
+  serviceable: boolean
+  zone: DeliveryZone | null
+  /** Only known for metro PIN codes; null elsewhere. */
+  city: string | null
+  state: string | null
+  etaDays: number | null
+  /** ISO yyyy-mm-dd. */
+  etaDate: string | null
+  codAvailable: boolean
+  freeShipping: boolean
+}
+
+// A PIN we don't cover comes back 200 with serviceable:false; only a malformed
+// PIN throws (400), so callers render the result rather than treating it as an error.
+export async function checkDelivery(pincode: string): Promise<DeliveryCheck> {
+  const data = await request<{ delivery: DeliveryCheck }>(
+    `${API_ENDPOINTS.delivery.check}?pincode=${encodeURIComponent(pincode)}`,
+  )
+  return data.delivery
+}
+
 export async function getCart(): Promise<Cart> {
   const data = await request<{ cart: Cart }>(API_ENDPOINTS.cart)
   return data.cart

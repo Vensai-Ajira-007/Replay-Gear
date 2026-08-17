@@ -14,6 +14,9 @@ export const API_ENDPOINTS = {
   cartClaim: '/cart/claim',
   orders: '/orders',
   order: (id: string) => `/orders/${id}`,
+  delivery: {
+    check: '/delivery/check',
+  },
   auth: {
     register: '/auth/register',
     login: '/auth/login',
