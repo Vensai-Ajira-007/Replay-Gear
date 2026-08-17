@@ -15,6 +15,7 @@ import { ProductsController } from './controllers/ProductsController.js'
 import { CartController } from './controllers/CartController.js'
 import { OrdersController } from './controllers/OrdersController.js'
 import { AuthController } from './controllers/AuthController.js'
+import { DeliveryController } from './controllers/DeliveryController.js'
 
 const PORT = Number(process.env.PORT) || 4000
 
@@ -42,6 +43,7 @@ async function main() {
       ProductsController,
       CartController,
       OrdersController,
+      DeliveryController,
     ],
     cors: false, // handled by the express cors() middleware above
     classTransformer: false,

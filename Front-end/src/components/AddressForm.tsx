@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
-import { INDIAN_STATES } from '../data/india'
+import { INDIAN_STATES, isValidPincode } from '../data/india'
 import type { DeliveryAddress } from '../lib/api'
 
 const input =
@@ -59,7 +59,7 @@ function validate(f: Fields): string | null {
   if (!f.line1.trim()) return 'Address line 1 is required'
   if (!f.city.trim()) return 'City is required'
   if (!f.state.trim()) return 'State is required'
-  if (!/^[1-9]\d{5}$/.test(f.pincode.trim())) {
+  if (!isValidPincode(f.pincode.trim())) {
     return 'Enter a valid 6-digit PIN code'
   }
   return null

@@ -10,6 +10,7 @@ import AdminScreen from '../screens/AdminScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import MyOrdersScreen from '../screens/MyOrdersScreen'
 import ChangePasswordScreen from '../screens/ChangePasswordScreen'
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen'
 import RequireAuth from '../components/RequireAuth'
 import { ROUTES } from './routes'
 
@@ -34,6 +35,7 @@ export const routeConfig: RouteObject[] = [
   },
   { path: ROUTES.login, element: <LoginScreen /> },
   { path: ROUTES.register, element: <RegisterScreen /> },
+  { path: ROUTES.forgotPassword, element: <ForgotPasswordScreen /> },
   {
     path: ROUTES.admin,
     element: (

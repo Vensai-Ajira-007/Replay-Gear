@@ -13,6 +13,7 @@ import { useAuth } from '../context/AuthContext'
 import { formatINR } from '../lib/format'
 import { ROUTES } from '../config/routes'
 import ProductCover from '../components/ProductCover'
+import DeliveryCheck from '../components/DeliveryCheck'
 
 interface EditForm {
   title: string
@@ -53,7 +54,7 @@ export default function ProductDetailScreen() {
   const { id } = useParams<{ id: string }>()
   const productId = Number(id)
 
-  const { isAdmin } = useAuth()
+  const { user, isAdmin } = useAuth()
   const { cart, add, setQty } = useCart()
 
   const [product, setProduct] = useState<Product | null>(null)
@@ -311,6 +312,11 @@ export default function ProductDetailScreen() {
                   </div>
                 )}
               </div>
+
+              <DeliveryCheck
+                className="mt-6"
+                initialPincode={user?.defaultAddress?.pincode}
+              />
 
               {savedMsg && <p className="mt-4 text-sm text-mint">{savedMsg}</p>}
 

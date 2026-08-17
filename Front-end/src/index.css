@@ -130,6 +130,52 @@ button:focus-visible,
     background-position: -200% 0;
   }
 }
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+/* Slight overshoot so the icon lands with a bit of weight. */
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* Falls the full viewport height; duration/delay are set per piece inline. */
+@keyframes confettiFall {
+  from {
+    opacity: 1;
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(110vh) rotate(720deg);
+  }
+}
 
 .animate-fade-up {
   animation: fadeInUp 0.5s ease-out both;
@@ -142,6 +188,28 @@ button:focus-visible,
 }
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+.animate-toast-in {
+  animation: toastIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-toast-out {
+  animation: toastOut 0.2s ease-in forwards;
+}
+.animate-pop {
+  animation: pop 0.45s ease-out both;
+}
+
+/* One-shot confetti piece. Position, colour, duration and delay come from an
+   inline style per piece — this only supplies the motion. */
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  animation-name: confettiFall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: both;
 }
 
 /* Shimmer for loading skeletons */
@@ -172,7 +240,17 @@ button:focus-visible,
   .animate-fade,
   .animate-scale-in,
   .animate-float,
+  .animate-toast-in,
+  .animate-toast-out,
+  .animate-pop,
   .shimmer {
     animation: none;
+  }
+
+  /* Not `animation: none` — that would freeze every piece at its start
+     position and leave them sitting on screen. Confetti is pure decoration,
+     so drop it entirely. */
+  .confetti-piece {
+    display: none;
   }
 }

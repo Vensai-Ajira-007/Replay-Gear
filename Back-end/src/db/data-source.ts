@@ -4,6 +4,7 @@ import { Order } from '../entities/Order.js'
 import { OrderItem } from '../entities/OrderItem.js'
 import { User } from '../entities/User.js'
 import { Session } from '../entities/Session.js'
+import { PasswordReset } from '../entities/PasswordReset.js'
 
 // A single DATABASE_URL (e.g. from Neon/Render) takes precedence and connects
 // over SSL; otherwise fall back to the discrete PG* vars (local / docker-compose).
@@ -21,7 +22,7 @@ export const AppDataSource = new DataSource({
         database: process.env.PGDATABASE ?? 'replaygear',
       }),
   // Explicit entity classes (not glob paths) — ESM-safe.
-  entities: [Product, Order, OrderItem, User, Session],
+  entities: [Product, Order, OrderItem, User, Session, PasswordReset],
   // Dev convenience: auto-create/update tables from entities. Swap for
   // migrations in production.
   synchronize: true,

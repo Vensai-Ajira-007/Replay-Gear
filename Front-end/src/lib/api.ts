@@ -186,6 +186,34 @@ export async function fetchProduct(id: number): Promise<Product> {
   return data.product
 }
 
+// --- Delivery serviceability -------------------------------------------------
+
+export type DeliveryZone = 'metro' | 'regional' | 'remote'
+
+/** Mirrors DeliveryCheck in Back-end/src/services/delivery.ts. */
+export interface DeliveryCheck {
+  pincode: string
+  serviceable: boolean
+  zone: DeliveryZone | null
+  /** Only known for metro PIN codes; null elsewhere. */
+  city: string | null
+  state: string | null
+  etaDays: number | null
+  /** ISO yyyy-mm-dd. */
+  etaDate: string | null
+  codAvailable: boolean
+  freeShipping: boolean
+}
+
+// A PIN we don't cover comes back 200 with serviceable:false; only a malformed
+// PIN throws (400), so callers render the result rather than treating it as an error.
+export async function checkDelivery(pincode: string): Promise<DeliveryCheck> {
+  const data = await request<{ delivery: DeliveryCheck }>(
+    `${API_ENDPOINTS.delivery.check}?pincode=${encodeURIComponent(pincode)}`,
+  )
+  return data.delivery
+}
+
 export async function getCart(): Promise<Cart> {
   const data = await request<{ cart: Cart }>(API_ENDPOINTS.cart)
   return data.cart
@@ -299,6 +327,41 @@ export async function changePassword(
   await request(API_ENDPOINTS.auth.changePassword, {
     method: 'POST',
     body: JSON.stringify({ currentPassword, newPassword }),
+  })
+}
+
+// --- Forgot password (all three are unauthenticated) -------------------------
+// These paths start with /auth/, so request() skips its 401-refresh-and-retry —
+// which is what we want: there is no session to refresh here.
+
+// Step 1. Resolves even for an unregistered email; the API never says which.
+export async function forgotPassword(email: string): Promise<void> {
+  await request(API_ENDPOINTS.auth.forgotPassword, {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  })
+}
+
+// Step 2. Trades the emailed code for a short-lived, one-time reset token.
+export async function verifyOtp(
+  email: string,
+  code: string,
+): Promise<string> {
+  const data = await request<{ resetToken: string }>(
+    API_ENDPOINTS.auth.verifyOtp,
+    { method: 'POST', body: JSON.stringify({ email, code }) },
+  )
+  return data.resetToken
+}
+
+// Step 3. Sets the new password and revokes every session for that user.
+export async function resetPassword(
+  resetToken: string,
+  newPassword: string,
+): Promise<void> {
+  await request(API_ENDPOINTS.auth.resetPassword, {
+    method: 'POST',
+    body: JSON.stringify({ resetToken, newPassword }),
   })
 }
 

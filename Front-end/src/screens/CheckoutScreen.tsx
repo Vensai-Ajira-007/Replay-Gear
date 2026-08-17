@@ -2,14 +2,17 @@ import { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import { ROUTES } from '../config/routes'
 import { formatINR } from '../lib/format'
 import AddressForm from '../components/AddressForm'
+import Confetti from '../components/Confetti'
 import type { DeliveryAddress } from '../lib/api'
 
 export default function CheckoutScreen() {
   const { cart, loading, checkout } = useCart()
   const { user, refreshUser } = useAuth()
+  const { showToast } = useToast()
   const [orderId, setOrderId] = useState<string | null>(null)
 
   const placeOrder = async (address: DeliveryAddress) => {
@@ -20,13 +23,20 @@ export default function CheckoutScreen() {
       // Non-critical: the order succeeded either way.
     })
     setOrderId(order.id)
+    showToast({
+      kind: 'success',
+      icon: '🎉',
+      title: 'Order placed!',
+      body: `${cart.totalItems} item${cart.totalItems === 1 ? '' : 's'} on the way.`,
+    })
   }
 
   // Order confirmation — the order is now persisted in the database.
   if (orderId) {
     return (
       <section className="animate-fade-up mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
-        <div className="animate-scale-in text-7xl drop-shadow-[0_0_25px_rgba(170,59,255,0.5)]">
+        <Confetti />
+        <div className="animate-pop text-7xl drop-shadow-[0_0_25px_rgba(170,59,255,0.5)]">
           🎉
         </div>
         <h1 className="mt-4 text-3xl font-bold text-white">Order placed!</h1>
