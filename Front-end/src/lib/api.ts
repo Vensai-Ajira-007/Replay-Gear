@@ -302,6 +302,41 @@ export async function changePassword(
   })
 }
 
+// --- Forgot password (all three are unauthenticated) -------------------------
+// These paths start with /auth/, so request() skips its 401-refresh-and-retry —
+// which is what we want: there is no session to refresh here.
+
+// Step 1. Resolves even for an unregistered email; the API never says which.
+export async function forgotPassword(email: string): Promise<void> {
+  await request(API_ENDPOINTS.auth.forgotPassword, {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  })
+}
+
+// Step 2. Trades the emailed code for a short-lived, one-time reset token.
+export async function verifyOtp(
+  email: string,
+  code: string,
+): Promise<string> {
+  const data = await request<{ resetToken: string }>(
+    API_ENDPOINTS.auth.verifyOtp,
+    { method: 'POST', body: JSON.stringify({ email, code }) },
+  )
+  return data.resetToken
+}
+
+// Step 3. Sets the new password and revokes every session for that user.
+export async function resetPassword(
+  resetToken: string,
+  newPassword: string,
+): Promise<void> {
+  await request(API_ENDPOINTS.auth.resetPassword, {
+    method: 'POST',
+    body: JSON.stringify({ resetToken, newPassword }),
+  })
+}
+
 // The current user's own orders (backend scopes GET /orders by user).
 export async function fetchOrders(): Promise<Order[]> {
   const data = await request<{ orders: Order[] }>(API_ENDPOINTS.orders)

@@ -15,8 +15,11 @@ import {
   logout,
   refresh,
   register,
+  requestPasswordReset,
+  resetPassword,
   toPublic,
   updateDefaultAddress,
+  verifyPasswordResetOtp,
 } from '../services/auth.js'
 
 interface RegisterBody {
@@ -33,6 +36,17 @@ interface RefreshBody {
 }
 interface ChangePasswordBody {
   currentPassword?: string
+  newPassword?: string
+}
+interface ForgotPasswordBody {
+  email?: string
+}
+interface VerifyOtpBody {
+  email?: string
+  code?: string
+}
+interface ResetPasswordBody {
+  resetToken?: string
   newPassword?: string
 }
 interface AddressBody {
@@ -80,6 +94,28 @@ export class AuthController {
       body.currentPassword ?? '',
       body.newPassword ?? '',
     )
+    return { ok: true }
+  }
+
+  // POST /api/auth/forgot-password  → email a 6-digit OTP
+  // Always { ok: true }, even for an unknown address, so the response can't be
+  // used to test which emails are registered.
+  @Post('/forgot-password')
+  async forgotPassword(@Body() body: ForgotPasswordBody) {
+    await requestPasswordReset(body?.email)
+    return { ok: true }
+  }
+
+  // POST /api/auth/verify-otp  → exchange the OTP for a one-time reset token
+  @Post('/verify-otp')
+  async verifyOtp(@Body() body: VerifyOtpBody) {
+    return verifyPasswordResetOtp(body?.email, body?.code)
+  }
+
+  // POST /api/auth/reset-password  → set the new password, revoke all sessions
+  @Post('/reset-password')
+  async resetPassword(@Body() body: ResetPasswordBody) {
+    await resetPassword(body?.resetToken, body?.newPassword)
     return { ok: true }
   }
 

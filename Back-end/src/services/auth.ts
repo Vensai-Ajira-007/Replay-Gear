@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs'
+import { randomInt } from 'node:crypto'
 import {
   BadRequestError,
   UnauthorizedError,
@@ -6,7 +7,9 @@ import {
 import { AppDataSource } from '../db/data-source.js'
 import { User, type Role } from '../entities/User.js'
 import { Session } from '../entities/Session.js'
+import { PasswordReset } from '../entities/PasswordReset.js'
 import { authConfig } from '../auth/config.js'
+import { sendPasswordResetOtp } from '../mail/passwordReset.js'
 import { parseDeliveryAddress, type DeliveryAddress } from './address.js'
 import {
   generateRefreshToken,
@@ -16,6 +19,7 @@ import {
 
 const userRepo = () => AppDataSource.getRepository(User)
 const sessionRepo = () => AppDataSource.getRepository(Session)
+const resetRepo = () => AppDataSource.getRepository(PasswordReset)
 
 export interface PublicUser {
   id: string
@@ -144,4 +148,132 @@ export async function changePassword(
   }
   user.passwordHash = await bcrypt.hash(newPassword, 10)
   await userRepo().save(user)
+}
+
+const normalizeEmail = (email?: string) => (email ?? '').trim().toLowerCase()
+
+/**
+ * Step 1 of the forgot-password flow: email a 6-digit OTP.
+ *
+ * Resolves regardless of whether the address is registered — the controller
+ * always answers { ok: true } so this endpoint can't be used to discover which
+ * emails have accounts.
+ */
+export async function requestPasswordReset(email?: string): Promise<void> {
+  const user = await userRepo().findOneBy({ email: normalizeEmail(email) })
+  if (!user) return
+
+  // Resend throttle: one mail per account per window, no matter how many times
+  // the button is clicked.
+  const existing = await resetRepo().findOneBy({ userId: user.id })
+  if (
+    existing &&
+    Date.now() - existing.createdAt.getTime() <
+      authConfig.resetOtpResendSeconds * 1000
+  ) {
+    return
+  }
+
+  // randomInt, not Math.random — this is a credential.
+  const code = String(randomInt(0, 1_000_000)).padStart(6, '0')
+
+  // One live attempt per user: a new code invalidates the previous one.
+  await resetRepo().delete({ userId: user.id })
+  await resetRepo().save(
+    resetRepo().create({
+      userId: user.id,
+      codeHash: hashToken(code),
+      tokenHash: null,
+      attempts: 0,
+      expiresAt: new Date(
+        Date.now() + authConfig.resetOtpTtlMinutes * 60 * 1000,
+      ),
+    }),
+  )
+
+  // Fire-and-forget: a mail failure must not change the response shape.
+  sendPasswordResetOtp(user.email, user.name, code)
+    .then(() => console.log(`✉️  password reset code sent → ${user.email}`))
+    .catch((err) => console.error('password reset email failed:', err))
+}
+
+/**
+ * Step 2: exchange a valid OTP for a one-time reset token.
+ *
+ * Every failure returns the same message — a distinct "no such email" or
+ * "expired" would turn this into an oracle.
+ */
+export async function verifyPasswordResetOtp(
+  email?: string,
+  code?: string,
+): Promise<{ resetToken: string }> {
+  const invalid = () => new BadRequestError('Invalid or expired code')
+
+  const user = await userRepo().findOneBy({ email: normalizeEmail(email) })
+  if (!user) throw invalid()
+
+  const reset = await resetRepo().findOneBy({ userId: user.id })
+  // codeHash is null once the OTP has already been spent.
+  if (!reset || !reset.codeHash) throw invalid()
+  if (reset.expiresAt.getTime() < Date.now()) {
+    await resetRepo().delete({ id: reset.id })
+    throw invalid()
+  }
+
+  if (reset.codeHash !== hashToken((code ?? '').trim())) {
+    reset.attempts += 1
+    if (reset.attempts >= authConfig.resetOtpMaxAttempts) {
+      await resetRepo().delete({ id: reset.id })
+    } else {
+      await resetRepo().save(reset)
+    }
+    throw invalid()
+  }
+
+  const resetToken = generateRefreshToken()
+  reset.codeHash = null
+  reset.tokenHash = hashToken(resetToken)
+  reset.attempts = 0
+  reset.expiresAt = new Date(
+    Date.now() + authConfig.resetTokenTtlMinutes * 60 * 1000,
+  )
+  await resetRepo().save(reset)
+
+  return { resetToken }
+}
+
+/**
+ * Step 3: set the new password using the token from step 2, then log every
+ * device out — a reset is the fix for a compromised account, so any refresh
+ * token an attacker holds has to die with it.
+ */
+export async function resetPassword(
+  resetToken?: string,
+  newPassword?: string,
+): Promise<void> {
+  const invalid = () => new BadRequestError('Invalid or expired reset token')
+  if (!resetToken) throw invalid()
+
+  const reset = await resetRepo().findOneBy({ tokenHash: hashToken(resetToken) })
+  // codeHash still set means the row was never verified — token can't be real.
+  if (!reset || reset.codeHash) throw invalid()
+  if (reset.expiresAt.getTime() < Date.now()) {
+    await resetRepo().delete({ id: reset.id })
+    throw invalid()
+  }
+
+  if (!newPassword || newPassword.length < 6) {
+    throw new BadRequestError('New password must be at least 6 characters')
+  }
+
+  const user = await userRepo().findOneBy({ id: reset.userId })
+  if (!user) {
+    await resetRepo().delete({ id: reset.id })
+    throw invalid()
+  }
+
+  user.passwordHash = await bcrypt.hash(newPassword, 10)
+  await userRepo().save(user)
+  await resetRepo().delete({ id: reset.id })
+  await sessionRepo().delete({ userId: user.id })
 }

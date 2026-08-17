@@ -37,6 +37,11 @@ services:
       # the values in. Unset means empty, which the app treats as "not configured".
       MAILEROO_API_KEY: ${MAILEROO_API_KEY:-}
       MAIL_FROM: ${MAIL_FROM:-}
+      # Forgot-password OTP knobs — empty falls back to the defaults in auth/config.ts.
+      RESET_OTP_TTL_MINUTES: ${RESET_OTP_TTL_MINUTES:-}
+      RESET_OTP_MAX_ATTEMPTS: ${RESET_OTP_MAX_ATTEMPTS:-}
+      RESET_TOKEN_TTL_MINUTES: ${RESET_TOKEN_TTL_MINUTES:-}
+      RESET_OTP_RESEND_SECONDS: ${RESET_OTP_RESEND_SECONDS:-}
     ports:
       - '4000:4000'
 

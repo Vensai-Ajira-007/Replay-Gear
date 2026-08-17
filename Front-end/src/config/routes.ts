@@ -9,6 +9,7 @@ export const ROUTES = {
   checkout: '/checkout',
   login: '/login',
   register: '/register',
+  forgotPassword: '/forgot-password',
   admin: '/admin',
   // Product details — `productPath` is the route pattern, `product(id)` builds a link.
   productPath: '/product/:id',
