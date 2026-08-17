@@ -52,7 +52,15 @@ export default function AdminScreen() {
         price: Number(form.price),
         originalPrice: Number(form.originalPrice) || Number(form.price),
       })
-      setMsg(`Added "${created.title}" (id ${created.id})`)
+      // Say whether the blurb was pulled, so a failed Wikipedia lookup isn't silent.
+      const blurb = form.description?.trim()
+        ? ''
+        : created.description
+          ? ' — description pulled from Wikipedia'
+          : form.wikipediaUrl?.trim()
+            ? " — couldn't read that Wikipedia page, description left empty"
+            : ''
+      setMsg(`Added "${created.title}" (id ${created.id})${blurb}`)
       setForm(emptyForm)
       load()
     } catch (err) {
@@ -194,7 +202,10 @@ export default function AdminScreen() {
 
           <div>
             <label className="mb-1 block text-sm text-white/70">
-              Description <span className="text-white/40">(optional)</span>
+              Description{' '}
+              <span className="text-white/40">
+                (optional — leave blank to pull it from the Wikipedia article below)
+              </span>
             </label>
             <textarea
               className={`${input} min-h-20 resize-y`}
