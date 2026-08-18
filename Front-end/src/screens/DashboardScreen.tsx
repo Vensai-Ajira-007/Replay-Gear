@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Hero from '../components/Hero'
+import HeroSlider from '../components/HeroSlider'
 import ProductCard from '../components/ProductCard'
 import { type Product } from '../data/products'
 import { fetchProducts } from '../lib/api'
@@ -61,15 +61,18 @@ export default function DashboardScreen() {
     console: products.length ? products.filter((p) => p.type === 'console').length : null,
   }
 
-  // Top 4 by discount percentage.
-  const deals = useMemo(
-    () => [...products].sort((a, b) => discountPct(b) - discountPct(a)).slice(0, 4),
+  // Deepest markdowns first. The top few headline the slideshow and the next
+  // few fill the grid, so nothing shows up twice on one screen.
+  const byDiscount = useMemo(
+    () => [...products].sort((a, b) => discountPct(b) - discountPct(a)),
     [products],
   )
+  const featured = byDiscount.slice(0, 5)
+  const deals = byDiscount.slice(5, 9)
 
   return (
     <>
-      <Hero />
+      {featured.length > 0 && <HeroSlider products={featured} />}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white">Browse by category</h2>
@@ -123,7 +126,7 @@ export default function DashboardScreen() {
             <div>
               <h2 className="text-2xl font-bold text-white">🔥 Hot Deals</h2>
               <p className="mt-1 text-sm text-white/60">
-                Biggest markdowns in the store right now.
+                More deals worth a look, beyond the ones up top.
               </p>
             </div>
           </div>
