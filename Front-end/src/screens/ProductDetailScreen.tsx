@@ -150,7 +150,7 @@ export default function ProductDetailScreen() {
         <p className="mt-2 text-white/60">{error ?? 'This item may have been removed.'}</p>
         <Link
           to={ROUTES.home}
-          className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
+          className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90"
         >
           Back to store
         </Link>
@@ -278,7 +278,7 @@ export default function ProductDetailScreen() {
                   <button
                     type="button"
                     onClick={() => add(product.id)}
-                    className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-brand/50 active:scale-95"
+                    className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-8 py-3 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-brand/50 active:scale-95"
                   >
                     Add to cart
                   </button>
@@ -298,7 +298,7 @@ export default function ProductDetailScreen() {
                     <button
                       type="button"
                       onClick={() => add(product.id)}
-                      className="grid h-9 w-9 place-items-center rounded-full bg-brand/90 text-white transition hover:bg-brand active:scale-95"
+                      className="grid h-9 w-9 place-items-center rounded-full bg-brand/90 text-ink transition hover:bg-brand active:scale-95"
                       aria-label="Increase quantity"
                     >
                       +
@@ -512,7 +512,7 @@ export default function ProductDetailScreen() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:opacity-50"
+                  className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-2.5 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:opacity-50"
                 >
                   {saving ? 'Saving…' : 'Save changes'}
                 </button>

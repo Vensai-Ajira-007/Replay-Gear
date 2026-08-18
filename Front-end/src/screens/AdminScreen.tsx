@@ -252,7 +252,7 @@ export default function AdminScreen() {
           <button
             type="submit"
             disabled={busy}
-            className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:opacity-50"
+            className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:opacity-50"
           >
             {busy ? 'Adding…' : 'Add product'}
           </button>

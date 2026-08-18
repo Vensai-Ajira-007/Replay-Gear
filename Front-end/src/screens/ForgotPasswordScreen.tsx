@@ -21,7 +21,7 @@ export default function ForgotPasswordScreen() {
   const input =
     'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white outline-none focus:border-brand/60'
   const primary =
-    'w-full rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:opacity-50'
+    'w-full rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:opacity-50'
   const ghost =
     'rounded-full px-4 py-2 text-sm font-medium text-white/70 transition hover:text-white disabled:opacity-50'
 

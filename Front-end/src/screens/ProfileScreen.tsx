@@ -46,7 +46,7 @@ export default function ProfileScreen() {
     <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       {/* Header */}
       <div className="animate-fade-up flex items-center gap-4 rounded-2xl border border-white/10 bg-panel/60 p-6">
-        <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brand to-brand-soft text-2xl font-bold uppercase text-white shadow-lg shadow-brand/30">
+        <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brand to-brand-soft text-2xl font-bold uppercase text-ink shadow-lg shadow-brand/30">
           {user.name.trim().charAt(0) || 'U'}
         </span>
         <div className="min-w-0">
@@ -176,7 +176,7 @@ export default function ProfileScreen() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
+                className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-5 py-2 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90"
               >
                 Log out
               </button>

@@ -85,7 +85,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 stop(e)
                 add(product.id)
               }}
-              className="relative z-20 rounded-full bg-brand/90 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand active:scale-95"
+              className="relative z-20 rounded-full bg-brand/90 px-4 py-2 text-sm font-semibold text-ink transition hover:bg-brand active:scale-95"
             >
               Add to cart
             </button>
@@ -111,7 +111,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                   stop(e)
                   add(product.id)
                 }}
-                className="grid h-8 w-8 place-items-center rounded-full bg-brand/90 text-white transition hover:bg-brand active:scale-95"
+                className="grid h-8 w-8 place-items-center rounded-full bg-brand/90 text-ink transition hover:bg-brand active:scale-95"
                 aria-label={`Increase ${product.title}`}
               >
                 +

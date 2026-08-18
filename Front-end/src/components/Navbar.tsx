@@ -29,7 +29,7 @@ export default function Navbar() {
 
   return (
     <>
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-ink/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-black/40 bg-panel-2 shadow-lg shadow-black/30">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-3 px-4 py-3 sm:gap-x-4 sm:px-6">
         {/* Brand */}
         <Link to={ROUTES.home} className="group flex shrink-0 items-center gap-2">
@@ -109,7 +109,7 @@ export default function Navbar() {
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
           </svg>
           {count > 0 && (
-            <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-xs font-bold text-white">
+            <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-xs font-bold text-ink">
               {count}
             </span>
           )}
@@ -131,7 +131,7 @@ export default function Navbar() {
               title="Your profile"
               className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pl-1 pr-3 transition hover:border-brand/50 hover:bg-white/10"
             >
-              <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-brand to-brand-soft text-xs font-bold uppercase text-white">
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-brand to-brand-soft text-xs font-bold uppercase text-ink">
                 {user.name.trim().charAt(0) || 'U'}
               </span>
               <span className="hidden text-sm text-white/80 transition group-hover:text-white sm:block">
@@ -156,7 +156,7 @@ export default function Navbar() {
             </Link>
             <Link
               to={ROUTES.register}
-              className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-3 py-1.5 text-sm font-semibold text-white transition hover:opacity-90"
+              className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-3 py-1.5 text-sm font-semibold text-ink transition hover:opacity-90"
             >
               Sign up
             </Link>
@@ -196,7 +196,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={handleLogout}
-              className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
+              className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-4 py-2 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90"
             >
               Log out
             </button>

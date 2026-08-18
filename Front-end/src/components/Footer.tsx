@@ -31,7 +31,7 @@ export default function Footer() {
               />
               <button
                 type="submit"
-                className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-soft"
+                className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-ink transition hover:bg-brand-soft"
               >
                 Join
               </button>

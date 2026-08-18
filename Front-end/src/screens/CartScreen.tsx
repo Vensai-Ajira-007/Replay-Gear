@@ -32,7 +32,7 @@ export default function CartScreen() {
         </p>
         <Link
           to={ROUTES.home}
-          className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
+          className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90"
         >
           Browse the catalog
         </Link>
@@ -119,7 +119,7 @@ export default function CartScreen() {
                         <button
                           type="button"
                           onClick={() => add(product.id)}
-                          className="grid h-7 w-7 place-items-center rounded-full bg-brand/90 text-white transition hover:bg-brand"
+                          className="grid h-7 w-7 place-items-center rounded-full bg-brand/90 text-ink transition hover:bg-brand"
                           aria-label={`Add one more ${product.title}`}
                         >
                           +
@@ -170,7 +170,7 @@ export default function CartScreen() {
               type="button"
               onClick={goToCheckout}
               disabled={cart.lines.length === 0}
-              className="mt-6 w-full rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-6 w-full rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {user ? 'Proceed to checkout' : 'Log in to check out'}
             </button>

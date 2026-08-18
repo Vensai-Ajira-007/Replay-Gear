@@ -176,7 +176,7 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     originalPrice: originalPrice > 0 ? originalPrice : price,
     rating: Number(input.rating) || 4.5,
     emoji: input.emoji?.trim() || '🎮',
-    accent: input.accent?.trim() || 'from-brand/30 to-fuchsia-500/20',
+    accent: input.accent?.trim() || 'from-brand/30 to-slate-600/30',
     imageUrl: input.imageUrl?.trim() || null,
     description,
     wikipediaUrl,
@@ -252,7 +252,7 @@ export async function updateProduct(
   }
   if (patch.emoji !== undefined) existing.emoji = patch.emoji.trim() || '🎮'
   if (patch.accent !== undefined) {
-    existing.accent = patch.accent.trim() || 'from-brand/30 to-fuchsia-500/20'
+    existing.accent = patch.accent.trim() || 'from-brand/30 to-slate-600/30'
   }
   if (patch.imageUrl !== undefined) existing.imageUrl = patch.imageUrl.trim() || null
   if (patch.description !== undefined) {

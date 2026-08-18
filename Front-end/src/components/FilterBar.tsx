@@ -36,7 +36,7 @@ export default function FilterBar({
                 onClick={() => onTypeChange(t.key)}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
                   typeFilter === t.key
-                    ? 'bg-brand text-white shadow'
+                    ? 'bg-brand text-ink shadow'
                     : 'text-white/60 hover:text-white'
                 }`}
               >

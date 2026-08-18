@@ -21,6 +21,13 @@ interface ProductCoverProps {
   emojiClassName?: string
   /** Extra classes for the image (padding, hover scale). */
   imgClassName?: string
+  /**
+   * Drop the accent-gradient backdrop, letting whatever sits behind show
+   * through. Only useful when the caller paints its own backdrop (see the
+   * blurred fill behind the featured carousel's poster) — with no image and no
+   * gradient the emoji would float on nothing.
+   */
+  transparent?: boolean
   /** Overlays rendered above the image (sheen, badges). */
   children?: ReactNode
 }
@@ -43,15 +50,18 @@ export default function ProductCover({
   className = '',
   emojiClassName = '',
   imgClassName = '',
+  transparent = false,
   children,
 }: ProductCoverProps) {
   const [imgError, setImgError] = useState(false)
   const showImage = Boolean(product.imageUrl) && !imgError
 
+  // Fall back to the gradient whenever there's no artwork to sit on, even if
+  // the caller asked for transparent — otherwise the emoji has no backdrop.
+  const backdrop = transparent && showImage ? '' : `bg-gradient-to-br ${product.accent}`
+
   return (
-    <div
-      className={`relative overflow-hidden bg-gradient-to-br ${product.accent} ${className}`}
-    >
+    <div className={`relative overflow-hidden ${backdrop} ${className}`}>
       {showImage ? (
         <img
           src={product.imageUrl ?? ''}

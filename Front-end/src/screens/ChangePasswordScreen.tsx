@@ -91,7 +91,7 @@ export default function ChangePasswordScreen() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:opacity-50"
+            className="w-full rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:opacity-90 disabled:opacity-50"
           >
             {busy ? 'Saving…' : 'Update password'}
           </button>

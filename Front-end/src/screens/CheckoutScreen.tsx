@@ -36,7 +36,7 @@ export default function CheckoutScreen() {
     return (
       <section className="animate-fade-up mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
         <Confetti />
-        <div className="animate-pop text-7xl drop-shadow-[0_0_25px_rgba(170,59,255,0.5)]">
+        <div className="animate-pop text-7xl drop-shadow-[0_0_25px_rgba(102,192,244,0.5)]">
           🎉
         </div>
         <h1 className="mt-4 text-3xl font-bold text-white">Order placed!</h1>
@@ -49,7 +49,7 @@ export default function CheckoutScreen() {
         <div className="mt-8 flex items-center justify-center gap-3">
           <Link
             to={ROUTES.home}
-            className="inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-brand/50 active:scale-95"
+            className="inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-brand/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-brand/50 active:scale-95"
           >
             Keep shopping
           </Link>
