@@ -27,12 +27,17 @@ interface HeroSliderProps {
 /**
  * Rotating full-width banner for the deepest-discounted products, in place of
  * the old static hero.
+ *
+ * All slides are mounted, stacked in one grid cell; the active one fades and
+ * rises in. The poster backdrop and the scrims sit outside that stack, so they
+ * stay put while the content changes over them.
  */
 export default function HeroSlider({ products }: HeroSliderProps) {
   const { add } = useCart()
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
-  const [adding, setAdding] = useState(false)
+  // Per-product, not a single boolean: every slide's button is mounted at once.
+  const [addingId, setAddingId] = useState<number | null>(null)
 
   // Read once. The prefers-reduced-motion block in index.css is CSS-only and
   // can't stop a JS timer, so autoplay has to opt out here instead.
@@ -56,15 +61,13 @@ export default function HeroSlider({ products }: HeroSliderProps) {
 
   // Modulo at render: the catalogue can shrink under a stale index.
   const current = index % count
-  const product = products[current]
-  const discount = discountOf(product)
 
-  const onAdd = async () => {
-    setAdding(true)
+  const onAdd = async (id: number) => {
+    setAddingId(id)
     try {
-      await add(product.id)
+      await add(id)
     } finally {
-      setAdding(false)
+      setAddingId(null)
     }
   }
 
@@ -82,8 +85,7 @@ export default function HeroSlider({ products }: HeroSliderProps) {
       onBlurCapture={() => setPaused(false)}
     >
       {/* The store's poster art (from the old hero), fixed behind every slide.
-          Deliberately not keyed to the product: it stays put while slides
-          change, so the backdrop doesn't flash on each rotation. */}
+          Outside the track on purpose: it stays still while slides move. */}
       <div
         className="pointer-events-none absolute inset-0 bg-cover bg-no-repeat"
         style={{ backgroundImage: `url(${heroBg})`, backgroundPosition: 'center right' }}
@@ -94,83 +96,102 @@ export default function HeroSlider({ products }: HeroSliderProps) {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
-        <div
-          key={product.id}
-          className="animate-fade grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_auto]"
-        >
-          {/* Text + actions */}
-          <div className="max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2">
-              {discount > 0 && (
-                <span className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-semibold text-brand-soft">
-                  🔥 {discount}% OFF
-                </span>
-              )}
-              <span className="text-xs uppercase tracking-wide text-white/40">
-                {product.type}
-              </span>
-            </div>
-
-            <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
-              {product.title}
-            </h1>
-
-            <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-white/60">
-              <span>{product.platform}</span>
-              <span aria-hidden="true">·</span>
-              <span>{product.condition} condition</span>
-              <span aria-hidden="true">·</span>
-              <span className="flex items-center gap-1">
-                <span className="text-fair">★</span>
-                {product.rating.toFixed(1)}
-              </span>
-            </p>
-
-            <div className="mt-5 flex items-end gap-3">
-              <span className="text-3xl font-extrabold text-white">
-                {formatINR(product.price)}
-              </span>
-              {discount > 0 && (
-                <span className="pb-1 text-sm text-white/40 line-through">
-                  {formatINR(product.originalPrice)}
-                </span>
-              )}
-            </div>
-
-            <div className="mt-7 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={onAdd}
-                disabled={adding}
-                className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-brand/50 active:scale-95 disabled:opacity-60"
+        {/* Every slide occupies the same grid cell, so the banner keeps the
+            height of the tallest one instead of resizing as titles wrap. Only
+            the active slide is painted; it fades and rises in via the existing
+            .animate-fade-up utility, which the reduced-motion block in
+            index.css already neutralises. */}
+        <div className="grid">
+          {products.map((product, i) => {
+            const discount = discountOf(product)
+            const active = i === current
+            return (
+              // The class is absent while a slide is inactive, so re-activating
+              // it restarts the animation rather than showing it already settled.
+              // inert also keeps hidden slides' buttons out of the tab order.
+              <div
+                key={product.id}
+                className={`col-start-1 row-start-1 ${active ? 'animate-fade-up' : 'invisible'}`}
+                inert={!active}
               >
-                {adding ? 'Adding…' : 'Add to cart'}
-              </button>
-              <Link
-                to={ROUTES.product(product.id)}
-                className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10 active:scale-95"
-              >
-                View details
-              </Link>
-            </div>
-          </div>
+                <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
+                  {/* Text + actions */}
+                  <div className="max-w-2xl">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {discount > 0 && (
+                        <span className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-semibold text-brand-soft">
+                          🔥 {discount}% OFF
+                        </span>
+                      )}
+                      <span className="text-xs uppercase tracking-wide text-white/40">
+                        {product.type}
+                      </span>
+                    </div>
 
-          {/* The cover, whole and framed. */}
-          <Link
-            to={ROUTES.product(product.id)}
-            aria-label={`View ${product.title}`}
-            className="hidden lg:block"
-            tabIndex={-1}
-          >
-            <ProductCover
-              product={product}
-              // Centred so the emoji fallback sits in the middle of the tile,
-              // as it does on the product cards.
-              className="flex aspect-[3/4] w-56 items-center justify-center rounded-2xl border border-white/10 shadow-2xl shadow-black/50 transition duration-300 hover:scale-[1.02]"
-              emojiClassName="text-7xl"
-              imgClassName="p-2"
-            />
-          </Link>
+                    <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+                      {product.title}
+                    </h1>
+
+                    <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-white/60">
+                      <span>{product.platform}</span>
+                      <span aria-hidden="true">·</span>
+                      <span>{product.condition} condition</span>
+                      <span aria-hidden="true">·</span>
+                      <span className="flex items-center gap-1">
+                        <span className="text-fair">★</span>
+                        {product.rating.toFixed(1)}
+                      </span>
+                    </p>
+
+                    <div className="mt-5 flex items-end gap-3">
+                      <span className="text-3xl font-extrabold text-white">
+                        {formatINR(product.price)}
+                      </span>
+                      {discount > 0 && (
+                        <span className="pb-1 text-sm text-white/40 line-through">
+                          {formatINR(product.originalPrice)}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="mt-7 flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => onAdd(product.id)}
+                        disabled={addingId === product.id}
+                        className="rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-brand/50 active:scale-95 disabled:opacity-60"
+                      >
+                        {addingId === product.id ? 'Adding…' : 'Add to cart'}
+                      </button>
+                      <Link
+                        to={ROUTES.product(product.id)}
+                        className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10 active:scale-95"
+                      >
+                        View details
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* The cover, whole and framed. */}
+                  <Link
+                    to={ROUTES.product(product.id)}
+                    aria-label={`View ${product.title}`}
+                    className="hidden lg:block"
+                    tabIndex={-1}
+                  >
+                    <ProductCover
+                      product={product}
+                      // Centred so the emoji fallback sits in the middle of the
+                      // tile, as it does on the product cards.
+                      className="flex aspect-[3/4] w-56 items-center justify-center rounded-2xl border border-white/10 shadow-2xl shadow-black/50 transition duration-300 hover:scale-[1.02]"
+                      emojiClassName="text-7xl"
+                      imgClassName="p-2"
+                    />
+                  </Link>
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         {/* Trust signals, carried over from the hero this replaces. */}
