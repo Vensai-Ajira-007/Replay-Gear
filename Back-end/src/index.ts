@@ -5,7 +5,11 @@ import cors from 'cors'
 import morgan from 'morgan'
 import { useExpressServer } from 'routing-controllers'
 import { AppDataSource } from './db/data-source.js'
-import { seedAdmin, seedProductsFromSql } from './db/seed.js'
+import {
+  seedAdmin,
+  seedFeaturedDefaults,
+  seedProductsFromSql,
+} from './db/seed.js'
 import {
   authorizationChecker,
   currentUserChecker,
@@ -24,6 +28,7 @@ async function main() {
   await AppDataSource.initialize()
   console.log('🗄️  Database connected')
   await seedProductsFromSql()
+  await seedFeaturedDefaults()
   await seedAdmin()
 
   const app = express()

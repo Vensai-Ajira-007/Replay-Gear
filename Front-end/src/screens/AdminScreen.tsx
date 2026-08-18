@@ -21,6 +21,7 @@ const emptyForm: NewProductInput = {
   description: '',
   wikipediaUrl: '',
   steamAppid: null,
+  featured: false,
 }
 
 const conditions: Condition[] = ['Mint', 'Good', 'Fair']
@@ -245,6 +246,16 @@ export default function AdminScreen() {
               />
             </div>
           </div>
+
+          <label className="flex w-fit cursor-pointer items-center gap-2 text-sm text-white/70">
+            <input
+              type="checkbox"
+              checked={form.featured ?? false}
+              onChange={(e) => set('featured', e.target.checked)}
+              className="h-4 w-4 accent-brand"
+            />
+            Feature on the home page
+          </label>
 
           {error && <p className="text-sm text-red-400">{error}</p>}
           {msg && <p className="text-sm text-mint">{msg}</p>}

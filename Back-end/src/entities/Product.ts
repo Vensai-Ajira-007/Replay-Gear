@@ -63,6 +63,11 @@ export class Product {
   @Column({ name: 'steam_appid', type: 'int', nullable: true })
   steamAppid!: number | null
 
+  // Hand-picked by an admin for the home page's Featured Products row.
+  // Deliberately not driven by products.seed.sql — see seedFeaturedDefaults().
+  @Column({ type: 'boolean', default: false })
+  featured!: boolean
+
   // Set at read time by the catalog service, never persisted — tells the frontend
   // whether the price it received came from Steam or from this table.
   priceSource?: 'steam' | 'store'

@@ -17,6 +17,34 @@ export async function seedProductsFromSql(): Promise<void> {
   console.log('🌱 Product catalog synced from products.seed.sql')
 }
 
+/**
+ * Give a fresh database a few featured products so the home page's Featured
+ * Products row isn't empty on first run.
+ *
+ * The NOT EXISTS guard is what makes this a one-time backfill: once anything is
+ * featured, this never touches the table again, so an admin's picks survive
+ * every restart. That is also why `featured` is NOT in products.seed.sql — that
+ * file is a full upsert that re-runs on every boot and would reset the flag on
+ * ids 1-44 each time.
+ */
+const DEFAULT_FEATURED_IDS = [1, 3, 9, 14]
+
+export async function seedFeaturedDefaults(): Promise<void> {
+  // Checked as its own query rather than a NOT EXISTS inside the UPDATE: the
+  // driver returns [rows, rowCount] for `UPDATE ... RETURNING`, so counting the
+  // result directly reports nonsense.
+  const [{ count }]: [{ count: number }] = await AppDataSource.query(
+    'SELECT count(*)::int AS count FROM products WHERE featured',
+  )
+  if (count > 0) return
+
+  await AppDataSource.query(
+    `UPDATE products SET featured = true WHERE id = ANY($1)`,
+    [DEFAULT_FEATURED_IDS],
+  )
+  console.log(`⭐ Featured ${DEFAULT_FEATURED_IDS.length} products (first run)`)
+}
+
 // Create the default admin account on first run if it doesn't exist.
 export async function seedAdmin(): Promise<void> {
   const repo = AppDataSource.getRepository(User)

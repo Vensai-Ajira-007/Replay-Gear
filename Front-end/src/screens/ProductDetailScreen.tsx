@@ -28,6 +28,7 @@ interface EditForm {
   description: string
   wikipediaUrl: string
   steamAppid: string
+  featured: boolean
 }
 
 const conditions: Condition[] = ['Mint', 'Good', 'Fair']
@@ -47,6 +48,7 @@ function toForm(p: Product): EditForm {
     description: p.description ?? '',
     wikipediaUrl: p.wikipediaUrl ?? '',
     steamAppid: p.steamAppid ? String(p.steamAppid) : '',
+    featured: p.featured ?? false,
   }
 }
 
@@ -505,6 +507,16 @@ export default function ProductDetailScreen() {
                   />
                 </div>
               </div>
+
+              <label className="flex w-fit cursor-pointer items-center gap-2 text-sm text-white/70">
+                <input
+                  type="checkbox"
+                  checked={form?.featured ?? false}
+                  onChange={(e) => set('featured', e.target.checked)}
+                  className="h-4 w-4 accent-brand"
+                />
+                Feature on the home page
+              </label>
 
               {saveError && <p className="text-sm text-red-400">{saveError}</p>}
 

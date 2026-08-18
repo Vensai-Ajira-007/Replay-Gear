@@ -26,19 +26,23 @@ import {
 
 @JsonController('/products')
 export class ProductsController {
-  // GET /api/products?search=&type=&platform=&sort=  (public)
+  // GET /api/products?search=&type=&platform=&sort=&featured=  (public)
   @Get('/')
   async list(
     @QueryParam('search') search?: string,
     @QueryParam('type') type?: string,
     @QueryParam('platform') platform?: string,
     @QueryParam('sort') sort?: string,
+    // Arrives as a string like every other query param (classTransformer is off),
+    // so compare rather than declaring it boolean.
+    @QueryParam('featured') featured?: string,
   ) {
     const products = await queryProducts({
       search,
       type: type as TypeFilter | undefined,
       platform,
       sort: sort as SortKey | undefined,
+      featured: featured === 'true',
     })
     return { products, count: products.length }
   }

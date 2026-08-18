@@ -16,6 +16,8 @@ export interface CatalogQuery {
   type?: TypeFilter
   platform?: string
   sort?: SortKey
+  /** When true, return only admin-featured products. */
+  featured?: boolean
 }
 
 function repo() {
@@ -76,6 +78,9 @@ export async function queryProducts(query: CatalogQuery): Promise<Product[]> {
   if (search !== '') {
     qb.andWhere('(p.title ILIKE :q OR p.platform ILIKE :q)', { q: `%${search}%` })
   }
+  if (query.featured) {
+    qb.andWhere('p.featured = true')
+  }
 
   if (sort === 'price-asc') qb.orderBy('p.price', 'ASC')
   else if (sort === 'price-desc') qb.orderBy('p.price', 'DESC')
@@ -112,6 +117,7 @@ export interface NewProduct {
   description?: string
   wikipediaUrl?: string
   steamAppid?: number | null
+  featured?: boolean
 }
 
 const TYPES: ProductType[] = ['game', 'console']
@@ -181,6 +187,7 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     description,
     wikipediaUrl,
     steamAppid: Number(input.steamAppid) > 0 ? Number(input.steamAppid) : null,
+    featured: Boolean(input.featured),
   })
   return repo().save(product)
 }
@@ -199,6 +206,7 @@ export interface UpdateProduct {
   description?: string
   wikipediaUrl?: string
   steamAppid?: number | null
+  featured?: boolean
 }
 
 // Admin-only: update an existing product. Only the provided fields are changed;
@@ -272,6 +280,7 @@ export async function updateProduct(
   if (patch.steamAppid !== undefined) {
     existing.steamAppid = Number(patch.steamAppid) > 0 ? Number(patch.steamAppid) : null
   }
+  if (patch.featured !== undefined) existing.featured = Boolean(patch.featured)
 
   return repo().save(existing)
 }
