@@ -12,6 +12,7 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { formatINR } from '../lib/format'
 import { ROUTES } from '../config/routes'
+import heroBg from '../assets/tufkigckuj241.jpg'
 import ProductCover from '../components/ProductCover'
 import DeliveryCheck from '../components/DeliveryCheck'
 
@@ -149,7 +150,7 @@ export default function ProductDetailScreen() {
       <section className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
         <div className="text-6xl">🔍</div>
         <h1 className="mt-4 text-2xl font-bold text-white">Product not found</h1>
-        <p className="mt-2 text-white/60">{error ?? 'This item may have been removed.'}</p>
+        <p className="mt-2 text-white/75">{error ?? 'This item may have been removed.'}</p>
         <Link
           to={ROUTES.home}
           className="mt-8 inline-block rounded-full bg-gradient-to-r from-brand to-brand-soft px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:opacity-90"
@@ -171,30 +172,30 @@ export default function ProductDetailScreen() {
     // overflow-hidden is load-bearing: the backdrop is scaled past both edges,
     // and without clipping that becomes a horizontal scrollbar.
     <div className="relative overflow-hidden">
-      {/* The product's own artwork behind the whole page, lightly blurred and
-          dimmed. Skipped entirely when there's no image, so emoji-fallback
-          products keep the plain site gradient instead of a dark slab. */}
-      {product.imageUrl && (
-        <div
-          aria-hidden="true"
-          // overflow-hidden here, not just on the wrapper: the scale pushes the
-          // image past this layer, and the dim below is inset-0 of it — so an
-          // unclipped overflow shows as a bright undimmed strip.
-          className="pointer-events-none absolute inset-0 overflow-hidden"
-        >
-          <img
-            src={product.imageUrl}
-            alt=""
-            className="h-full w-full scale-105 object-cover blur-md"
-          />
-          <div className="absolute inset-0 bg-ink/65" />
-          {/* Soft hand-off into the footer below. */}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent" />
-        </div>
-      )}
+      {/* One shared backdrop for every product, rather than each product's own
+          artwork. Because it's a single known image, the dim below is tuned once
+          and every product page reads identically — with per-product art, a pale
+          cover (Zelda) and a dark one (Elden Ring) needed different settings and
+          text legibility varied page to page. Same poster as the home page. */}
+      <div
+        aria-hidden="true"
+        // overflow-hidden here, not just on the wrapper: the scale pushes the
+        // image past this layer, and the dim below is inset-0 of it — so an
+        // unclipped overflow shows as a bright undimmed strip.
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+      >
+        <img
+          src={heroBg}
+          alt=""
+          className="h-full w-full scale-105 object-cover blur-lg"
+        />
+        <div className="absolute inset-0 bg-ink/80" />
+        {/* Soft hand-off into the footer below. */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent" />
+      </div>
 
       <section className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <nav className="mb-6 text-sm text-white/50">
+        <nav className="mb-6 text-sm text-white/70">
           <Link to={ROUTES.home} className="transition hover:text-white">
             Dashboard
           </Link>
@@ -206,7 +207,7 @@ export default function ProductDetailScreen() {
             {product.type === 'game' ? 'Games' : 'Consoles'}
           </Link>
           <span className="px-2">/</span>
-          <span className="text-white/80">{product.title}</span>
+          <span className="text-white/90">{product.title}</span>
         </nav>
 
         <div className="grid gap-8 lg:grid-cols-2">
@@ -236,18 +237,18 @@ export default function ProductDetailScreen() {
                   >
                     {product.condition}
                   </span>
-                  <span className="text-xs uppercase tracking-wide text-white/40">
+                  <span className="text-xs uppercase tracking-wide text-white/60">
                     {product.type}
                   </span>
-                  <span className="flex items-center gap-1 text-xs text-white/60">
+                  <span className="flex items-center gap-1 text-xs text-white/75">
                     <span className="text-fair">★</span>
                     {product.rating.toFixed(1)}
                   </span>
                 </div>
 
                 <h1 className="mt-3 text-3xl font-bold text-white">{product.title}</h1>
-                <p className="mt-2 text-sm text-white/60">
-                  Platform: <span className="text-white/80">{product.platform}</span>
+                <p className="mt-2 text-sm text-white/75">
+                  Platform: <span className="text-white/90">{product.platform}</span>
                 </p>
 
                 <div className="mt-6 flex items-end gap-3">
@@ -255,7 +256,7 @@ export default function ProductDetailScreen() {
                     {formatINR(product.price)}
                   </span>
                   {product.originalPrice > product.price && (
-                    <span className="pb-1 text-sm text-white/40 line-through">
+                    <span className="pb-1 text-sm text-white/60 line-through">
                       {formatINR(product.originalPrice)}
                     </span>
                   )}
@@ -267,7 +268,7 @@ export default function ProductDetailScreen() {
                 </div>
 
                 {product.priceSource === 'steam' && (
-                  <p className="mt-1.5 text-xs text-white/40">
+                  <p className="mt-1.5 text-xs text-white/60">
                     Live Steam price (India)
                   </p>
                 )}
@@ -275,12 +276,12 @@ export default function ProductDetailScreen() {
                 {/* Blurb + source link. Absent on admin-added products, so both
                     the text and the link are rendered only when present. */}
                 {product.description && (
-                  <p className="mt-5 text-sm leading-relaxed text-white/75">
+                  <p className="mt-5 text-sm leading-relaxed text-white/90">
                     {product.description}
                   </p>
                 )}
                 {product.wikipediaUrl && (
-                  <p className="mt-2 text-xs text-white/40">
+                  <p className="mt-2 text-xs text-white/60">
                     <a
                       href={product.wikipediaUrl}
                       target="_blank"
@@ -293,9 +294,9 @@ export default function ProductDetailScreen() {
                   </p>
                 )}
 
-                <p className="mt-4 text-sm leading-relaxed text-white/60">
+                <p className="mt-4 text-sm leading-relaxed text-white/75">
                   A pre-owned {product.type === 'game' ? 'game' : 'console'} in{' '}
-                  <span className="text-white/80">{product.condition}</span> condition,
+                  <span className="text-white/90">{product.condition}</span> condition,
                   cleaned and tested. Free shipping and a 30-day guarantee.
                 </p>
 
@@ -371,11 +372,11 @@ export default function ProductDetailScreen() {
               >
                 <div className="flex items-center justify-between">
                   <h2 className="font-semibold text-white">Edit product</h2>
-                  <span className="text-xs text-white/40">id {product.id}</span>
+                  <span className="text-xs text-white/60">id {product.id}</span>
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm text-white/70">Title</label>
+                  <label className="mb-1 block text-sm text-white/85">Title</label>
                   <input
                     className={input}
                     required
@@ -386,7 +387,7 @@ export default function ProductDetailScreen() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="mb-1 block text-sm text-white/70">Type</label>
+                    <label className="mb-1 block text-sm text-white/85">Type</label>
                     <select
                       className={input}
                       value={form?.type}
@@ -400,7 +401,7 @@ export default function ProductDetailScreen() {
                     </select>
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm text-white/70">Platform</label>
+                    <label className="mb-1 block text-sm text-white/85">Platform</label>
                     <select
                       className={input}
                       value={form?.platform}
@@ -419,7 +420,7 @@ export default function ProductDetailScreen() {
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="mb-1 block text-sm text-white/70">Condition</label>
+                    <label className="mb-1 block text-sm text-white/85">Condition</label>
                     <select
                       className={input}
                       value={form?.condition}
@@ -433,7 +434,7 @@ export default function ProductDetailScreen() {
                     </select>
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm text-white/70">Price</label>
+                    <label className="mb-1 block text-sm text-white/85">Price</label>
                     <input
                       className={input}
                       type="number"
@@ -444,7 +445,7 @@ export default function ProductDetailScreen() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm text-white/70">Was</label>
+                    <label className="mb-1 block text-sm text-white/85">Was</label>
                     <input
                       className={input}
                       type="number"
@@ -457,7 +458,7 @@ export default function ProductDetailScreen() {
 
                 <div className="grid grid-cols-4 gap-4">
                   <div>
-                    <label className="mb-1 block text-sm text-white/70">Rating</label>
+                    <label className="mb-1 block text-sm text-white/85">Rating</label>
                     <input
                       className={input}
                       type="number"
@@ -469,7 +470,7 @@ export default function ProductDetailScreen() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm text-white/70">Emoji</label>
+                    <label className="mb-1 block text-sm text-white/85">Emoji</label>
                     <input
                       className={input}
                       value={form?.emoji ?? ''}
@@ -477,8 +478,8 @@ export default function ProductDetailScreen() {
                     />
                   </div>
                   <div className="col-span-2">
-                    <label className="mb-1 block text-sm text-white/70">
-                      Image URL <span className="text-white/40">(optional)</span>
+                    <label className="mb-1 block text-sm text-white/85">
+                      Image URL <span className="text-white/60">(optional)</span>
                     </label>
                     <input
                       className={input}
@@ -491,9 +492,9 @@ export default function ProductDetailScreen() {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm text-white/70">
+                  <label className="mb-1 block text-sm text-white/85">
                     Description{' '}
-                    <span className="text-white/40">
+                    <span className="text-white/60">
                       (blank = pull from the Wikipedia article)
                     </span>
                   </label>
@@ -507,8 +508,8 @@ export default function ProductDetailScreen() {
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
-                    <label className="mb-1 block text-sm text-white/70">
-                      Wikipedia URL <span className="text-white/40">(optional)</span>
+                    <label className="mb-1 block text-sm text-white/85">
+                      Wikipedia URL <span className="text-white/60">(optional)</span>
                     </label>
                     <input
                       className={input}
@@ -519,8 +520,8 @@ export default function ProductDetailScreen() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm text-white/70">
-                      Steam appid <span className="text-white/40">(optional)</span>
+                    <label className="mb-1 block text-sm text-white/85">
+                      Steam appid <span className="text-white/60">(optional)</span>
                     </label>
                     <input
                       className={input}
@@ -533,7 +534,7 @@ export default function ProductDetailScreen() {
                   </div>
                 </div>
 
-                <label className="flex w-fit cursor-pointer items-center gap-2 text-sm text-white/70">
+                <label className="flex w-fit cursor-pointer items-center gap-2 text-sm text-white/85">
                   <input
                     type="checkbox"
                     checked={form?.featured ?? false}
@@ -556,7 +557,7 @@ export default function ProductDetailScreen() {
                   <button
                     type="button"
                     onClick={() => setEditing(false)}
-                    className="rounded-full px-4 py-2.5 text-sm font-medium text-white/60 transition hover:text-white"
+                    className="rounded-full px-4 py-2.5 text-sm font-medium text-white/75 transition hover:text-white"
                   >
                     Cancel
                   </button>
