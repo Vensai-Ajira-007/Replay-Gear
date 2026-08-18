@@ -95,7 +95,7 @@ export default function DeliveryCheck({
             <p className="text-sm text-mint">
               Delivery by {formatDeliveryDate(result.etaDate)}
             </p>
-            <p className="mt-0.5 text-xs text-white/60">
+            <p className="mt-0.5 text-xs text-white/75">
               {area && <>{area} · </>}
               {result.freeShipping ? 'Free shipping' : 'Shipping charges apply'} ·{' '}
               {result.codAvailable

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Hero from '../components/Hero'
+import HeroSlider from '../components/HeroSlider'
 import ProductCard from '../components/ProductCard'
 import { type Product } from '../data/products'
 import { fetchProducts } from '../lib/api'
@@ -61,15 +61,24 @@ export default function DashboardScreen() {
     console: products.length ? products.filter((p) => p.type === 'console').length : null,
   }
 
-  // Top 4 by discount percentage.
-  const deals = useMemo(
-    () => [...products].sort((a, b) => discountPct(b) - discountPct(a)).slice(0, 4),
+  // Deepest markdowns headline the slideshow.
+  const byDiscount = useMemo(
+    () => [...products].sort((a, b) => discountPct(b) - discountPct(a)),
     [products],
   )
+  const topDeals = byDiscount.slice(0, 5)
+
+  // Curated by an admin (the `featured` flag), not derived from price. Filtered
+  // from the catalog we already fetched rather than a second request.
+  const featured = products.filter((p) => p.featured)
 
   return (
     <>
-      <Hero />
+      {/* The navbar's "Deals" link targets #deals — the slideshow is the
+          discounts banner, so it owns the anchor. */}
+      <div id="deals" className="scroll-mt-24">
+        {topDeals.length > 0 && <HeroSlider products={topDeals} />}
+      </div>
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white">Browse by category</h2>
@@ -117,19 +126,20 @@ export default function DashboardScreen() {
         </div>
       </section>
 
-      {deals.length > 0 && (
-        <section id="deals" className="mx-auto max-w-7xl scroll-mt-24 px-4 pb-16 sm:px-6">
+      {/* Hidden entirely when nothing is flagged, rather than an empty heading. */}
+      {featured.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
           <div className="mb-6 flex items-end justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-white">🔥 Hot Deals</h2>
+              <h2 className="text-2xl font-bold text-white">⭐ Featured Products</h2>
               <p className="mt-1 text-sm text-white/60">
-                Biggest markdowns in the store right now.
+                Hand-picked by us — the ones worth your time.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {deals.map((product) => (
+            {featured.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

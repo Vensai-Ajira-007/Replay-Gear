@@ -27,6 +27,8 @@ export interface Product {
   steamAppid?: number | null
   /** Whether the price came from Steam or from the store's own database. */
   priceSource?: 'steam' | 'store'
+  /** Hand-picked by an admin for the home page's Featured Products row. */
+  featured?: boolean
 }
 
 export const types: { key: 'all' | ProductType; label: string }[] = [
