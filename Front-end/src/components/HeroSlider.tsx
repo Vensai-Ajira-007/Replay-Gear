@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import heroBg from '../assets/tufkigckuj241.jpg'
 import type { Product } from '../data/products'
 import { useCart } from '../context/CartContext'
 import { formatINR } from '../lib/format'
@@ -80,18 +81,13 @@ export default function HeroSlider({ products }: HeroSliderProps) {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      {/* Artwork blown up and blurred to fill the wide frame. The poster itself
-          is shown whole on the right — cropping a 3:4 cover to a banner leaves
-          an unrecognisable detail. */}
-      {product.imageUrl && (
-        <img
-          key={`bg-${product.id}`}
-          src={product.imageUrl}
-          alt=""
-          aria-hidden="true"
-          className="animate-fade pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
-        />
-      )}
+      {/* The store's poster art (from the old hero), fixed behind every slide.
+          Deliberately not keyed to the product: it stays put while slides
+          change, so the backdrop doesn't flash on each rotation. */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-cover bg-no-repeat"
+        style={{ backgroundImage: `url(${heroBg})`, backgroundPosition: 'center right' }}
+      />
 
       {/* Same scrims as the old hero, so the page below still blends in. */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/30" />
