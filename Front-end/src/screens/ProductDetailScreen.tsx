@@ -15,11 +15,14 @@ import { ROUTES } from '../config/routes'
 import heroBg from '../assets/tufkigckuj241.jpg'
 import ProductCover from '../components/ProductCover'
 import DeliveryCheck from '../components/DeliveryCheck'
+import ConsolePicker from '../components/ConsolePicker'
+import ConsoleBadges from '../components/ConsoleBadges'
 
 interface EditForm {
   title: string
   type: ProductType
   platform: string
+  consoles: string[]
   condition: Condition
   price: number
   originalPrice: number
@@ -40,6 +43,7 @@ function toForm(p: Product): EditForm {
     title: p.title,
     type: p.type,
     platform: p.platform,
+    consoles: p.consoles ?? [],
     condition: p.condition,
     price: p.price,
     originalPrice: p.originalPrice,
@@ -96,6 +100,9 @@ export default function ProductDetailScreen() {
 
   const set = <K extends keyof EditForm>(k: K, v: EditForm[K]) =>
     setForm((f) => (f ? { ...f, [k]: v } : f))
+
+  // Only games have a Steam listing, so hardware doesn't get asked for an appid.
+  const isConsole = form?.type === 'console'
 
   const startEdit = () => {
     if (!product) return
@@ -224,6 +231,7 @@ export default function ProductDetailScreen() {
                   -{discount}%
                 </span>
               )}
+              <ConsoleBadges consoles={product.consoles} size="md" />
             </ProductCover>
           </div>
 
@@ -250,6 +258,12 @@ export default function ProductDetailScreen() {
                 <p className="mt-2 text-sm text-white/75">
                   Platform: <span className="text-white/90">{product.platform}</span>
                 </p>
+                {product.consoles?.length ? (
+                  <p className="mt-1 text-sm text-white/75">
+                    Consoles:{' '}
+                    <span className="text-white/90">{product.consoles.join(', ')}</span>
+                  </p>
+                ) : null}
 
                 <div className="mt-6 flex items-end gap-3">
                   <span className="text-3xl font-extrabold text-white">
@@ -391,7 +405,19 @@ export default function ProductDetailScreen() {
                     <select
                       className={input}
                       value={form?.type}
-                      onChange={(e) => set('type', e.target.value as ProductType)}
+                      onChange={(e) => {
+                        const type = e.target.value as ProductType
+                        setForm((f) =>
+                          f
+                            ? {
+                                ...f,
+                                type,
+                                steamAppid: type === 'console' ? '' : f.steamAppid,
+                                consoles: type === 'console' ? [] : f.consoles,
+                              }
+                            : f,
+                        )
+                      }}
                     >
                       {types.map((t) => (
                         <option key={t} value={t}>
@@ -405,7 +431,12 @@ export default function ProductDetailScreen() {
                     <select
                       className={input}
                       value={form?.platform}
-                      onChange={(e) => set('platform', e.target.value)}
+                      onChange={(e) =>
+                        // Consoles are family-scoped, so a new family invalidates them.
+                        setForm((f) =>
+                          f ? { ...f, platform: e.target.value, consoles: [] } : f,
+                        )
+                      }
                     >
                       {platforms
                         .filter((p) => p !== 'All')
@@ -417,6 +448,15 @@ export default function ProductDetailScreen() {
                     </select>
                   </div>
                 </div>
+
+                {!isConsole && form && (
+                  <ConsolePicker
+                    platform={form.platform}
+                    value={form.consoles}
+                    onChange={(consoles) => set('consoles', consoles)}
+                    labelClassName="text-white/85"
+                  />
+                )}
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
@@ -507,7 +547,7 @@ export default function ProductDetailScreen() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-2">
+                  <div className={isConsole ? 'col-span-3' : 'col-span-2'}>
                     <label className="mb-1 block text-sm text-white/85">
                       Wikipedia URL <span className="text-white/60">(optional)</span>
                     </label>
@@ -519,19 +559,21 @@ export default function ProductDetailScreen() {
                       onChange={(e) => set('wikipediaUrl', e.target.value)}
                     />
                   </div>
-                  <div>
-                    <label className="mb-1 block text-sm text-white/85">
-                      Steam appid <span className="text-white/60">(optional)</span>
-                    </label>
-                    <input
-                      className={input}
-                      type="number"
-                      min="1"
-                      placeholder="1091500"
-                      value={form?.steamAppid ?? ''}
-                      onChange={(e) => set('steamAppid', e.target.value)}
-                    />
-                  </div>
+                  {!isConsole && (
+                    <div>
+                      <label className="mb-1 block text-sm text-white/85">
+                        Steam appid <span className="text-white/60">(optional)</span>
+                      </label>
+                      <input
+                        className={input}
+                        type="number"
+                        min="1"
+                        placeholder="1091500"
+                        value={form?.steamAppid ?? ''}
+                        onChange={(e) => set('steamAppid', e.target.value)}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <label className="flex w-fit cursor-pointer items-center gap-2 text-sm text-white/85">

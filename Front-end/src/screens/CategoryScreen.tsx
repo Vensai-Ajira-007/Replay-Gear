@@ -29,6 +29,7 @@ export default function CategoryScreen({ type }: CategoryScreenProps) {
 
   const [debouncedSearch, setDebouncedSearch] = useState(search)
   const [platformFilter, setPlatformFilter] = useState('All')
+  const [consoleFilter, setConsoleFilter] = useState('All')
   const [sort, setSort] = useState<SortKey>('featured')
 
   const [items, setItems] = useState<Product[]>([])
@@ -40,6 +41,11 @@ export default function CategoryScreen({ type }: CategoryScreenProps) {
     setPlatformFilter('All')
     setSort('featured')
   }, [type])
+
+  // Console models belong to one family, so a family change invalidates the pick.
+  useEffect(() => {
+    setConsoleFilter('All')
+  }, [platformFilter])
 
   // Debounce the search box so we don't hit the API on every keystroke.
   useEffect(() => {
@@ -53,7 +59,13 @@ export default function CategoryScreen({ type }: CategoryScreenProps) {
     setLoading(true)
     setError(null)
 
-    fetchProducts({ search: debouncedSearch, type, platform: platformFilter, sort })
+    fetchProducts({
+      search: debouncedSearch,
+      type,
+      platform: platformFilter,
+      console: consoleFilter,
+      sort,
+    })
       .then((products) => {
         if (!cancelled) setItems(products)
       })
@@ -70,7 +82,7 @@ export default function CategoryScreen({ type }: CategoryScreenProps) {
     return () => {
       cancelled = true
     }
-  }, [debouncedSearch, type, platformFilter, sort])
+  }, [debouncedSearch, type, platformFilter, consoleFilter, sort])
 
   const { title, blurb, emoji } = meta[type]
 
@@ -97,6 +109,9 @@ export default function CategoryScreen({ type }: CategoryScreenProps) {
       <FilterBar
         platformFilter={platformFilter}
         onPlatformChange={setPlatformFilter}
+        consoleFilter={consoleFilter}
+        onConsoleChange={setConsoleFilter}
+        showConsoles={type === 'game'}
         sort={sort}
         onSortChange={setSort}
         resultCount={items.length}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import HeroSlider from '../components/HeroSlider'
 import ProductCard from '../components/ProductCard'
 import { type Product } from '../data/products'
@@ -39,7 +39,19 @@ function discountPct(p: Product): number {
 }
 
 export default function DashboardScreen() {
+  const location = useLocation()
+  const navigate = useNavigate()
   const [products, setProducts] = useState<Product[]>([])
+
+  // A one-off confirmation handed over by another screen (the admin add form
+  // navigates here after a save). Read once, then dropped from history so a
+  // later Back doesn't resurrect a stale banner.
+  const [notice, setNotice] = useState<string | null>(
+    (location.state as { notice?: string } | null)?.notice ?? null,
+  )
+  useEffect(() => {
+    if (notice) navigate(ROUTES.home, { replace: true, state: null })
+  }, [notice, navigate])
 
   // Fetch the whole catalog once — used for category counts and hot deals.
   useEffect(() => {
@@ -80,6 +92,20 @@ export default function DashboardScreen() {
         {topDeals.length > 0 && <HeroSlider products={topDeals} />}
       </div>
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+        {notice && (
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-mint/30 bg-mint/10 px-4 py-3">
+            <p className="flex-1 text-sm text-mint">{notice}</p>
+            <button
+              type="button"
+              onClick={() => setNotice(null)}
+              aria-label="Dismiss"
+              className="text-mint/60 transition hover:text-mint"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white">Browse by category</h2>
           <p className="mt-1 text-sm text-white/60">

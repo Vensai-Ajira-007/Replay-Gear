@@ -19,6 +19,11 @@ export class Product {
   @Column({ type: 'varchar', length: 32 })
   platform!: string
 
+  // The specific machines a game runs on within its platform family, e.g.
+  // ['PS4', 'PS5']. Always empty for hardware.
+  @Column({ type: 'text', array: true, default: () => "'{}'" })
+  consoles!: string[]
+
   @Column({ type: 'varchar', length: 8 })
   condition!: Condition
 

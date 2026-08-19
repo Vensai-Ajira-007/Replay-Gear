@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext'
 import { formatINR } from '../lib/format'
 import { ROUTES } from '../config/routes'
 import ProductCover from './ProductCover'
+import ConsoleBadges from './ConsoleBadges'
 
 interface ProductCardProps {
   product: Product
@@ -46,6 +47,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <span className="absolute right-3 top-3 z-10 rounded-full bg-black/50 px-2 py-1 text-xs font-medium text-white/90 ring-1 ring-white/10 backdrop-blur">
           {product.platform}
         </span>
+        <ConsoleBadges consoles={product.consoles} />
       </ProductCover>
 
       {/* Body */}

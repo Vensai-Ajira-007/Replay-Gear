@@ -15,6 +15,8 @@ export interface CatalogQuery {
   search?: string
   type?: TypeFilter
   platform?: string
+  /** A specific machine, e.g. 'PS5'. Only games carry these. */
+  console?: string
   sort?: SortKey
   /** When true, return only admin-featured products. */
   featured?: boolean
@@ -65,6 +67,7 @@ export async function queryProducts(query: CatalogQuery): Promise<Product[]> {
   const search = (query.search ?? '').trim()
   const type = query.type ?? 'all'
   const platform = query.platform ?? 'All'
+  const consoleModel = (query.console ?? 'All').trim()
   const sort = query.sort ?? 'featured'
 
   const qb = repo().createQueryBuilder('p')
@@ -74,6 +77,9 @@ export async function queryProducts(query: CatalogQuery): Promise<Product[]> {
   }
   if (platform !== 'All') {
     qb.andWhere('p.platform = :platform', { platform })
+  }
+  if (consoleModel !== 'All' && consoleModel !== '') {
+    qb.andWhere(':consoleModel = ANY(p.consoles)', { consoleModel })
   }
   if (search !== '') {
     qb.andWhere('(p.title ILIKE :q OR p.platform ILIKE :q)', { q: `%${search}%` })
@@ -107,6 +113,7 @@ export interface NewProduct {
   title?: string
   type?: ProductType
   platform?: string
+  consoles?: string[]
   condition?: Condition
   price?: number
   originalPrice?: number
@@ -122,6 +129,47 @@ export interface NewProduct {
 
 const TYPES: ProductType[] = ['game', 'console']
 const CONDITIONS: Condition[] = ['Mint', 'Good', 'Fair']
+
+// The machines a game can be listed for, grouped by platform family. Kept in step
+// with consolesByPlatform on the frontend — the two apps share no code.
+const CONSOLES_BY_PLATFORM: Record<string, string[]> = {
+  PlayStation: ['PS1', 'PS2', 'PS3', 'PS4', 'PS5'],
+  Xbox: ['Xbox', 'Xbox 360', 'Xbox One', 'Xbox Series X|S'],
+  Nintendo: [
+    'NES',
+    'SNES',
+    'N64',
+    'GameCube',
+    'Wii',
+    'Wii U',
+    'DS',
+    '3DS',
+    'Switch',
+    'Switch 2',
+  ],
+  PC: ['Windows PC', 'Steam Deck'],
+}
+
+/**
+ * The console list to store: games must name at least one machine from their own
+ * platform family; hardware never carries one, the same way it never carries a
+ * Steam appid.
+ */
+function normalizeConsoles(
+  type: ProductType,
+  platform: string,
+  input: unknown,
+): string[] {
+  if (type === 'console') return []
+  const allowed = CONSOLES_BY_PLATFORM[platform] ?? []
+  const picked = Array.isArray(input) ? [...new Set(input.map(String))] : []
+  const unknown = picked.filter((c) => !allowed.includes(c))
+  if (unknown.length) {
+    throw new BadRequestError(`Not a ${platform} console: ${unknown.join(', ')}`)
+  }
+  if (!picked.length) throw new BadRequestError('Select at least one console for a game')
+  return picked
+}
 
 /**
  * The blurb to store: whatever the admin typed, or — when they left it blank
@@ -153,6 +201,8 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     throw new BadRequestError("type must be 'game' or 'console'")
   }
   if (!input.platform?.trim()) throw new BadRequestError('Platform is required')
+  const platform = input.platform.trim()
+  const consoles = normalizeConsoles(input.type, platform, input.consoles)
   if (!input.condition || !CONDITIONS.includes(input.condition)) {
     throw new BadRequestError('condition must be Mint, Good or Fair')
   }
@@ -176,7 +226,8 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     id: nextId,
     title,
     type: input.type,
-    platform: input.platform.trim(),
+    platform,
+    consoles,
     condition: input.condition,
     price,
     originalPrice: originalPrice > 0 ? originalPrice : price,
@@ -186,7 +237,11 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     imageUrl: input.imageUrl?.trim() || null,
     description,
     wikipediaUrl,
-    steamAppid: Number(input.steamAppid) > 0 ? Number(input.steamAppid) : null,
+    // Only games have a Steam listing; hardware never does.
+    steamAppid:
+      input.type === 'console' || !(Number(input.steamAppid) > 0)
+        ? null
+        : Number(input.steamAppid),
     featured: Boolean(input.featured),
   })
   return repo().save(product)
@@ -196,6 +251,7 @@ export interface UpdateProduct {
   title?: string
   type?: ProductType
   platform?: string
+  consoles?: string[]
   condition?: Condition
   price?: number
   originalPrice?: number
@@ -279,6 +335,22 @@ export async function updateProduct(
   }
   if (patch.steamAppid !== undefined) {
     existing.steamAppid = Number(patch.steamAppid) > 0 ? Number(patch.steamAppid) : null
+  }
+  // Keyed off the post-patch type, so switching a game to hardware drops its appid too.
+  if (existing.type === 'console') existing.steamAppid = null
+  // Same idea for the console list, but only re-validated when this edit actually
+  // touched one of the three fields it depends on — otherwise an unrelated patch
+  // (a price change, say) would be rejected for a game that predates this field.
+  if (
+    patch.consoles !== undefined ||
+    patch.type !== undefined ||
+    patch.platform !== undefined
+  ) {
+    existing.consoles = normalizeConsoles(
+      existing.type,
+      existing.platform,
+      patch.consoles ?? existing.consoles,
+    )
   }
   if (patch.featured !== undefined) existing.featured = Boolean(patch.featured)
 

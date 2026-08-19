@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { platforms, type Condition, type Product, type ProductType } from '../data/products'
 import {
   createProduct,
@@ -7,12 +8,15 @@ import {
   type NewProductInput,
 } from '../lib/api'
 import { formatINR } from '../lib/format'
+import { ROUTES } from '../config/routes'
 import ProductCover from '../components/ProductCover'
+import ConsolePicker from '../components/ConsolePicker'
 
 const emptyForm: NewProductInput = {
   title: '',
   type: 'game',
   platform: 'PlayStation',
+  consoles: [],
   condition: 'Good',
   price: 0,
   originalPrice: 0,
@@ -28,9 +32,10 @@ const conditions: Condition[] = ['Mint', 'Good', 'Fair']
 const types: ProductType[] = ['game', 'console']
 
 export default function AdminScreen() {
+  const navigate = useNavigate()
+
   const [form, setForm] = useState<NewProductInput>(emptyForm)
   const [products, setProducts] = useState<Product[]>([])
-  const [msg, setMsg] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
@@ -44,9 +49,14 @@ export default function AdminScreen() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    // The server re-validates this — it's here so the admin doesn't wait on a
+    // round trip to be told a game needs a console.
+    if (form.type === 'game' && !form.consoles?.length) {
+      setError('Pick at least one console for this game')
+      return
+    }
     setBusy(true)
     setError(null)
-    setMsg(null)
     try {
       const created = await createProduct({
         ...form,
@@ -61,9 +71,12 @@ export default function AdminScreen() {
           : form.wikipediaUrl?.trim()
             ? " — couldn't read that Wikipedia page, description left empty"
             : ''
-      setMsg(`Added "${created.title}" (id ${created.id})${blurb}`)
       setForm(emptyForm)
-      load()
+      // Back to the dashboard, carrying the confirmation so it isn't lost with
+      // this screen — the dashboard renders anything handed to it as `notice`.
+      navigate(ROUTES.home, {
+        state: { notice: `Added "${created.title}" (id ${created.id})${blurb}` },
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add product')
     } finally {
@@ -83,6 +96,9 @@ export default function AdminScreen() {
 
   const input =
     'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white outline-none focus:border-brand/60'
+
+  // Only games have a Steam listing, so hardware doesn't get asked for an appid.
+  const isConsole = form.type === 'console'
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -113,7 +129,15 @@ export default function AdminScreen() {
               <select
                 className={input}
                 value={form.type}
-                onChange={(e) => set('type', e.target.value as ProductType)}
+                onChange={(e) => {
+                  const type = e.target.value as ProductType
+                  setForm((f) => ({
+                    ...f,
+                    type,
+                    steamAppid: type === 'console' ? null : f.steamAppid,
+                    consoles: type === 'console' ? [] : f.consoles,
+                  }))
+                }}
               >
                 {types.map((t) => (
                   <option key={t} value={t}>
@@ -127,7 +151,10 @@ export default function AdminScreen() {
               <select
                 className={input}
                 value={form.platform}
-                onChange={(e) => set('platform', e.target.value)}
+                onChange={(e) =>
+                  // Consoles are family-scoped, so a new family invalidates the picks.
+                  setForm((f) => ({ ...f, platform: e.target.value, consoles: [] }))
+                }
               >
                 {platforms
                   .filter((p) => p !== 'All')
@@ -139,6 +166,14 @@ export default function AdminScreen() {
               </select>
             </div>
           </div>
+
+          {!isConsole && (
+            <ConsolePicker
+              platform={form.platform}
+              value={form.consoles ?? []}
+              onChange={(consoles) => set('consoles', consoles)}
+            />
+          )}
 
           <div className="grid grid-cols-3 gap-4">
             <div>
@@ -218,7 +253,7 @@ export default function AdminScreen() {
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2">
+            <div className={isConsole ? 'col-span-3' : 'col-span-2'}>
               <label className="mb-1 block text-sm text-white/70">
                 Wikipedia URL <span className="text-white/40">(optional)</span>
               </label>
@@ -230,21 +265,23 @@ export default function AdminScreen() {
                 onChange={(e) => set('wikipediaUrl', e.target.value)}
               />
             </div>
-            <div>
-              <label className="mb-1 block text-sm text-white/70">
-                Steam appid <span className="text-white/40">(optional)</span>
-              </label>
-              <input
-                className={input}
-                type="number"
-                min="1"
-                placeholder="1091500"
-                value={form.steamAppid ?? ''}
-                onChange={(e) =>
-                  set('steamAppid', Number(e.target.value) > 0 ? Number(e.target.value) : null)
-                }
-              />
-            </div>
+            {!isConsole && (
+              <div>
+                <label className="mb-1 block text-sm text-white/70">
+                  Steam appid <span className="text-white/40">(optional)</span>
+                </label>
+                <input
+                  className={input}
+                  type="number"
+                  min="1"
+                  placeholder="1091500"
+                  value={form.steamAppid ?? ''}
+                  onChange={(e) =>
+                    set('steamAppid', Number(e.target.value) > 0 ? Number(e.target.value) : null)
+                  }
+                />
+              </div>
+            )}
           </div>
 
           <label className="flex w-fit cursor-pointer items-center gap-2 text-sm text-white/70">
@@ -258,7 +295,6 @@ export default function AdminScreen() {
           </label>
 
           {error && <p className="text-sm text-red-400">{error}</p>}
-          {msg && <p className="text-sm text-mint">{msg}</p>}
 
           <button
             type="submit"
@@ -288,7 +324,8 @@ export default function AdminScreen() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm text-white">{p.title}</div>
                   <div className="text-xs text-white/40">
-                    {p.platform} · {formatINR(p.price)}
+                    {p.consoles?.length ? p.consoles.join(', ') : p.platform} ·{' '}
+                    {formatINR(p.price)}
                   </div>
                 </div>
                 <button
