@@ -84,6 +84,9 @@ export default function AdminScreen() {
   const input =
     'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white outline-none focus:border-brand/60'
 
+  // Only games have a Steam listing, so hardware doesn't get asked for an appid.
+  const isConsole = form.type === 'console'
+
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <h1 className="text-2xl font-bold text-white">Admin — Products</h1>
@@ -113,7 +116,14 @@ export default function AdminScreen() {
               <select
                 className={input}
                 value={form.type}
-                onChange={(e) => set('type', e.target.value as ProductType)}
+                onChange={(e) => {
+                  const type = e.target.value as ProductType
+                  setForm((f) => ({
+                    ...f,
+                    type,
+                    steamAppid: type === 'console' ? null : f.steamAppid,
+                  }))
+                }}
               >
                 {types.map((t) => (
                   <option key={t} value={t}>
@@ -218,7 +228,7 @@ export default function AdminScreen() {
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2">
+            <div className={isConsole ? 'col-span-3' : 'col-span-2'}>
               <label className="mb-1 block text-sm text-white/70">
                 Wikipedia URL <span className="text-white/40">(optional)</span>
               </label>
@@ -230,21 +240,23 @@ export default function AdminScreen() {
                 onChange={(e) => set('wikipediaUrl', e.target.value)}
               />
             </div>
-            <div>
-              <label className="mb-1 block text-sm text-white/70">
-                Steam appid <span className="text-white/40">(optional)</span>
-              </label>
-              <input
-                className={input}
-                type="number"
-                min="1"
-                placeholder="1091500"
-                value={form.steamAppid ?? ''}
-                onChange={(e) =>
-                  set('steamAppid', Number(e.target.value) > 0 ? Number(e.target.value) : null)
-                }
-              />
-            </div>
+            {!isConsole && (
+              <div>
+                <label className="mb-1 block text-sm text-white/70">
+                  Steam appid <span className="text-white/40">(optional)</span>
+                </label>
+                <input
+                  className={input}
+                  type="number"
+                  min="1"
+                  placeholder="1091500"
+                  value={form.steamAppid ?? ''}
+                  onChange={(e) =>
+                    set('steamAppid', Number(e.target.value) > 0 ? Number(e.target.value) : null)
+                  }
+                />
+              </div>
+            )}
           </div>
 
           <label className="flex w-fit cursor-pointer items-center gap-2 text-sm text-white/70">

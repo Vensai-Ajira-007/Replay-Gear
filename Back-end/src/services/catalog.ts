@@ -186,7 +186,11 @@ export async function createProduct(input: NewProduct): Promise<Product> {
     imageUrl: input.imageUrl?.trim() || null,
     description,
     wikipediaUrl,
-    steamAppid: Number(input.steamAppid) > 0 ? Number(input.steamAppid) : null,
+    // Only games have a Steam listing; hardware never does.
+    steamAppid:
+      input.type === 'console' || !(Number(input.steamAppid) > 0)
+        ? null
+        : Number(input.steamAppid),
     featured: Boolean(input.featured),
   })
   return repo().save(product)
@@ -280,6 +284,8 @@ export async function updateProduct(
   if (patch.steamAppid !== undefined) {
     existing.steamAppid = Number(patch.steamAppid) > 0 ? Number(patch.steamAppid) : null
   }
+  // Keyed off the post-patch type, so switching a game to hardware drops its appid too.
+  if (existing.type === 'console') existing.steamAppid = null
   if (patch.featured !== undefined) existing.featured = Boolean(patch.featured)
 
   return repo().save(existing)

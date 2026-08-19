@@ -97,6 +97,9 @@ export default function ProductDetailScreen() {
   const set = <K extends keyof EditForm>(k: K, v: EditForm[K]) =>
     setForm((f) => (f ? { ...f, [k]: v } : f))
 
+  // Only games have a Steam listing, so hardware doesn't get asked for an appid.
+  const isConsole = form?.type === 'console'
+
   const startEdit = () => {
     if (!product) return
     setForm(toForm(product))
@@ -391,7 +394,14 @@ export default function ProductDetailScreen() {
                     <select
                       className={input}
                       value={form?.type}
-                      onChange={(e) => set('type', e.target.value as ProductType)}
+                      onChange={(e) => {
+                        const type = e.target.value as ProductType
+                        setForm((f) =>
+                          f
+                            ? { ...f, type, steamAppid: type === 'console' ? '' : f.steamAppid }
+                            : f,
+                        )
+                      }}
                     >
                       {types.map((t) => (
                         <option key={t} value={t}>
@@ -507,7 +517,7 @@ export default function ProductDetailScreen() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-2">
+                  <div className={isConsole ? 'col-span-3' : 'col-span-2'}>
                     <label className="mb-1 block text-sm text-white/85">
                       Wikipedia URL <span className="text-white/60">(optional)</span>
                     </label>
@@ -519,19 +529,21 @@ export default function ProductDetailScreen() {
                       onChange={(e) => set('wikipediaUrl', e.target.value)}
                     />
                   </div>
-                  <div>
-                    <label className="mb-1 block text-sm text-white/85">
-                      Steam appid <span className="text-white/60">(optional)</span>
-                    </label>
-                    <input
-                      className={input}
-                      type="number"
-                      min="1"
-                      placeholder="1091500"
-                      value={form?.steamAppid ?? ''}
-                      onChange={(e) => set('steamAppid', e.target.value)}
-                    />
-                  </div>
+                  {!isConsole && (
+                    <div>
+                      <label className="mb-1 block text-sm text-white/85">
+                        Steam appid <span className="text-white/60">(optional)</span>
+                      </label>
+                      <input
+                        className={input}
+                        type="number"
+                        min="1"
+                        placeholder="1091500"
+                        value={form?.steamAppid ?? ''}
+                        onChange={(e) => set('steamAppid', e.target.value)}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <label className="flex w-fit cursor-pointer items-center gap-2 text-sm text-white/85">
