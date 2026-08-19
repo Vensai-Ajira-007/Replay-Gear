@@ -15,11 +15,13 @@ import { ROUTES } from '../config/routes'
 import heroBg from '../assets/tufkigckuj241.jpg'
 import ProductCover from '../components/ProductCover'
 import DeliveryCheck from '../components/DeliveryCheck'
+import ConsolePicker from '../components/ConsolePicker'
 
 interface EditForm {
   title: string
   type: ProductType
   platform: string
+  consoles: string[]
   condition: Condition
   price: number
   originalPrice: number
@@ -40,6 +42,7 @@ function toForm(p: Product): EditForm {
     title: p.title,
     type: p.type,
     platform: p.platform,
+    consoles: p.consoles ?? [],
     condition: p.condition,
     price: p.price,
     originalPrice: p.originalPrice,
@@ -253,6 +256,12 @@ export default function ProductDetailScreen() {
                 <p className="mt-2 text-sm text-white/75">
                   Platform: <span className="text-white/90">{product.platform}</span>
                 </p>
+                {product.consoles?.length ? (
+                  <p className="mt-1 text-sm text-white/75">
+                    Consoles:{' '}
+                    <span className="text-white/90">{product.consoles.join(', ')}</span>
+                  </p>
+                ) : null}
 
                 <div className="mt-6 flex items-end gap-3">
                   <span className="text-3xl font-extrabold text-white">
@@ -398,7 +407,12 @@ export default function ProductDetailScreen() {
                         const type = e.target.value as ProductType
                         setForm((f) =>
                           f
-                            ? { ...f, type, steamAppid: type === 'console' ? '' : f.steamAppid }
+                            ? {
+                                ...f,
+                                type,
+                                steamAppid: type === 'console' ? '' : f.steamAppid,
+                                consoles: type === 'console' ? [] : f.consoles,
+                              }
                             : f,
                         )
                       }}
@@ -415,7 +429,12 @@ export default function ProductDetailScreen() {
                     <select
                       className={input}
                       value={form?.platform}
-                      onChange={(e) => set('platform', e.target.value)}
+                      onChange={(e) =>
+                        // Consoles are family-scoped, so a new family invalidates them.
+                        setForm((f) =>
+                          f ? { ...f, platform: e.target.value, consoles: [] } : f,
+                        )
+                      }
                     >
                       {platforms
                         .filter((p) => p !== 'All')
@@ -427,6 +446,15 @@ export default function ProductDetailScreen() {
                     </select>
                   </div>
                 </div>
+
+                {!isConsole && form && (
+                  <ConsolePicker
+                    platform={form.platform}
+                    value={form.consoles}
+                    onChange={(consoles) => set('consoles', consoles)}
+                    labelClassName="text-white/85"
+                  />
+                )}
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>

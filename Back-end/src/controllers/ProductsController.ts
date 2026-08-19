@@ -26,12 +26,14 @@ import {
 
 @JsonController('/products')
 export class ProductsController {
-  // GET /api/products?search=&type=&platform=&sort=&featured=  (public)
+  // GET /api/products?search=&type=&platform=&console=&sort=&featured=  (public)
   @Get('/')
   async list(
     @QueryParam('search') search?: string,
     @QueryParam('type') type?: string,
     @QueryParam('platform') platform?: string,
+    // Bound as consoleModel so it doesn't shadow the global `console`.
+    @QueryParam('console') consoleModel?: string,
     @QueryParam('sort') sort?: string,
     // Arrives as a string like every other query param (classTransformer is off),
     // so compare rather than declaring it boolean.
@@ -41,6 +43,7 @@ export class ProductsController {
       search,
       type: type as TypeFilter | undefined,
       platform,
+      console: consoleModel,
       sort: sort as SortKey | undefined,
       featured: featured === 'true',
     })

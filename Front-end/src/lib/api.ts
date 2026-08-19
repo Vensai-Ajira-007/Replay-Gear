@@ -8,6 +8,8 @@ export interface ProductQuery {
   search?: string
   type?: TypeFilter
   platform?: string
+  /** A specific machine, e.g. 'PS5'. 'All' means no console filter. */
+  console?: string
   sort?: SortKey
   /** Only admin-featured products. */
   featured?: boolean
@@ -174,6 +176,7 @@ export async function fetchProducts(query: ProductQuery): Promise<Product[]> {
   if (query.search) params.set('search', query.search)
   if (query.type && query.type !== 'all') params.set('type', query.type)
   if (query.platform && query.platform !== 'All') params.set('platform', query.platform)
+  if (query.console && query.console !== 'All') params.set('console', query.console)
   if (query.sort) params.set('sort', query.sort)
   if (query.featured) params.set('featured', 'true')
 
@@ -379,6 +382,8 @@ export interface NewProductInput {
   title: string
   type: ProductType
   platform: string
+  /** Required for games, ignored for hardware. */
+  consoles?: string[]
   condition: 'Mint' | 'Good' | 'Fair'
   price: number
   originalPrice: number

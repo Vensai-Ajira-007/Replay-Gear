@@ -68,6 +68,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         <h3 className="mt-2 line-clamp-2 font-semibold leading-snug text-white">
           {product.title}
         </h3>
+        {product.consoles?.length ? (
+          <p className="mt-1 text-xs text-white/50">{product.consoles.join(' · ')}</p>
+        ) : null}
 
         <div className="mt-auto flex items-end justify-between pt-4">
           <div>

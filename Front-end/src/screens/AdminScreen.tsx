@@ -8,11 +8,13 @@ import {
 } from '../lib/api'
 import { formatINR } from '../lib/format'
 import ProductCover from '../components/ProductCover'
+import ConsolePicker from '../components/ConsolePicker'
 
 const emptyForm: NewProductInput = {
   title: '',
   type: 'game',
   platform: 'PlayStation',
+  consoles: [],
   condition: 'Good',
   price: 0,
   originalPrice: 0,
@@ -44,6 +46,12 @@ export default function AdminScreen() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    // The server re-validates this — it's here so the admin doesn't wait on a
+    // round trip to be told a game needs a console.
+    if (form.type === 'game' && !form.consoles?.length) {
+      setError('Pick at least one console for this game')
+      return
+    }
     setBusy(true)
     setError(null)
     setMsg(null)
@@ -122,6 +130,7 @@ export default function AdminScreen() {
                     ...f,
                     type,
                     steamAppid: type === 'console' ? null : f.steamAppid,
+                    consoles: type === 'console' ? [] : f.consoles,
                   }))
                 }}
               >
@@ -137,7 +146,10 @@ export default function AdminScreen() {
               <select
                 className={input}
                 value={form.platform}
-                onChange={(e) => set('platform', e.target.value)}
+                onChange={(e) =>
+                  // Consoles are family-scoped, so a new family invalidates the picks.
+                  setForm((f) => ({ ...f, platform: e.target.value, consoles: [] }))
+                }
               >
                 {platforms
                   .filter((p) => p !== 'All')
@@ -149,6 +161,14 @@ export default function AdminScreen() {
               </select>
             </div>
           </div>
+
+          {!isConsole && (
+            <ConsolePicker
+              platform={form.platform}
+              value={form.consoles ?? []}
+              onChange={(consoles) => set('consoles', consoles)}
+            />
+          )}
 
           <div className="grid grid-cols-3 gap-4">
             <div>
@@ -300,7 +320,8 @@ export default function AdminScreen() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm text-white">{p.title}</div>
                   <div className="text-xs text-white/40">
-                    {p.platform} · {formatINR(p.price)}
+                    {p.consoles?.length ? p.consoles.join(', ') : p.platform} ·{' '}
+                    {formatINR(p.price)}
                   </div>
                 </div>
                 <button

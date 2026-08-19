@@ -10,6 +10,8 @@ export interface Product {
   title: string
   type: ProductType
   platform: string
+  /** The machines a game runs on, e.g. ['PS4', 'PS5']. Empty for hardware. */
+  consoles?: string[]
   condition: Condition
   price: number
   originalPrice: number
@@ -38,6 +40,18 @@ export const types: { key: 'all' | ProductType; label: string }[] = [
 ]
 
 export const platforms = ['All', 'PlayStation', 'Xbox', 'Nintendo', 'PC'] as const
+
+/**
+ * The machines a game can be listed for, grouped by platform family. No 'All'
+ * sentinel here — the filter bar adds that pill itself. Mirrored by
+ * CONSOLES_BY_PLATFORM in the backend's catalog service, which validates saves.
+ */
+export const consolesByPlatform: Record<string, string[]> = {
+  PlayStation: ['PS1', 'PS2', 'PS3', 'PS4', 'PS5'],
+  Xbox: ['Xbox', 'Xbox 360', 'Xbox One', 'Xbox Series X|S'],
+  Nintendo: ['NES', 'SNES', 'N64', 'GameCube', 'Wii', 'Wii U', '3DS', 'Switch', 'Switch 2'],
+  PC: ['Windows PC', 'Steam Deck'],
+}
 
 export const conditionColor: Record<Condition, string> = {
   Mint: 'bg-mint/15 text-mint ring-mint/30',
