@@ -135,7 +135,18 @@ const CONDITIONS: Condition[] = ['Mint', 'Good', 'Fair']
 const CONSOLES_BY_PLATFORM: Record<string, string[]> = {
   PlayStation: ['PS1', 'PS2', 'PS3', 'PS4', 'PS5'],
   Xbox: ['Xbox', 'Xbox 360', 'Xbox One', 'Xbox Series X|S'],
-  Nintendo: ['NES', 'SNES', 'N64', 'GameCube', 'Wii', 'Wii U', '3DS', 'Switch', 'Switch 2'],
+  Nintendo: [
+    'NES',
+    'SNES',
+    'N64',
+    'GameCube',
+    'Wii',
+    'Wii U',
+    'DS',
+    '3DS',
+    'Switch',
+    'Switch 2',
+  ],
   PC: ['Windows PC', 'Steam Deck'],
 }
 

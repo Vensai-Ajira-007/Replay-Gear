@@ -16,6 +16,7 @@ import heroBg from '../assets/tufkigckuj241.jpg'
 import ProductCover from '../components/ProductCover'
 import DeliveryCheck from '../components/DeliveryCheck'
 import ConsolePicker from '../components/ConsolePicker'
+import ConsoleBadges from '../components/ConsoleBadges'
 
 interface EditForm {
   title: string
@@ -230,6 +231,7 @@ export default function ProductDetailScreen() {
                   -{discount}%
                 </span>
               )}
+              <ConsoleBadges consoles={product.consoles} size="md" />
             </ProductCover>
           </div>
 

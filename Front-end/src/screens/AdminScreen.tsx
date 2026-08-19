@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { platforms, type Condition, type Product, type ProductType } from '../data/products'
 import {
   createProduct,
@@ -7,6 +8,7 @@ import {
   type NewProductInput,
 } from '../lib/api'
 import { formatINR } from '../lib/format'
+import { ROUTES } from '../config/routes'
 import ProductCover from '../components/ProductCover'
 import ConsolePicker from '../components/ConsolePicker'
 
@@ -30,9 +32,10 @@ const conditions: Condition[] = ['Mint', 'Good', 'Fair']
 const types: ProductType[] = ['game', 'console']
 
 export default function AdminScreen() {
+  const navigate = useNavigate()
+
   const [form, setForm] = useState<NewProductInput>(emptyForm)
   const [products, setProducts] = useState<Product[]>([])
-  const [msg, setMsg] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
@@ -54,7 +57,6 @@ export default function AdminScreen() {
     }
     setBusy(true)
     setError(null)
-    setMsg(null)
     try {
       const created = await createProduct({
         ...form,
@@ -69,9 +71,12 @@ export default function AdminScreen() {
           : form.wikipediaUrl?.trim()
             ? " — couldn't read that Wikipedia page, description left empty"
             : ''
-      setMsg(`Added "${created.title}" (id ${created.id})${blurb}`)
       setForm(emptyForm)
-      load()
+      // Back to the dashboard, carrying the confirmation so it isn't lost with
+      // this screen — the dashboard renders anything handed to it as `notice`.
+      navigate(ROUTES.home, {
+        state: { notice: `Added "${created.title}" (id ${created.id})${blurb}` },
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add product')
     } finally {
@@ -290,7 +295,6 @@ export default function AdminScreen() {
           </label>
 
           {error && <p className="text-sm text-red-400">{error}</p>}
-          {msg && <p className="text-sm text-mint">{msg}</p>}
 
           <button
             type="submit"
